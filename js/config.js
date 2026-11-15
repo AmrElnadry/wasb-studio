@@ -17,11 +17,18 @@ window.WASB_CONTACT = {
 /* 2) النصوص باللغتين */
 window.WASB_I18N = {
   ar: {
+    'nav.menu': 'القائمة',
+    'door.identity.t': 'شعار ودليل هوية متكامل.', 'door.website.t': 'واجهات وتجربة تعكس علامتك.', 'door.profile.t': 'ملف تعريفي يقدّم شركتك بوضوح.',
+    'door.identity': 'الهوية البصرية', 'door.website': 'المواقع الإلكترونية', 'door.profile': 'بروفايلات الشركات',
+    'filter.all': 'الكل', 'filter.identity': 'هوية بصرية', 'filter.website': 'مواقع', 'filter.profile': 'بروفايلات',
+    'svc.0.a': 'الشعار ونسخه', 'svc.0.b': 'الألوان والخطوط', 'svc.0.c': 'العناصر المساندة والأنماط', 'svc.0.d': 'دليل الاستخدام والتطبيقات', 'svc.0.cta': 'أعمال الهوية',
+    'svc.1.a': 'هيكلة المحتوى', 'svc.1.b': 'تصميم الواجهات', 'svc.1.c': 'نسخة الجوال والكمبيوتر', 'svc.1.cta': 'أعمال المواقع',
+    'svc.2.a': 'تنظيم المحتوى', 'svc.2.b': 'تصميم الصفحات', 'svc.2.c': 'نسخة للطباعة ونسخة رقمية', 'svc.2.cta': 'أعمال البروفايلات',
     'skip': 'تخطَّ إلى الأعمال',
     'nav.works': 'الأعمال', 'nav.services': 'الخدمات', 'nav.approach': 'المنهجية', 'nav.about': 'عن وثب',
     'cta.start': 'ابدأ مشروعك', 'cta.works': 'شاهد الأعمال',
     'hero.title': 'علامتك تستحق قفزة.',
-    'hero.lede': 'وثب استوديو تصميم يبني الهوية البصرية والمواقع وبروفايلات الشركات، لتنتقل علامتك من حضورٍ عادي إلى حضورٍ يُرى.',
+    'hero.lede': 'وثب استوديو تصميم يبني لعلامتك هويتها البصرية، موقعها، وبروفايل شركتها.',
     'gate.a': 'من حضورٍ عادي', 'gate.b': 'إلى حضورٍ يُرى.',
     'works.title': 'أعمال مختارة',
     'works.note': 'ستة مشاريع وأربعة مواقع. كل عمل معروض بالطريقة التي تناسب طبيعته.',
@@ -29,11 +36,11 @@ window.WASB_I18N = {
     'sites.note': 'لقطات مباشرة من مواقع صمّمناها وهي على الهواء.',
     'services.title': 'ثلاث خدمات، قفزة واحدة.',
     'svc.0.name': 'الشعار ودليل الهوية',
-    'svc.0.text': 'نبني العلامة من جذرها: الشعار، نظام الألوان والخطوط، العناصر المساندة، ثم دليل يضمن أن تُستخدم الهوية بشكل صحيح في كل مكان.',
+    'svc.0.text': 'نبني العلامة من جذرها، ثم نكتب دليلاً يضمن أن تُستخدم الهوية بشكل صحيح في كل مكان.',
     'svc.1.name': 'تصميم المواقع',
     'svc.1.text': 'واجهة وتجربة تعكسان شخصية العلامة وتعرضان محتواها بوضوح، على الجوال قبل الكمبيوتر.',
     'svc.2.name': 'بروفايلات الشركات',
-    'svc.2.text': 'ملف تعريفي منظم يقدّم الشركة وخدماتها ومشاريعها، مطبوعاً أو رقمياً، بلغة بصرية واحدة.',
+    'svc.2.text': 'ملف تعريفي منظم يقدّم الشركة وخدماتها ومشاريعها بلغة بصرية واحدة.',
     'approach.title': 'كيف نصل إلى القفزة',
     'step.0.name': 'نفهم', 'step.0.text': 'نسمع، نسأل، وندرس السوق والمنافسين قبل أن نرسم خطاً واحداً.',
     'step.1.name': 'نبني الفكرة', 'step.1.text': 'نحوّل ما فهمناه إلى فكرة واحدة واضحة تقود كل قرار بصري.',
@@ -53,11 +60,18 @@ window.WASB_I18N = {
     'plate.open': 'عرض المشروع'
   },
   en: {
+    'nav.menu': 'Menu',
+    'door.identity.t': 'Logo and a complete brand guideline.', 'door.website.t': 'Interfaces and experience that carry your brand.', 'door.profile.t': 'A profile that presents your company clearly.',
+    'door.identity': 'Brand identity', 'door.website': 'Websites', 'door.profile': 'Company profiles',
+    'filter.all': 'All', 'filter.identity': 'Identity', 'filter.website': 'Websites', 'filter.profile': 'Profiles',
+    'svc.0.a': 'Logo and its versions', 'svc.0.b': 'Colour and type', 'svc.0.c': 'Supporting elements and patterns', 'svc.0.d': 'Usage guideline and applications', 'svc.0.cta': 'Identity work',
+    'svc.1.a': 'Content structure', 'svc.1.b': 'Interface design', 'svc.1.c': 'Mobile and desktop', 'svc.1.cta': 'Website work',
+    'svc.2.a': 'Content organisation', 'svc.2.b': 'Page design', 'svc.2.c': 'Print and digital versions', 'svc.2.cta': 'Profile work',
     'skip': 'Skip to work',
     'nav.works': 'Work', 'nav.services': 'Services', 'nav.approach': 'Approach', 'nav.about': 'About',
     'cta.start': 'Start a project', 'cta.works': 'See the work',
     'hero.title': 'Your brand deserves a leap.',
-    'hero.lede': 'WASB is a design studio building brand identities, websites and company profiles that move a brand from being present to being seen.',
+    'hero.lede': 'WASB is a design studio that builds your brand\u2019s visual identity, its website, and its company profile.',
     'gate.a': 'From being present', 'gate.b': 'to being seen.',
     'works.title': 'Selected work',
     'works.note': 'Six projects and four websites, each shown the way its nature calls for.',
@@ -65,11 +79,11 @@ window.WASB_I18N = {
     'sites.note': 'Captures of sites we designed, taken from the live web.',
     'services.title': 'Three services, one leap.',
     'svc.0.name': 'Logo & brand guidelines',
-    'svc.0.text': 'We build the brand from its root: the logo, colour and type system, supporting elements, and a guideline that keeps the identity used correctly everywhere.',
+    'svc.0.text': 'We build the brand from its root, then write the guideline that keeps the identity used correctly everywhere.',
     'svc.1.name': 'Website design',
     'svc.1.text': 'Interface and experience that carry the brand’s character and present its content clearly, on mobile before desktop.',
     'svc.2.name': 'Company profiles',
-    'svc.2.text': 'A structured profile presenting the company, its services and its projects, in print or digital, in one visual language.',
+    'svc.2.text': 'A structured profile presenting the company, its services and its projects in one visual language.',
     'approach.title': 'How we get to the leap',
     'step.0.name': 'Understand', 'step.0.text': 'We listen, ask, and study the market and competitors before drawing a single line.',
     'step.1.name': 'Build the idea', 'step.1.text': 'We turn what we learned into one clear idea that leads every visual decision.',
@@ -103,13 +117,12 @@ window.WASB_TAGS = {
 
 /* 3) المشاريع
    لإضافة مشروع: انسخ أي عنصر، غيّر id والصور، وأضف الصور داخل assets/.
-   span: عرض البطاقة في الشبكة (من 12).   shape: 'arch' أو 'low'.
+   cover: صورة البطاقة (تُعرض كما هي).
    blocks: محتوى صفحة المشروع بالترتيب.
      full   : صورة واحدة بعرض كامل
      grid   : شبكة صور (cols = عدد الأعمدة)
      strip  : شريط صفحات يُسحب أفقياً (مناسب لصفحات PDF)
      browser: لقطة موقع داخل إطار متصفح
-     stage  : عناصر مقصوصة على أرضية بلون المشروع
 */
 (function () {
   const A = 'assets/';
@@ -121,9 +134,9 @@ window.WASB_TAGS = {
       name: { ar: 'فزت', en: 'FZT' },
       line: { ar: 'شركة فزت للتسويق وإدارة الفعاليات', en: 'FZT, marketing and event management' },
       tags: ['identity', 'profile', 'website'],
-      plate: { art: A + 'fzt/pattern-white.webp', artOpacity: .1, logo: A + 'fzt/FZT_logo_Final_FZT_White.svg', fig: A + 'fzt/poster.webp', figClass: 'is-sheet' },
+      cover: A + 'fzt/profile-01.webp',
       blocks: [
-        { type: 'stage', items: [{ src: A + 'fzt/FZT_logo_Final_FZT_White.svg', w: 34 }], art: A + 'fzt/pattern-white.webp' },
+        { type: 'full', src: A + 'fzt/guide-02.webp' },
         { type: 'strip', title: { ar: 'دليل الهوية', en: 'Brand guidelines' }, ratio: '16/9', items: seq('fzt', 'guide', ['01', '02', '03', '05', '06', '07', '09', '11', '13']) },
         { type: 'grid', cols: 2, items: [A + 'fzt/poster.webp', A + 'fzt/pattern.webp'], fit: 'contain' },
         { type: 'strip', title: { ar: 'بروفايل الشركة', en: 'Company profile' }, ratio: '1.414/1', items: seq('fzt', 'profile', ['01', '02', '03', '04', '05', '08', '09', '10', '11', '12', '13', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28']) },
@@ -135,10 +148,9 @@ window.WASB_TAGS = {
       name: { ar: 'نادي العلا · Summer Camp', en: 'AlUla Club · Summer Camp' },
       line: { ar: 'طقم هدايا لاعبي المعسكر الصيفي، لصالح فزت ونادي العلا', en: 'Summer camp player gift set, for FZT and AlUla Club' },
       tags: ['identity', 'merch'],
-      plate: { art: A + 'ula/artwork-v.webp', fig: A + 'ula/cut-backpack.webp', figClass: 'is-tall' },
+      cover: A + 'ula/artwork-h.webp',
       blocks: [
         { type: 'full', src: A + 'ula/artwork-h.webp' },
-        { type: 'stage', items: [{ src: A + 'ula/cut-bottle.webp', w: 12 }, { src: A + 'ula/cut-backpack.webp', w: 26 }, { src: A + 'ula/cut-pin.webp', w: 16 }, { src: A + 'ula/cut-eyemask.webp', w: 30 }] },
         { type: 'grid', cols: 2, items: [A + 'ula/backpack.webp', A + 'ula/scarf.webp'] },
         { type: 'grid', cols: 3, items: [A + 'ula/pillow.webp', A + 'ula/tag.webp', A + 'ula/eyemask.webp'] },
         { type: 'grid', cols: 2, items: [A + 'ula/pin.webp', A + 'ula/bottle.webp'] }
@@ -149,7 +161,7 @@ window.WASB_TAGS = {
       name: { ar: 'آيار', en: 'IAAR' },
       line: { ar: 'شركة آيار للصناعات الخشبية والمعدنية', en: 'IAAR, wood and metal industries' },
       tags: ['identity', 'profile', 'print'],
-      plate: { logo: A + 'iaar/logo-05.webp', logoBlend: true, fig: A + 'iaar/cut-cards.webp', figClass: 'is-wide' },
+      cover: A + 'iaar/cards.webp',
       blocks: [
         { type: 'full', src: A + 'iaar/cards.webp' },
         { type: 'strip', title: { ar: 'دليل الهوية', en: 'Brand guidelines' }, ratio: '16/9', items: seq('iaar', 'guide', ['01', '02', '03', '05', '06', '08', '09', '10', '11', '12']) },
@@ -163,7 +175,7 @@ window.WASB_TAGS = {
       name: { ar: 'الكمال', en: 'Al Kamal' },
       line: { ar: 'شركة مقاولات: بروفايل مطبوع وموقع إلكتروني', en: 'Contracting company: printed profile and website' },
       tags: ['profile', 'website'],
-      plate: { fig: A + 'alkamal/cut-cover.webp', figClass: 'is-wide is-big' },
+      cover: A + 'alkamal/cover-dark.webp',
       blocks: [
         { type: 'full', src: A + 'alkamal/cover-dark.webp' },
         { type: 'grid', cols: 2, items: [A + 'alkamal/spread-about.webp', A + 'alkamal/spread-structure.webp'] },
@@ -177,7 +189,7 @@ window.WASB_TAGS = {
       name: { ar: 'دان الرائدة', en: 'Dan AlRaeda' },
       line: { ar: 'فريقك المتكامل لنجاح أعمالك', en: 'Back office services' },
       tags: ['logo', 'profile'],
-      plate: { art: A + 'dan/logo-2.webp', fig: A + 'dan/cut-mug.webp', figClass: 'is-corner' },
+      cover: A + 'dan/logo-2.webp',
       blocks: [
         { type: 'full', src: A + 'dan/logo-1.webp' },
         { type: 'grid', cols: 2, items: [A + 'dan/logo-2.webp', A + 'dan/logo-4.webp'] },
@@ -190,9 +202,8 @@ window.WASB_TAGS = {
       name: { ar: 'Greazy', en: 'Greazy' },
       line: { ar: 'مطعم: شعار، واجهات المحل، ولوحات داخلية وقائمة طعام', en: 'Restaurant: logo, storefront, interior signage and menu' },
       tags: ['logo', 'signage', 'print'],
-      plate: { fig: A + 'greazy/mascot.webp', figClass: 'is-tall is-mascot', logo: A + 'greazy/logo-light.webp', logoHide: true },
+      cover: A + 'greazy/front-0.webp',
       blocks: [
-        { type: 'stage', items: [{ src: A + 'greazy/logo-dark.webp', w: 30 }] },
         { type: 'full', src: A + 'greazy/front-0.webp' },
         { type: 'grid', cols: 2, items: [A + 'greazy/front-1.webp', A + 'greazy/front-2.webp', A + 'greazy/front-3.webp', A + 'greazy/front-4.webp'] },
         { type: 'grid', cols: 2, items: [A + 'greazy/plan-1.webp', A + 'greazy/plan-4.webp'], fit: 'contain', title: { ar: 'مخططات التنفيذ', en: 'Production layouts' } },
@@ -202,6 +213,10 @@ window.WASB_TAGS = {
       ]
     }
   ];
+
+  /* ترتيب ظهور المشاريع في الصفحة */
+  const ORDER = ['ula', 'fzt', 'iaar', 'alkamal', 'dan', 'greazy'];
+  window.WASB_PROJECTS.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
 
   /* 4) المواقع الحيّة */
   window.WASB_SITES = [

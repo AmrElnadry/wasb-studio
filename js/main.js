@@ -5,9 +5,11 @@
   const I18N = window.WASB_I18N, PROJECTS = window.WASB_PROJECTS, SITES = window.WASB_SITES, TAGS = window.WASB_TAGS, CONTACT = window.WASB_CONTACT;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-  const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const arrow = '<svg aria-hidden="true"><use href="#i-arrow"/></svg>';
+
+  // which project tags each of the three services covers
+  const FILTERS = { identity: ['identity', 'logo', 'merch', 'signage'], website: ['website'], profile: ['profile'] };
 
   let lang = 'ar';
   try { lang = localStorage.getItem('wasb-lang') || 'ar'; } catch (e) {}
@@ -17,7 +19,7 @@
   /* ---------- reveal ---------- */
   const io = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { rootMargin: '0px 0px -12% 0px', threshold: .12 }) : null;
+  }, { rootMargin: '0px 0px -10% 0px', threshold: .1 }) : null;
   const watch = el => { if (io) io.observe(el); else el.classList.add('in'); };
 
   function split(el) {
@@ -40,34 +42,44 @@
     const btn = $('#langToggle');
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
-    renderPlates(); renderSites(); renderContact();
-    if (!first) { measureGate(); onScroll(); if (currentCase) renderCase(currentCase); }
+    renderCards(); renderSites(); renderContact(); applyFilter(filter, true);
+    if (!first) { onScroll(); if (currentCase) renderCase(currentCase); }
   }
 
-  /* ---------- plates ---------- */
-  function tagLine(p) { return p.tags.map(k => L(TAGS[k])).join(' · '); }
-  function renderPlates() {
-    const host = $('#plates');
+  /* ---------- works ---------- */
+  const tagLine = p => p.tags.map(k => L(TAGS[k])).join(' · ');
+  function renderCards() {
+    const host = $('#cards');
     const seen = host.childElementCount > 0;
-    host.innerHTML = PROJECTS.map(p => {
-      const pl = p.plate || {};
-      return `<a class="plate plate--${p.shape} plate--${p.id}${seen ? ' in' : ''}" href="#/work/${p.id}" style="--span:${p.span};--ground:${p.ground}" aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
-        <div class="plate__stage">
-          <span class="plate__frame">
-            ${pl.art ? `<span class="plate__art" style="background-image:url(${pl.art});opacity:${pl.artOpacity || 1}"></span>` : ''}
-            ${pl.logo && !pl.logoHide ? `<img class="plate__logo" src="${pl.logo}" alt="" loading="lazy">` : ''}
-          </span>
-          ${pl.fig ? `<img class="plate__fig ${pl.figClass || ''}" src="${pl.fig}" alt="" loading="lazy">` : ''}
-        </div>
-        <div class="plate__cap">
-          <h3 class="plate__name">${esc(L(p.name))}</h3>
-          <p class="plate__tags">${esc(tagLine(p))}</p>
-          <span class="plate__go">${arrow}</span>
-        </div>
-      </a>`;
-    }).join('');
-    if (!seen) $$('.plate', host).forEach(watch);
+    host.innerHTML = PROJECTS.map(p => `<a class="card${seen ? ' in' : ''}" href="#/work/${p.id}" data-id="${p.id}" aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
+        <span class="card__media"><img src="${p.cover}" alt="" loading="lazy"></span>
+        <span class="card__cap">
+          <span class="card__name">${esc(L(p.name))}</span>
+          <span class="card__tags">${esc(tagLine(p))}</span>
+          ${arrow}
+        </span>
+      </a>`).join('');
+    if (!seen) $$('.card', host).forEach(watch);
   }
+
+  let filter = 'all';
+  function applyFilter(f, quiet) {
+    filter = FILTERS[f] ? f : 'all';
+    $$('#filters button').forEach(b => { const on = b.dataset.filter === filter; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
+    const keys = FILTERS[filter];
+    PROJECTS.forEach(p => {
+      const el = $(`.card[data-id="${p.id}"]`);
+      if (!el) return;
+      el.hidden = !!keys && !p.tags.some(k => keys.includes(k));
+      if (!quiet && !el.hidden) { el.classList.remove('in'); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in'))); }
+    });
+    $('#sitesBlock').hidden = filter === 'identity' || filter === 'profile';
+  }
+  $('#filters').addEventListener('click', e => { const b = e.target.closest('button'); if (b) applyFilter(b.dataset.filter); });
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[data-filter]');
+    if (a) applyFilter(a.dataset.filter);
+  });
 
   function renderSites() {
     const host = $('#sites');
@@ -90,65 +102,40 @@
     if (c.email) links.push(['contact.email', 'mailto:' + c.email]);
     ['instagram', 'behance', 'linkedin', 'x'].forEach(k => { if (c[k]) links.push(['contact.' + k, c[k]]); });
     host.innerHTML = links.length
-      ? links.map(([k, href]) => `<a class="btn btn--paper" href="${esc(href)}" target="_blank" rel="noopener">${esc(t(k))}${arrow}</a>`).join('')
+      ? links.map(([k, href]) => `<a class="btn btn--paper" href="${esc(href)}" target="_blank" rel="noopener"><span>${esc(t(k))}</span>${arrow}</a>`).join('')
       : `<p class="contact__empty">${esc(t('contact.empty'))}</p>`;
   }
 
-  /* ---------- nav tone ---------- */
-  const nav = $('.nav');
+  /* ---------- header ---------- */
+  const nav = $('#nav'), burger = $('#burger'), menu = $('#menu');
   const sections = $$('main > section');
-  let gateProgress = 0;
-  function navTone() {
-    const y = 36;
-    let tone = 'paper', here = '';
-    for (const s of sections) {
-      const r = s.getBoundingClientRect();
-      if (r.top <= y && r.bottom > y) { tone = s.dataset.tone || 'paper'; here = s.id; break; }
+  let lastY = window.scrollY;
+  function runNav() {
+    const y = window.scrollY, open = burger.getAttribute('aria-expanded') === 'true';
+    if (!open) {
+      if (y > lastY + 6 && y > 200) nav.classList.add('is-away');
+      else if (y < lastY - 6 || y < 200) nav.classList.remove('is-away');
     }
-    if (here === 'hero' && gateProgress > .62) tone = 'ink';
-    if (nav.dataset.tone !== tone) nav.dataset.tone = tone;
+    nav.classList.toggle('is-stuck', y > 8);
+    lastY = y;
+    let here = '';
+    for (const s of sections) { const r = s.getBoundingClientRect(); if (r.top <= innerHeight * .4 && r.bottom > innerHeight * .4) { here = s.id; break; } }
     $$('.nav__links a').forEach(a => a.classList.toggle('is-here', a.getAttribute('href') === '#' + here));
-    const meta = $('meta[name="theme-color"]');
-    if (meta) meta.content = tone === 'ink' ? '#111111' : tone === 'red' ? '#C43B2B' : '#F5F3EF';
   }
-
-  /* ---------- the gate ---------- */
-  const hero = $('#hero'), pin = $('.hero__pin'), gate = $('#gate'), gateSym = $('#gateSymbol'), heroSym = $('#heroSymbol'), gateLine = $('.gate__line');
-  let G = null;
-  function measureGate() {
-    if (reduce.matches) { G = null; return; }
-    const pr = pin.getBoundingClientRect(), r = heroSym.getBoundingClientRect();
-    if (!r.width) { G = null; return; }
-    const x = r.left - pr.left, y = r.top - pr.top;
-    // inner window of the mark, in viewBox fractions (152 52 263 358)
-    const l = x + r.width * .053, rt = x + r.width * .9363, tp = y + r.height * .0439, bt = y + r.height * .9613;
-    G = { W: pr.width, H: pr.height, x, y, w: r.width, h: r.height, l, r: pr.width - rt, t: tp, b: pr.height - bt, rad: (rt - l) / 2 };
-    gateSym.style.width = r.width + 'px'; gateSym.style.height = r.height + 'px';
-    gateSym.style.left = x + 'px'; gateSym.style.top = y + 'px';
+  function setMenu(open) {
+    burger.setAttribute('aria-expanded', open);
+    document.body.classList.toggle('is-locked', open || !!currentCase);
+    if (open) { menu.hidden = false; nav.classList.remove('is-away'); requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('is-open'))); }
+    else { menu.classList.remove('is-open'); setTimeout(() => { if (burger.getAttribute('aria-expanded') !== 'true') menu.hidden = true; }, reduce.matches ? 0 : 350); }
   }
-  function runGate() {
-    if (!G) { gateProgress = 0; return; }
-    const total = hero.offsetHeight - window.innerHeight;
-    const p = clamp((window.scrollY - hero.offsetTop) / Math.max(1, total));
-    gateProgress = p;
-    const on = clamp(p / .05);
-    const e = easeInOut(clamp((p - .03) / .62));
-    const k = 1 - e;
-    gate.style.opacity = on;
-    gate.style.clipPath = `inset(${G.t * k}px ${G.r * k}px ${G.b * k}px ${G.l * k}px round ${G.rad * k}px ${G.rad * k}px 0 0)`;
-    const q = clamp((p - .3) / .5), leap = q * q * q;
-    gateSym.style.opacity = on;
-    gateSym.style.transform = `translate3d(0, ${-leap * (G.y + G.h + 60)}px, 0) scale(${1 + .12 * q})`;
-    const s = clamp((p - .5) / .26);
-    gateLine.style.opacity = s;
-    gateLine.style.transform = `translate3d(0, ${(1 - easeInOut(s)) * 60}px, 0)`;
-  }
+  burger.addEventListener('click', () => setMenu(burger.getAttribute('aria-expanded') !== 'true'));
+  menu.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
 
   /* ---------- approach arc ---------- */
   const arc = $('#arc'), steps = $$('.arc__step');
   function runArc() {
     const r = arc.getBoundingClientRect(), vh = window.innerHeight;
-    const p = clamp((vh * .82 - r.top) / (r.height + vh * .2));
+    const p = clamp((vh * .9 - r.top) / (r.height * .9));
     arc.style.setProperty('--p', p.toFixed(3));
     steps.forEach(s => s.classList.toggle('is-on', p + .02 >= parseFloat(s.style.getPropertyValue('--t'))));
   }
@@ -157,25 +144,8 @@
   function onScroll() {
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(() => { runGate(); runArc(); navTone(); ticking = false; });
+    requestAnimationFrame(() => { runArc(); runNav(); ticking = false; });
   }
-
-  /* ---------- services ---------- */
-  const svcItems = $$('.svc__item'), svcImgs = $$('.window__img');
-  function setSvc(i) {
-    svcItems.forEach((el, n) => el.classList.toggle('is-active', n === i));
-    svcImgs.forEach((img, n) => {
-      const was = img.classList.contains('is-on');
-      img.classList.toggle('was-on', was && n !== i);
-      img.classList.toggle('is-on', n === i);
-      if (was && n !== i) setTimeout(() => img.classList.remove('was-on'), 950);
-    });
-  }
-  svcItems.forEach((el, i) => {
-    el.addEventListener('mouseenter', () => setSvc(i));
-    el.addEventListener('focus', () => setSvc(i));
-    el.addEventListener('click', () => setSvc(i));
-  });
 
   /* ---------- case study ---------- */
   const caseEl = $('#case'), caseBody = $('#caseBody'), caseScroll = $('#caseScroll'), caseCrumb = $('#caseCrumb');
@@ -187,7 +157,6 @@
     if (b.type === 'full') return `<section class="blk blk--full">${title}<div class="wrap"><img src="${b.src}" alt="${alt}" loading="lazy"></div></section>`;
     if (b.type === 'grid') return `<section class="blk blk--grid${b.fit === 'contain' ? ' is-contain' : ''}" style="--cols:${b.cols || 2}">${title}<div class="wrap"><div class="blk__items">${b.items.map(s => `<img src="${s}" alt="${alt}" loading="lazy">`).join('')}</div></div></section>`;
     if (b.type === 'strip') return `<section class="blk blk--strip">${title}<div class="blk__rail" tabindex="0">${b.items.map(s => `<img src="${s}" alt="${alt}" loading="lazy" draggable="false">`).join('')}</div></section>`;
-    if (b.type === 'stage') return `<section class="blk blk--stage"><div class="wrap"><div class="blk__stage" style="--ground:${p.ground}">${b.art ? `<span class="blk__art" style="background-image:url(${b.art})"></span>` : ''}${b.items.map(it => `<img src="${it.src}" alt="${alt}" style="--w:${it.w}%" loading="lazy">`).join('')}</div></div></section>`;
     if (b.type === 'browser') return `<section class="blk blk--browser">${title}<div class="wrap"><div class="browser"><div class="browser__bar"><i></i><i></i><i></i><span>${esc(b.label || '')}</span>${b.url ? `<a href="${b.url}" target="_blank" rel="noopener">${esc(t('case.visit'))}${arrow}</a>` : ''}</div><div class="browser__view" tabindex="0"><img src="${b.src}" alt="${alt}" loading="lazy"></div></div></div></section>`;
     return '';
   }
@@ -198,7 +167,7 @@
     const p = PROJECTS[idx], next = PROJECTS[(idx + 1) % PROJECTS.length];
     caseCrumb.textContent = L(p.name);
     caseBody.innerHTML = `
-      <header class="case__head" style="--ground:${p.ground};--on:${p.ink}">
+      <header class="case__head">
         <div class="wrap">
           <div><h1 class="case__title" id="caseTitle">${esc(L(p.name))}</h1><p class="case__line">${esc(L(p.line))}</p></div>
           <div class="case__scope"><h2>${esc(t('case.scope'))}</h2><ul>${p.tags.map(k => `<li>${esc(L(TAGS[k]))}</li>`).join('')}</ul></div>
@@ -211,9 +180,9 @@
   }
 
   function dragRail(rail) {
-    let down = false, sx = 0, sl = 0, moved = 0;
-    rail.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; sx = e.clientX; sl = rail.scrollLeft; moved = 0; rail.classList.add('is-drag'); rail.setPointerCapture(e.pointerId); });
-    rail.addEventListener('pointermove', e => { if (!down) return; const dx = e.clientX - sx; moved = Math.abs(dx); rail.scrollLeft = sl - dx; });
+    let down = false, sx = 0, sl = 0;
+    rail.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; sx = e.clientX; sl = rail.scrollLeft; rail.classList.add('is-drag'); rail.setPointerCapture(e.pointerId); });
+    rail.addEventListener('pointermove', e => { if (down) rail.scrollLeft = sl - (e.clientX - sx); });
     const up = () => { down = false; rail.classList.remove('is-drag'); };
     rail.addEventListener('pointerup', up); rail.addEventListener('pointercancel', up);
   }
@@ -234,7 +203,7 @@
     currentCase = null;
     caseEl.classList.remove('is-open');
     document.body.classList.remove('is-locked');
-    setTimeout(() => { if (!currentCase) { caseEl.hidden = true; caseBody.innerHTML = ''; } }, reduce.matches ? 0 : 900);
+    setTimeout(() => { if (!currentCase) { caseEl.hidden = true; caseBody.innerHTML = ''; } }, reduce.matches ? 0 : 500);
     if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
   function route() {
@@ -243,6 +212,7 @@
   }
   $('#caseClose').addEventListener('click', () => { history.pushState('', document.title, location.pathname + location.search); closeCase(); });
   document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') { setMenu(false); burger.focus(); return; }
     if (!currentCase) return;
     if (e.key === 'Escape') { $('#caseClose').click(); }
     if (e.key === 'Tab') {
@@ -261,12 +231,12 @@
   applyLang(lang, true);
   $$('[data-split]').forEach(el => { if (el.closest('.hero')) requestAnimationFrame(() => el.classList.add('in')); else watch(el); });
 
-  const settle = () => { measureGate(); onScroll(); };
+  const settle = () => onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', settle);
   window.addEventListener('load', settle);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
-  reduce.addEventListener && reduce.addEventListener('change', settle);
+  if (reduce.addEventListener) reduce.addEventListener('change', settle);
   settle();
   route();
 })();
