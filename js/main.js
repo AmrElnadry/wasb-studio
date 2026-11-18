@@ -63,14 +63,15 @@
     ['wheel', 'touchstart', 'keydown', 'click'].forEach(ev => window.addEventListener(ev, skip, { once: true, passive: true }));
     await Promise.race([Promise.all(imgs.map(i => i.decode().catch(() => {}))), sleep(1600)]);
     if (skipped) return;
-    const s = Math.min(innerWidth, innerHeight) * (innerWidth < 820 ? .58 : .34);
-    Object.assign(box.style, { width: s + 'px', height: s + 'px', left: (innerWidth - s) / 2 + 'px', top: (innerHeight - s) / 2 + 'px' });
+    const target = slab.getBoundingClientRect();
+    const s = Math.min(target.width, innerHeight * .8);
+    Object.assign(box.style, { width: target.width + 'px', height: s + 'px', left: target.left + 'px', top: (innerHeight - s) / 2 + 'px' });
     await sleep(60);
     box.classList.add('is-on');
-    await sleep(650);
+    await sleep(380);
     for (let k = 0; k < imgs.length && !skipped; k++) {
       imgs.forEach((im, j) => im.classList.toggle('is-on', j === k));
-      await sleep(190);
+      await sleep(115);
     }
     if (skipped) return;
     imgs.forEach(im => im.classList.remove('is-on'));
