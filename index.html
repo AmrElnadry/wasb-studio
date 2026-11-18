@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=31">
+<link rel="stylesheet" href="css/style.css?v=44">
 <script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!/[?&]nointro/.test(location.search)&&!location.hash)document.documentElement.classList.add('intro-on')</script>
 </head>
 <body>
@@ -69,9 +69,9 @@
       <div class="slab__in">
         <svg class="slab__mark" viewBox="0 0 263 358" aria-hidden="true"><use href="#wasb-symbol"/></svg>
         <ul class="trio" id="trio" aria-label="الخدمات">
-          <li><a href="#works" data-filter="identity" data-peek="assets/fzt/guide-05.webp"><span class="trio__t" data-i18n="hero.s1">الهوية البصرية</span></a></li>
-          <li><a href="#works" data-filter="website" data-peek="assets/web/alkamal.webp"><span class="trio__t" data-i18n="hero.s2">المواقع الإلكترونية</span></a></li>
-          <li><a href="#works" data-filter="profile" data-peek="assets/alkamal/spread-about.webp"><span class="trio__t" data-i18n="hero.s3">الملف التعريفي</span></a></li>
+          <li><a href="#works" data-filter="identity"><span class="trio__t" data-i18n="hero.s1">الهوية البصرية</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li><a href="#works" data-filter="website"><span class="trio__t" data-i18n="hero.s2">المواقع الإلكترونية</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li><a href="#works" data-filter="profile"><span class="trio__t" data-i18n="hero.s3">الملف التعريفي</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
         </ul>
       </div>
     </div>
@@ -82,28 +82,24 @@
       <span class="hero__year"><span data-i18n="hero.folio">بورتفوليو</span> <span class="year">2026</span></span>
     </div>
     <div class="hero__pitch">
-      <p class="hero__slogan" data-i18n="hero.slogan">لبناء هوية أوضح وأقوى وأكثر حضوراً</p>
-      <p class="hero__lede" data-i18n="hero.lede">نبني ونطوّر هويتك البصرية لنعزّز حضورك الرقمي بما يساهم في زيادة تأثيرك وتحقيق أهدافك التسويقية.</p>
+      <p class="hero__slogan"><span data-i18n="hero.slogan">لبناء هوية أوضح وأقوى وأكثر حضوراً</span><i class="bl" id="blSlogan"></i></p>
+      <p class="hero__lede"><i class="bl" id="blLede"></i><span data-i18n="hero.lede">نبني ونطوّر هويتك البصرية لنعزّز حضورك الرقمي بما يساهم في زيادة تأثيرك وتحقيق أهدافك التسويقية.</span></p>
     </div>
     <h1 class="hero__word" id="heroWord">
       <span class="sr" data-i18n="foot.name">وثب استوديو</span>
       <span class="hero__wordmark ar-only" aria-hidden="true"><svg viewBox="0 0 263 83" aria-hidden="true"><use href="#wasb-word"/></svg></span>
       <span class="hero__wordmark en-only" aria-hidden="true"><svg viewBox="0 0 258.13 59.97" aria-hidden="true"><use href="#wasb-latin"/></svg></span>
     </h1>
-    <div class="peek" id="peek" aria-hidden="true"><img alt=""></div>
   </section>
 
   <section class="say" id="about">
-    <div class="wrap">
-      <h2 class="say__line" data-split data-i18n="about.lead">الوثبة قفزة واحدة محسوبة، وهذا ما نصنعه لكل علامة.</h2>
-      <div class="say__foot">
+    <div class="wrap say__in">
         <div class="pair">
           <span class="pair__wasb"><svg class="pair__sym" viewBox="0 0 263 358" aria-hidden="true"><use href="#wasb-symbol"/></svg><span class="ar-only"><svg viewBox="0 0 263 83" aria-hidden="true"><use href="#wasb-word"/></svg></span><span class="en-only"><svg viewBox="0 0 258.13 59.97" aria-hidden="true"><use href="#wasb-latin"/></svg></span></span>
           <i class="pair__x" aria-hidden="true"></i>
-          <a class="pair__blue" href="https://blue-network.sa" target="_blank" rel="noopener" aria-label="Blue Network"><img src="assets/blue/blue-icon-white.webp?v=31" alt="" width="356" height="400"><span>Blue Network</span></a>
+          <a class="pair__blue" href="https://blue-network.sa" target="_blank" rel="noopener" aria-label="Blue Network"><img src="assets/blue/blue-icon-white.webp?v=44" alt="" width="356" height="400"><span>Blue Network</span></a>
         </div>
-        <p data-i18n="about.p2">وثب هي الامتداد الإبداعي واستوديو التصميم والهوية البصرية لـ Blue Network. نبني للعلامات هويتها البصرية ومواقعها وملفاتها التعريفية، بفريق يجمع الإخراج الفني والتصميم والتطوير.</p>
-      </div>
+        <p class="say__text" data-i18n="about.p2">وثب هي الامتداد الإبداعي واستوديو التصميم والهوية البصرية لـ Blue Network. نبني للعلامات هويتها البصرية ومواقعها وملفاتها التعريفية، بفريق يجمع الإخراج الفني والتصميم والتطوير.</p>
     </div>
   </section>
 
@@ -154,7 +150,6 @@
             <p class="game__hint" id="gameHint" aria-live="polite" data-i18n="game.hint">اضغط «اقفز» وانتقل مع الحصان خطوة خطوة.</p>
             <div class="game__ctrl">
               <button class="leap" type="button" id="leapBtn"><span data-i18n="game.leap">اقفز</span><b id="leapCount">0/4</b></button>
-              <a class="game__skip" href="#contact" data-i18n="game.skip">تخطَّ إلى التواصل</a>
             </div>
           </div>
           <ol class="arc__steps">
@@ -170,9 +165,11 @@
 
   <section class="contact" id="contact">
     <div class="wrap contact__top">
-      <h2 class="contact__title" data-split data-i18n="contact.title">جاهز للقفزة؟</h2>
+      <div class="contact__head">
+        <h2 class="contact__title" data-split data-i18n="contact.title">جاهز للقفزة؟</h2>
+        <p class="contact__lede" data-i18n="contact.lede">تواصل معنا لبدء انطلاقة جديدة في حضورك الرقمي.</p>
+      </div>
       <div class="contact__info">
-        <p class="contact__lede" data-i18n="contact.lede">أخبرنا عن علامتك وما تريد أن تصل إليه. نرد عليك بخطوة أولى واضحة.</p>
         <div class="contact__links" id="contactLinks"></div>
         <dl class="contact__facts" id="contactFacts"></dl>
       </div>
@@ -193,7 +190,7 @@
   <div class="case__scroll" id="caseScroll" tabindex="-1"><article class="case__body" id="caseBody"></article></div>
 </div>
 
-<script src="js/config.js?v=31"></script>
-<script src="js/main.js?v=31"></script>
+<script src="js/config.js?v=44"></script>
+<script src="js/main.js?v=44"></script>
 </body>
 </html>

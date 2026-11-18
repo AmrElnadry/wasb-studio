@@ -44,7 +44,7 @@
     const btn = $('#langToggle');
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
-    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); syncGame();
+    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); alignHero(); syncGame();
     if (!first) { onScroll(); if (currentCase) renderCase(currentCase); }
   }
 
@@ -84,25 +84,6 @@
   }
 
   /* ---------- hero: three services under the mark, set to one length ---------- */
-  const peek = $('#peek'), peekImg = $('img', peek), hero = $('#hero'), slab = $('#slab');
-  let peekTimer = 0;
-  $$('#trio a').forEach(a => {
-    const show = () => {
-      if (innerWidth <= 820) return;
-      clearTimeout(peekTimer);
-      peekImg.src = a.dataset.peek;
-      const hr = hero.getBoundingClientRect(), sr = slab.getBoundingClientRect(), ar = a.getBoundingClientRect();
-      const w = peek.offsetWidth, h = peek.offsetHeight;
-      const side = lang === 'ar' ? sr.right + 28 - hr.left : sr.left - 28 - w - hr.left;
-      peek.style.left = clamp(side, 12, hr.width - w - 12) + 'px';
-      peek.style.top = clamp(ar.top + ar.height / 2 - h / 2 - hr.top, 12, hr.height - h - 12) + 'px';
-      peek.classList.add('is-on');
-    };
-    const hide = () => { peekTimer = setTimeout(() => peek.classList.remove('is-on'), 80); };
-    a.addEventListener('mouseenter', show); a.addEventListener('focus', show);
-    a.addEventListener('mouseleave', hide); a.addEventListener('blur', hide);
-  });
-
   // Arabic lines are lengthened with kashida (ـ) between joining letters; Latin lines with letter-spacing.
   const JOIN = 'بتثجحخسشصضطظعغفقكلمنهيئ';
   const ARABIC = /[ء-ي]/;
@@ -117,8 +98,35 @@
     }
     return slots;
   }
+  // Desktop: the mark's foot sits on the baseline of the slogan's last line,
+  // and the first service sits on the baseline of the description's first line.
+  function alignHero() {
+    const inner = $('.slab__in'), mark = $('.slab__mark'), trio = $('#trio');
+    const off = () => { inner.classList.remove('is-aligned'); mark.style.top = mark.style.height = trio.style.top = ''; };
+    if (innerWidth <= 820) return off();
+    const top = inner.getBoundingClientRect().top;
+    const yMark = $('#blSlogan').getBoundingClientRect().top - top;
+    const yServ = $('#blLede').getBoundingClientRect().top - top;
+    const first = $('.trio__t', trio);
+    const probe = document.createElement('i'); probe.className = 'bl';
+    first.appendChild(probe);
+    inner.classList.add('is-aligned');
+    trio.style.top = '0px';
+    const lead = probe.getBoundingClientRect().top - trio.getBoundingClientRect().top;
+    probe.remove();
+    mark.style.height = '';
+    const h = Math.min(mark.getBoundingClientRect().height, yMark - 24);
+    mark.style.height = h + 'px';
+    mark.style.top = (yMark - h) + 'px';
+    trio.style.top = (yServ - lead) + 'px';
+  }
+
+  // the slogan rises into place on load, so align again once it has landed
+  $('.hero__pitch').addEventListener('animationend', () => alignHero());
+
   function fitTrio() {
     const els = $$('#trio .trio__t');
+    if (!els.length) return;
     els.forEach(el => { el.textContent = t(el.dataset.i18n); el.style.letterSpacing = ''; });
     const widths = els.map(el => el.getBoundingClientRect().width);
     const target = Math.max(...widths);
@@ -186,26 +194,44 @@
   /* ---------- sites: a panoramic hall ---------- */
   const pano = $('#pano'), stage = $('#panoStage');
   let at = 0, cards = [], panoTimer = 0, panoSeen = false;
+  const panoPos = [];
   function renderPano() {
     stage.innerHTML = SITES.map((s, i) => `<div class="card" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${esc(s.label)}">
         <div class="card__bar"><i></i><i></i><i></i><span>${esc(s.label)}</span></div>
         <div class="card__view"><img src="${s.src}" alt="${esc(s.label)}" loading="lazy"></div>
       </div>`).join('');
     cards = $$('.card', stage);
+    panoPos.length = 0;
     cards.forEach(c => c.addEventListener('click', () => window.open(SITES[Number(c.dataset.i)].url, '_blank', 'noopener')));
     sizePano(); goPano(at, true);
   }
   function sizePano() {}
   function goPano(i, quiet) {
     const n = SITES.length;
+    const prev = at;
     at = (i + n) % n;
     cards.forEach((c, k) => {
-      let off = k - at;
-      if (off > n / 2) off -= n;
-      if (off < -n / 2) off += n;
-      c.style.setProperty('--off', off);
+      let off = ((k - at) % n + n) % n;     // 0, 1, 2 … n-1
+      if (off === n - 1) off = -1;           // the one just passed sits on the near side
+      const was = panoPos[k];
+      const wrap = was !== undefined && Math.abs(off - was) > 1;
+      if (wrap) {
+        // move it out of sight first, then teleport while hidden
+        c.classList.add('is-far');
+        c.style.setProperty('--off', was < off ? was - 1 : was + 1);
+        setTimeout(() => {
+          c.classList.add('no-anim');
+          c.style.setProperty('--off', off);
+          void c.offsetWidth;
+          c.classList.remove('no-anim');
+          c.classList.toggle('is-far', Math.abs(off) > 1);
+        }, 1650);
+      } else {
+        c.style.setProperty('--off', off);
+        c.classList.toggle('is-far', Math.abs(off) > 1);
+      }
+      panoPos[k] = off;
       c.classList.toggle('is-on', off === 0);
-      c.classList.toggle('is-far', Math.abs(off) > 1);
       c.setAttribute('aria-hidden', off !== 0);
     });
     $('#panoCount').textContent = `${pad(at + 1)}/${pad(n)}`;
@@ -213,11 +239,11 @@
     $('#panoLink').href = SITES[at].url;
     if (!quiet) restartPano();
   }
-  // each site holds for 2s after it settles, then the next one comes forward
+  // each site holds for 4s after it settles, then the next one comes forward
   function restartPano() {
     clearTimeout(panoTimer);
     if (reduce.matches || !panoSeen) return;
-    panoTimer = setTimeout(() => goPano(at + 1), 3600);
+    panoTimer = setTimeout(() => goPano(at + 1), 5600);
   }
   $('#panoPrev').addEventListener('click', () => goPano(at - 1));
   $('#panoNext').addEventListener('click', () => goPano(at + 1));
@@ -229,7 +255,7 @@
   function renderContact() {
     const c = CONTACT || {};
     const links = [];
-    if (c.whatsapp) links.push(`<a class="wa" href="https://wa.me/${String(c.whatsapp).replace(/\D/g, '')}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg><span>${esc(t('contact.whatsapp'))}</span></a>`);
+    if (c.whatsapp) links.push(`<a class="wa" aria-label="${esc(t('contact.whatsapp'))}" href="https://wa.me/${String(c.whatsapp).replace(/\D/g, '')}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg></a>`);
     if (c.email) links.push(`<a class="link" href="mailto:${esc(c.email)}"><span>${esc(t('contact.email'))}</span>${arrow}</a>`);
     ['instagram', 'behance', 'linkedin', 'x'].forEach(k => { if (c[k]) links.push(`<a class="link" href="${esc(c[k])}" target="_blank" rel="noopener"><span>${esc(t('contact.' + k))}</span>${arrow}</a>`); });
     $('#contactLinks').innerHTML = links.length ? links.join('') : `<p class="contact__empty">${esc(t('contact.empty'))}</p>`;
@@ -284,6 +310,7 @@
     const hop = Math.max(70, dist * .55);
     const dur = reduce.matches ? 0 : 720;
     leaping = true;
+    arc.style.setProperty('--p', parseFloat(steps[reached].style.getPropertyValue('--t')));
     const t0 = performance.now();
     const ease = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
     const frame = now => {
@@ -382,9 +409,9 @@
   applyLang(lang, true);
   $$('[data-split]').forEach(watch);
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', () => { fitTrio(); syncGame(); });
-  window.addEventListener('load', () => { fitTrio(); syncGame(); });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitTrio(); syncGame(); });
+  window.addEventListener('resize', () => { fitTrio(); alignHero(); syncGame(); });
+  window.addEventListener('load', () => { fitTrio(); alignHero(); syncGame(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitTrio(); alignHero(); syncGame(); });
   onScroll();
   route();
   runIntro();
