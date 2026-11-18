@@ -36,3 +36,12 @@ The mark appears in red on paper and in paper on red. No other recolouring.
 - Projects, sites, copy and contact details live in `js/config.js`.
 - Client work is shown as supplied. Mockups reframe; they never redraw.
 - No invented clients, results, dates or contact details.
+
+## Current page (dark version)
+- Intro: a red square on black flashes six covers, then grows into the centred red slab; the wordmark wipes in right to left. Skipped with `?nointro`, a hash link, or reduced motion; any click, key or scroll skips it.
+- Hero: the three services sit inside the white stroke of the letter ب; hovering one opens a small preview window. English places them as a list.
+- Dock: logo bottom-right, menu and language bottom-left, no frames. The menu icon is the three dots of ث.
+- Works: an index of project names with a sticky preview; filtered by service.
+- Sites: a panoramic hall; the centre site scrolls its home page, neighbours are blurred, auto-advances every 9s.
+- Approach: pinned; the red line draws with scroll and each step appears when the line reaches it.
+- Contact: WhatsApp button, mobile number and address from `js/config.js`.

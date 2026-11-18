@@ -5,9 +5,14 @@
   const I18N = window.WASB_I18N, PROJECTS = window.WASB_PROJECTS, SITES = window.WASB_SITES, TAGS = window.WASB_TAGS, CONTACT = window.WASB_CONTACT;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const arrow = '<svg aria-hidden="true"><use href="#i-arrow"/></svg>';
   const pad = n => String(n).padStart(2, '0');
+  const html = document.documentElement;
+
+  // which project tags each of the three services covers
+  const FILTERS = { identity: ['identity', 'logo', 'merch', 'signage'], website: ['website'], profile: ['profile'] };
 
   let lang = 'ar';
   try { lang = localStorage.getItem('wasb-lang') || 'ar'; } catch (e) {}
@@ -19,7 +24,6 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { rootMargin: '0px 0px -10% 0px', threshold: .1 }) : null;
   const watch = el => { if (io) io.observe(el); else el.classList.add('in'); };
-
   function split(el) {
     const text = el.textContent.trim();
     el.setAttribute('aria-label', text);
@@ -30,88 +34,183 @@
   function applyLang(next, first) {
     lang = next === 'en' ? 'en' : 'ar';
     try { localStorage.setItem('wasb-lang', lang); } catch (e) {}
-    const html = document.documentElement;
     html.lang = lang; html.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.title = lang === 'ar' ? 'وثب استوديو | هوية بصرية، مواقع، وبروفايلات شركات' : 'WASB Studio | Brand identity, websites and company profiles';
     $$('[data-i18n]').forEach(el => {
       el.textContent = t(el.dataset.i18n);
       if (el.hasAttribute('data-split')) { split(el); if (!first) el.classList.add('in'); }
     });
+    $$('[data-i18n-label]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nLabel)));
     const btn = $('#langToggle');
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
-    renderSlides(); renderSites(); renderContact(); syncMenuLabel();
+    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter, true);
     if (!first) { onScroll(); if (currentCase) renderCase(currentCase); }
   }
 
-  /* ---------- works: one project per screen ---------- */
-  const tagLine = p => p.tags.map(k => L(TAGS[k])).join(' / ');
-  const works = $('#works'), slidesHost = $('#slides'), indexHost = $('#index');
-  let slides = [], marks = [];
-  const STEP = .8; // scroll per project, in viewport heights
-  function renderSlides() {
-    const n = PROJECTS.length;
-    works.style.setProperty('--n', n);
-    slidesHost.innerHTML = PROJECTS.map((p, i) => `<a class="slide" href="#/work/${p.id}"${p.focus ? ` style="--focus:${p.focus}"` : ''} aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
-        <span class="slide__img"><img src="${p.cover}" alt="" decoding="async"${i > 1 ? ' fetchpriority="low"' : ''}></span>
-        <span class="slide__cap">
-          <span class="slide__count">${pad(i + 1)}/${pad(n)}</span>
-          <span class="slide__name">${esc(L(p.name))}</span>
-          <span class="slide__tags">${esc(tagLine(p))}</span>
-        </span>
-      </a>`).join('');
-    slides = $$('.slide', slidesHost);
-    indexHost.setAttribute('aria-label', t('index.label'));
-    indexHost.innerHTML = PROJECTS.map((p, i) => `<li><button type="button" data-i="${i}">${esc(L(p.name))}</button></li>`).join('');
-    marks = $$('button', indexHost);
-    runSlides();
-  }
-  function runSlides() {
-    if (reduce.matches || !slides.length) return;
-    const vh = window.innerHeight;
-    const P = clamp((window.scrollY - works.offsetTop) / (vh * STEP), 0, slides.length - 1);
-    const cur = Math.round(P);
-    marks.forEach((m, i) => { m.classList.toggle('is-on', i === cur); if (i === cur) m.setAttribute('aria-current', 'true'); else m.removeAttribute('aria-current'); });
-    slides.forEach((s, i) => {
-      const k = i === 0 ? 1 : clamp(P - (i - 1));
-      s.style.clipPath = k >= 1 ? 'none' : `inset(${(1 - k) * 100}% 0 0 0)`;
-      s.style.visibility = k <= 0 || P >= i + 1 ? 'hidden' : 'visible';
-      const img = s.firstElementChild.firstElementChild;
-      const drift = i === 0 ? clamp(P) : k - 1 + clamp(P - i);
-      img.style.transform = `translate3d(0, ${-6 + drift * -5}%, 0)`;
-    });
+  /* ---------- intro: the red square flashes the work, then becomes the slab ---------- */
+  async function runIntro() {
+    if (!html.classList.contains('intro-on')) return;
+    const intro = $('#intro'), box = $('#introBox'), imgs = $$('img', box), slab = $('#slab');
+    let skipped = false;
+    const done = () => {
+      if (!html.classList.contains('intro-on')) return;
+      html.classList.remove('intro-on');
+      setTimeout(() => intro.remove(), 600);
+      onScroll();
+    };
+    const skip = () => { skipped = true; done(); };
+    ['wheel', 'touchstart', 'keydown', 'click'].forEach(ev => window.addEventListener(ev, skip, { once: true, passive: true }));
+    await Promise.race([Promise.all(imgs.map(i => i.decode().catch(() => {}))), sleep(1600)]);
+    if (skipped) return;
+    const s = Math.min(innerWidth, innerHeight) * (innerWidth < 820 ? .58 : .34);
+    Object.assign(box.style, { width: s + 'px', height: s + 'px', left: (innerWidth - s) / 2 + 'px', top: (innerHeight - s) / 2 + 'px' });
+    await sleep(60);
+    box.classList.add('is-on');
+    await sleep(650);
+    for (let k = 0; k < imgs.length && !skipped; k++) {
+      imgs.forEach((im, j) => im.classList.toggle('is-on', j === k));
+      await sleep(190);
+    }
+    if (skipped) return;
+    imgs.forEach(im => im.classList.remove('is-on'));
+    const r = slab.getBoundingClientRect();
+    box.style.borderRadius = getComputedStyle(slab).borderRadius;
+    Object.assign(box.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+    await sleep(1050);
+    if (skipped) return;
+    intro.classList.add('is-out');
+    done();
   }
 
-  indexHost.addEventListener('click', e => {
-    const b = e.target.closest('button');
-    if (!b) return;
-    const y = works.offsetTop + Number(b.dataset.i) * window.innerHeight * STEP + 2;
-    window.scrollTo({ top: y, behavior: reduce.matches ? 'auto' : 'smooth' });
+  /* ---------- hero: services inside the ب, with a preview window ---------- */
+  const peek = $('#peek'), peekImg = $('img', peek), hero = $('#hero');
+  let peekTimer = 0;
+  $$('#bar a').forEach(a => {
+    const show = () => {
+      if (innerWidth <= 820) return;
+      clearTimeout(peekTimer);
+      peekImg.src = a.dataset.peek;
+      const hr = hero.getBoundingClientRect(), ar = a.getBoundingClientRect();
+      const w = peek.offsetWidth;
+      peek.style.left = clamp(ar.left + ar.width / 2 - w / 2 - hr.left, 12, hr.width - w - 12) + 'px';
+      peek.classList.add('is-on');
+    };
+    const hide = () => { peekTimer = setTimeout(() => peek.classList.remove('is-on'), 80); };
+    a.addEventListener('mouseenter', show); a.addEventListener('focus', show);
+    a.addEventListener('mouseleave', hide); a.addEventListener('blur', hide);
   });
 
-  function renderSites() {
-    const host = $('#sites');
-    const seen = host.childElementCount > 0;
-    host.innerHTML = SITES.map((s, i) => `<a class="site${s.tall ? ' is-tall' : ''}${seen ? ' in' : ''}" style="--i:${i}" href="${s.url}" target="_blank" rel="noopener" aria-label="${esc(s.label)}: ${esc(t('case.visit'))}">
-      <div class="site__frame">
-        <div class="site__bar"><i></i><i></i><i></i><span>${esc(s.label)}</span></div>
-        <div class="site__view"><img src="${s.src}" alt="${esc(s.label)}" loading="lazy"></div>
-      </div>
-      <div class="site__cap"><span>${esc(s.label)}</span>${arrow}</div>
-    </a>`).join('');
-    if (!seen) $$('.site', host).forEach(watch);
+  /* ---------- works: an index with a live preview ---------- */
+  const rowsHost = $('#rows'), view = $('#view');
+  const tagLine = p => p.tags.map(k => L(TAGS[k])).join(' / ');
+  let current = 0;
+  function renderRows() {
+    rowsHost.innerHTML = PROJECTS.map((p, i) => `<li class="row" data-i="${i}"${p.focus ? ` style="--focus:${p.focus}"` : ''}>
+        <a href="#/work/${p.id}">
+          <span class="row__thumb"><img src="${p.cover}" alt="" loading="lazy"></span>
+          <span class="row__name">${esc(L(p.name))}</span>
+          <span class="row__tags">${esc(tagLine(p))}</span>
+          ${arrow}
+        </a>
+      </li>`).join('');
+    if (!view.childElementCount) {
+      view.innerHTML = PROJECTS.map((p, i) => `<img src="${p.cover}" alt="" decoding="async"${p.focus ? ` style="--focus:${p.focus}"` : ''}${i === 0 ? ' class="is-on"' : ''}>`).join('');
+    }
+    $$('.row', rowsHost).forEach(row => {
+      const a = $('a', row);
+      const go = () => setView(Number(row.dataset.i));
+      a.addEventListener('mouseenter', go); a.addEventListener('focus', go);
+    });
+    setView(current, true);
+  }
+  function setView(i, quiet) {
+    $$('.row', rowsHost).forEach(r => r.classList.toggle('is-on', Number(r.dataset.i) === i));
+    if (i === current && !quiet) return;
+    $$('img', view).forEach((im, k) => {
+      const was = im.classList.contains('is-on');
+      im.classList.toggle('was-on', was && k !== i);
+      im.classList.toggle('is-on', k === i);
+      if (was && k !== i) setTimeout(() => im.classList.remove('was-on'), 850);
+    });
+    current = i;
   }
 
+  let filter = 'all';
+  function applyFilter(f, quiet) {
+    filter = FILTERS[f] ? f : 'all';
+    $$('#filters button').forEach(b => { const on = b.dataset.filter === filter; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
+    const keys = FILTERS[filter];
+    let first = -1;
+    $$('.row', rowsHost).forEach(row => {
+      const p = PROJECTS[Number(row.dataset.i)];
+      row.hidden = !!keys && !p.tags.some(k => keys.includes(k));
+      if (!row.hidden && first < 0) first = Number(row.dataset.i);
+    });
+    if (!quiet && first >= 0) setView(first);
+  }
+  $('#filters').addEventListener('click', e => { const b = e.target.closest('button'); if (b) applyFilter(b.dataset.filter); });
+  document.addEventListener('click', e => { const a = e.target.closest('a[data-filter]'); if (a) applyFilter(a.dataset.filter); });
+
+  /* ---------- sites: a panoramic hall ---------- */
+  const pano = $('#pano'), stage = $('#panoStage');
+  let at = 0, cards = [], panoTimer = 0, panoPaused = false, panoSeen = false;
+  function renderPano() {
+    stage.innerHTML = SITES.map((s, i) => `<div class="card" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${esc(s.label)}">
+        <div class="card__bar"><i></i><i></i><i></i><span>${esc(s.label)}</span></div>
+        <div class="card__view"><img src="${s.src}" alt="${esc(s.label)}" loading="lazy"></div>
+      </div>`).join('');
+    cards = $$('.card', stage);
+    cards.forEach(c => c.addEventListener('click', () => {
+      const i = Number(c.dataset.i);
+      if (i === at) window.open(SITES[i].url, '_blank', 'noopener');
+      else goPano(i);
+    }));
+    sizePano(); goPano(at, true);
+  }
+  function sizePano() {}
+  function goPano(i, quiet) {
+    const n = SITES.length;
+    at = (i + n) % n;
+    cards.forEach((c, k) => {
+      let off = k - at;
+      if (off > n / 2) off -= n;
+      if (off < -n / 2) off += n;
+      c.style.setProperty('--off', off);
+      c.classList.toggle('is-on', off === 0);
+      c.classList.toggle('is-far', Math.abs(off) > 1);
+      c.setAttribute('aria-hidden', off !== 0);
+    });
+    $('#panoCount').textContent = `${pad(at + 1)}/${pad(n)}`;
+    $('#panoLabel').textContent = SITES[at].label;
+    $('#panoLink').href = SITES[at].url;
+    if (!quiet) restartPano();
+  }
+  function restartPano() {
+    clearTimeout(panoTimer);
+    if (reduce.matches || panoPaused || !panoSeen) return;
+    panoTimer = setTimeout(() => goPano(at + 1), 9000);
+  }
+  $('#panoPrev').addEventListener('click', () => goPano(at - 1));
+  $('#panoNext').addEventListener('click', () => goPano(at + 1));
+  pano.addEventListener('mouseenter', () => { panoPaused = true; clearTimeout(panoTimer); });
+  pano.addEventListener('mouseleave', () => { panoPaused = false; restartPano(); });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(es => es.forEach(e => { panoSeen = e.isIntersecting; if (panoSeen) restartPano(); else clearTimeout(panoTimer); }), { threshold: .3 }).observe(pano);
+  }
+
+  /* ---------- contact ---------- */
   function renderContact() {
-    const host = $('#contactLinks');
     const c = CONTACT || {};
     const links = [];
-    if (c.whatsapp) links.push(['contact.whatsapp', 'https://wa.me/' + String(c.whatsapp).replace(/\D/g, '')]);
-    if (c.email) links.push(['contact.email', 'mailto:' + c.email]);
-    ['instagram', 'behance', 'linkedin', 'x'].forEach(k => { if (c[k]) links.push(['contact.' + k, c[k]]); });
-    host.innerHTML = links.length
-      ? links.map(([k, href]) => `<a class="link" href="${esc(href)}" target="_blank" rel="noopener"><span>${esc(t(k))}</span>${arrow}</a>`).join('')
-      : `<p class="contact__empty">${esc(t('contact.empty'))}</p>`;
+    if (c.whatsapp) links.push(`<a class="wa" href="https://wa.me/${String(c.whatsapp).replace(/\D/g, '')}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg><span>${esc(t('contact.whatsapp'))}</span></a>`);
+    if (c.email) links.push(`<a class="link" href="mailto:${esc(c.email)}"><span>${esc(t('contact.email'))}</span>${arrow}</a>`);
+    ['instagram', 'behance', 'linkedin', 'x'].forEach(k => { if (c[k]) links.push(`<a class="link" href="${esc(c[k])}" target="_blank" rel="noopener"><span>${esc(t('contact.' + k))}</span>${arrow}</a>`); });
+    $('#contactLinks').innerHTML = links.length ? links.join('') : `<p class="contact__empty">${esc(t('contact.empty'))}</p>`;
+    const facts = [];
+    if (c.phone) facts.push(`<dt>${esc(t('contact.phone'))}</dt><dd><a href="tel:+966${String(c.phone).replace(/\D/g, '').replace(/^0/, '')}">${esc(c.phone)}</a></dd>`);
+    facts.push(`<dt>${esc(t('contact.addressLabel'))}</dt><dd>${esc(t('contact.address'))}</dd>`);
+    $('#contactFacts').innerHTML = facts.join('');
   }
 
   /* ---------- menu ---------- */
@@ -128,36 +227,31 @@
   burger.addEventListener('click', () => setMenu(!menuOpen()));
   menu.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
 
-  /* ---------- hero drift ---------- */
-  const slab = $('.hero__slab'), word = $('.hero__word');
-  function runHero() {
-    if (reduce.matches) return;
-    const y = window.scrollY, vh = window.innerHeight;
-    if (y > vh * 1.2) return;
-    slab.style.transform = `translate3d(0, ${y * .22}px, 0)`;
-    word.style.transform = `translate3d(0, ${y * -.08}px, 0)`;
-  }
-
-  /* ---------- approach arc ---------- */
-  const arc = $('#arc'), steps = $$('.arc__step');
+  /* ---------- approach: pinned, the line draws with the scroll ---------- */
+  const approach = $('#approach'), pin = $('.approach__pin'), arc = $('#arc'), steps = $$('.arc__step');
   function runArc() {
-    const r = arc.getBoundingClientRect(), vh = window.innerHeight;
-    const p = clamp((vh * .9 - r.top) / (r.height * .9));
+    let p;
+    if (getComputedStyle(pin).position === 'sticky') {
+      const r = approach.getBoundingClientRect();
+      p = clamp(-r.top / Math.max(1, approach.offsetHeight - innerHeight) * 1.08);
+    } else {
+      const r = arc.getBoundingClientRect();
+      p = clamp((innerHeight * .9 - r.top) / (r.height * .9));
+    }
     arc.style.setProperty('--p', p.toFixed(3));
-    steps.forEach(s => s.classList.toggle('is-on', p + .02 >= parseFloat(s.style.getPropertyValue('--t'))));
+    steps.forEach(s => s.classList.toggle('is-on', p >= parseFloat(s.style.getPropertyValue('--t')) - .005));
   }
 
   let ticking = false;
   function onScroll() {
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(() => { runHero(); runSlides(); runArc(); ticking = false; });
+    requestAnimationFrame(() => { runArc(); ticking = false; });
   }
 
   /* ---------- case study ---------- */
   const caseEl = $('#case'), caseBody = $('#caseBody'), caseScroll = $('#caseScroll'), caseCrumb = $('#caseCrumb');
   let currentCase = null, lastFocus = null;
-
   function block(b, p) {
     const title = b.title ? `<h2 class="blk__title wrap"><span>${esc(L(b.title))}</span>${b.type === 'strip' ? `<span class="blk__hint">${esc(t('case.drag'))}</span>` : ''}</h2>` : '';
     const alt = esc(L(p.name));
@@ -167,7 +261,6 @@
     if (b.type === 'browser') return `<section class="blk blk--browser">${title}<div class="wrap"><div class="browser"><div class="browser__bar"><i></i><i></i><i></i><span>${esc(b.label || '')}</span>${b.url ? `<a href="${b.url}" target="_blank" rel="noopener">${esc(t('case.visit'))}${arrow}</a>` : ''}</div><div class="browser__view" tabindex="0"><img src="${b.src}" alt="${alt}" loading="lazy"></div></div></div></section>`;
     return '';
   }
-
   function renderCase(id) {
     const idx = PROJECTS.findIndex(p => p.id === id);
     if (idx < 0) return false;
@@ -185,7 +278,6 @@
     $$('.blk__rail', caseBody).forEach(dragRail);
     return true;
   }
-
   function dragRail(rail) {
     let down = false, sx = 0, sl = 0;
     rail.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; sx = e.clientX; sl = rail.scrollLeft; rail.classList.add('is-drag'); rail.setPointerCapture(e.pointerId); });
@@ -193,7 +285,6 @@
     const up = () => { down = false; rail.classList.remove('is-drag'); };
     rail.addEventListener('pointerup', up); rail.addEventListener('pointercancel', up);
   }
-
   function openCase(id) {
     if (!renderCase(id)) return;
     const wasOpen = !!currentCase;
@@ -237,11 +328,10 @@
   $$('.year').forEach(el => { el.textContent = new Date().getFullYear(); });
   applyLang(lang, true);
   $$('[data-split]').forEach(watch);
-
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
-  window.addEventListener('load', onScroll);
-  if (reduce.addEventListener) reduce.addEventListener('change', onScroll);
+  window.addEventListener('resize', () => { sizePano(); onScroll(); });
+  window.addEventListener('load', () => { sizePano(); onScroll(); });
   onScroll();
   route();
+  runIntro();
 })();

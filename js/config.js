@@ -6,17 +6,23 @@
 /* 1) بيانات التواصل — املأ ما تريد إظهاره واترك الباقي فارغاً.
       الرابط الفارغ لا يظهر في الموقع. */
 window.WASB_CONTACT = {
-  whatsapp: '',   // مثال: '9665XXXXXXXX' (أرقام فقط مع مفتاح الدولة)
-  email: '',      // مثال: 'hello@wasb.studio'
-  instagram: '',  // رابط كامل
-  behance: '',    // رابط كامل
-  linkedin: '',   // رابط كامل
-  x: ''           // رابط كامل
+  whatsapp: '966567561619',   // أرقام فقط مع مفتاح الدولة
+  phone: '0567561619',        // كما يظهر للزائر
+  email: '',
+  instagram: '',
+  behance: '',
+  linkedin: '',
+  x: ''
 };
 
 /* 2) النصوص باللغتين */
 window.WASB_I18N = {
   ar: {
+    'nav.sites': 'المواقع', 'hero.by': 'استوديو التصميم والهوية البصرية', 'hero.of': 'لـ',
+    'hero.slogan': 'لبناء هوية أوضح وأقوى وأكثر حضوراً',
+    'approach.t1': 'كيف نصل', 'approach.t2': 'إلى القفزة',
+    'contact.phone': 'موبايل', 'contact.addressLabel': 'العنوان', 'contact.address': 'حي الفلاح، الرياض، المملكة العربية السعودية',
+    'pano.prev': 'الموقع السابق', 'pano.next': 'الموقع التالي',
     'nav.menu': 'القائمة', 'nav.close': 'إغلاق', 'hero.folio': 'بورتفوليو', 'word.studio': 'استوديو',
     'about.lead': 'الوثبة قفزة واحدة محسوبة، وهذا ما نصنعه لكل علامة.', 'index.label': 'فهرس الأعمال',
     'say.line': 'نصنع للعلامة قفزتها: من حضورٍ عادي إلى حضورٍ يُرى.',
@@ -30,12 +36,12 @@ window.WASB_I18N = {
     'nav.works': 'الأعمال', 'nav.services': 'الخدمات', 'nav.approach': 'المنهجية', 'nav.about': 'عن وثب',
     'cta.start': 'ابدأ مشروعك', 'cta.works': 'شاهد الأعمال',
     'hero.title': 'علامتك تستحق قفزة.',
-    'hero.lede': 'نأخذ العلامة العادية ونعيد بناءها: أوضح، أقوى، وأصعب أن تُنسى.',
+    'hero.lede': 'نبني ونطوّر هويتك البصرية لنعزّز حضورك الرقمي بما يساهم في زيادة تأثيرك وتحقيق أهدافك التسويقية.',
     'gate.a': 'من حضورٍ عادي', 'gate.b': 'إلى حضورٍ يُرى.',
     'works.title': 'أعمال مختارة',
     'works.note': 'ستة مشاريع وأربعة مواقع. كل عمل معروض بالطريقة التي تناسب طبيعته.',
-    'sites.title': 'مواقع تعمل الآن',
-    'sites.note': 'لقطات مباشرة من مواقع صمّمناها وهي على الهواء.',
+    'sites.title': 'من التصميم إلى الإطلاق',
+    'sites.note': 'نماذج من مواقع صممناها، وطوّرنا تجاربها، وأصبحت متاحة للجمهور.',
     'services.title': 'ثلاث خدمات، قفزة واحدة.',
     'svc.0.name': 'الشعار ودليل الهوية',
     'svc.0.text': 'نبني العلامة من جذرها، ثم نكتب دليلاً يضمن أن تُستخدم الهوية بشكل صحيح في كل مكان.',
@@ -50,7 +56,7 @@ window.WASB_I18N = {
     'step.3.name': 'نطبّق', 'step.3.text': 'نسلّم ملفات جاهزة للاستخدام ودليلاً يحفظ الهوية بعدنا.',
     'about.title': 'وثب: الاسم هو الوعد.',
     'about.p1': 'الوثبة قفزة واحدة محسوبة. هذا ما نصنعه لكل عميل: ليس تصميماً منفرداً، بل انتقالاً واضحاً في الهوية والحضور الرقمي.',
-    'about.p2': 'يقود الاستوديو عمرو علي، مدير إبداعي مقيم في الرياض، بخبرة في الإخراج الفني وبناء العلامات لشركات في السعودية والمنطقة.',
+    'about.p2': 'وثب هي الامتداد الإبداعي واستوديو التصميم والهوية البصرية لـ Blue Network. نبني للعلامات هويتها البصرية ومواقعها وملفاتها التعريفية، بفريق يجمع الإخراج الفني والتصميم والتطوير.',
     'contact.title': 'جاهز للقفزة؟',
     'contact.lede': 'أخبرنا عن علامتك وما تريد أن تصل إليه. نرد عليك بخطوة أولى واضحة.',
     'contact.empty': 'بيانات التواصل تُضاف قريباً.',
@@ -62,6 +68,11 @@ window.WASB_I18N = {
     'plate.open': 'عرض المشروع'
   },
   en: {
+    'nav.sites': 'Websites', 'hero.by': 'The design and brand identity studio', 'hero.of': 'of',
+    'hero.slogan': 'For an identity that is clearer, stronger and more present',
+    'approach.t1': 'How we get', 'approach.t2': 'to the leap',
+    'contact.phone': 'Mobile', 'contact.addressLabel': 'Address', 'contact.address': 'Al Falah, Riyadh, Saudi Arabia',
+    'pano.prev': 'Previous website', 'pano.next': 'Next website',
     'nav.menu': 'Menu', 'nav.close': 'Close', 'hero.folio': 'Portfolio', 'word.studio': 'Studio',
     'about.lead': 'A wasb is one measured leap. That is what we make for every brand.', 'index.label': 'Work index',
     'say.line': 'We build the leap a brand needs: from being present to being seen.',
@@ -75,12 +86,12 @@ window.WASB_I18N = {
     'nav.works': 'Work', 'nav.services': 'Services', 'nav.approach': 'Approach', 'nav.about': 'About',
     'cta.start': 'Start a project', 'cta.works': 'See the work',
     'hero.title': 'Your brand deserves a leap.',
-    'hero.lede': 'We take an ordinary brand and rebuild it: clearer, stronger, harder to forget.',
+    'hero.lede': 'We build and develop your visual identity to strengthen your digital presence, grow your influence and reach your marketing goals.',
     'gate.a': 'From being present', 'gate.b': 'to being seen.',
     'works.title': 'Selected work',
     'works.note': 'Six projects and four websites, each shown the way its nature calls for.',
-    'sites.title': 'Websites, live now',
-    'sites.note': 'Captures of sites we designed, taken from the live web.',
+    'sites.title': 'From design to launch',
+    'sites.note': 'Websites we designed, built the experience for, and launched to the public.',
     'services.title': 'Three services, one leap.',
     'svc.0.name': 'Logo & brand guidelines',
     'svc.0.text': 'We build the brand from its root, then write the guideline that keeps the identity used correctly everywhere.',
@@ -95,7 +106,7 @@ window.WASB_I18N = {
     'step.3.name': 'Apply', 'step.3.text': 'We hand over ready-to-use files and a guideline that protects the identity after us.',
     'about.title': 'WASB: the name is the promise.',
     'about.p1': 'In Arabic, wasb is a single, measured leap. That is what we make for each client: not one isolated design, but a clear step up in identity and digital presence.',
-    'about.p2': 'The studio is led by Amr Ali, a creative director based in Riyadh, with a background in art direction and brand building for companies in Saudi Arabia and the region.',
+    'about.p2': 'WASB is the creative extension and the design and brand identity studio of Blue Network. We build brand identities, websites and company profiles with a team that brings art direction, design and development together.',
     'contact.title': 'Ready to leap?',
     'contact.lede': 'Tell us about your brand and where you want it to go. We will reply with a clear first step.',
     'contact.empty': 'Contact details coming soon.',
@@ -224,9 +235,9 @@ window.WASB_TAGS = {
 
   /* 4) المواقع الحيّة */
   window.WASB_SITES = [
-    { id: 'vendviz', label: 'vendviz.com', url: 'https://www.vendviz.com/', src: A + 'web/vendviz.webp', tall: true },
-    { id: 'alkamal-site', label: 'alkamal-er.com', url: 'https://alkamal-er.com/', src: A + 'web/alkamal.webp' },
-    { id: 'jadeed', label: 'jadeedsa.com', url: 'https://jadeedsa.com/', src: A + 'web/jadeed.webp', tall: true },
-    { id: 'viora', label: 'viora-dev.com', url: 'https://viora-dev.com/', src: A + 'web/viora.webp' }
+    { id: 'alkamal-site', label: 'alkamal-er.com', url: 'https://alkamal-er.com/', src: A + 'web/alkamal-full.webp' },
+    { id: 'vendviz', label: 'vendviz.com', url: 'https://www.vendviz.com/', src: A + 'web/vendviz-full.webp' },
+    { id: 'jadeed', label: 'jadeedsa.com', url: 'https://jadeedsa.com/', src: A + 'web/jadeed-full.webp' },
+    { id: 'viora', label: 'viora-dev.com', url: 'https://viora-dev.com/', src: A + 'web/viora-full.webp' }
   ];
 })();
