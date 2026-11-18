@@ -98,31 +98,7 @@
     }
     return slots;
   }
-  // Desktop: the mark's foot sits on the baseline of the slogan's last line,
-  // and the first service sits on the baseline of the description's first line.
-  function alignHero() {
-    const inner = $('.slab__in'), mark = $('.slab__mark'), trio = $('#trio');
-    const off = () => { inner.classList.remove('is-aligned'); mark.style.top = mark.style.height = trio.style.top = ''; };
-    if (innerWidth <= 820) return off();
-    const top = inner.getBoundingClientRect().top;
-    const yMark = $('#blSlogan').getBoundingClientRect().top - top;
-    const yServ = $('#blLede').getBoundingClientRect().top - top;
-    const first = $('.trio__t', trio);
-    const probe = document.createElement('i'); probe.className = 'bl';
-    first.appendChild(probe);
-    inner.classList.add('is-aligned');
-    trio.style.top = '0px';
-    const lead = probe.getBoundingClientRect().top - trio.getBoundingClientRect().top;
-    probe.remove();
-    mark.style.height = '';
-    const h = Math.min(mark.getBoundingClientRect().height, yMark - 24);
-    mark.style.height = h + 'px';
-    mark.style.top = (yMark - h) + 'px';
-    trio.style.top = (yServ - lead) + 'px';
-  }
-
-  // the slogan rises into place on load, so align again once it has landed
-  $('.hero__pitch').addEventListener('animationend', () => alignHero());
+  function alignHero() {}
 
   function fitTrio() {
     const els = $$('#trio .trio__t');
@@ -232,6 +208,7 @@
       }
       panoPos[k] = off;
       c.classList.toggle('is-on', off === 0);
+      c.classList.toggle('is-play', off === 0 && panoSeen);
       c.setAttribute('aria-hidden', off !== 0);
     });
     $('#panoCount').textContent = `${pad(at + 1)}/${pad(n)}`;
@@ -248,7 +225,12 @@
   $('#panoPrev').addEventListener('click', () => goPano(at - 1));
   $('#panoNext').addEventListener('click', () => goPano(at + 1));
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(es => es.forEach(e => { panoSeen = e.isIntersecting; if (panoSeen) restartPano(); else clearTimeout(panoTimer); }), { threshold: .3 }).observe(pano);
+    new IntersectionObserver(es => es.forEach(e => {
+      panoSeen = e.isIntersecting;
+      const cur = cards[at];
+      if (panoSeen) { if (cur) { cur.classList.remove('is-play'); void cur.offsetWidth; cur.classList.add('is-play'); } restartPano(); }
+      else { clearTimeout(panoTimer); cards.forEach(c => c.classList.remove('is-play')); }
+    }), { threshold: .15 }).observe(pano);
   }
 
   /* ---------- contact ---------- */
@@ -280,49 +262,56 @@
   burger.addEventListener('click', () => setMenu(!menuOpen()));
   menu.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
 
-  /* ---------- approach: the leap game ---------- */
-  const arc = $('#arc'), jumper = $('#jumper'), start = $('#arcStart'), leapBtn = $('#leapBtn'), leapCount = $('#leapCount'), hint = $('#gameHint');
+  /* ---------- approach: build the identity ---------- */
+  // Each leap sends a red diamond (a dot of the letter ث) along the arc to the next stage,
+  // reveals that stage, and builds one more layer of the WASB mark in the centre.
+  const arc = $('#arc'), spark = $('#spark'), start = $('#arcStart'), leapBtn = $('#leapBtn'), leapCount = $('#leapCount'), hint = $('#gameHint'), emblem = $('#emblem');
   const steps = $$('.arc__step');
+  const T = [0, ...steps.map(s => parseFloat(s.style.getPropertyValue('--t')))];
   let reached = 0, leaping = false;
-  function pointOf(i) {
-    const ar = arc.getBoundingClientRect();
-    let r;
-    if (i < 0) {
-      if (getComputedStyle(start).display !== 'none') r = start.getBoundingClientRect();
-      else { const d = $('.arc__dot', steps[0]).getBoundingClientRect(); return { x: d.left + d.width / 2 - ar.left, y: d.top - ar.top - 34 }; }
-    } else r = $('.arc__dot', steps[i]).getBoundingClientRect();
+  const onArc = () => getComputedStyle($('.arc__svg')).display !== 'none';
+  function arcPoint(tt) {
+    const w = arc.clientWidth, hgt = arc.clientHeight;
+    const fromStart = (.5 - .48 * Math.cos(Math.PI * tt)) * w;
+    return { x: lang === 'ar' ? w - fromStart : fromStart, y: (1 - .96 * Math.sin(Math.PI * tt)) * hgt };
+  }
+  function dotPoint(i) {
+    const ar = arc.getBoundingClientRect(), r = $('.arc__dot', steps[i]).getBoundingClientRect();
     return { x: r.left + r.width / 2 - ar.left, y: r.top + r.height / 2 - ar.top };
   }
-  function place(p) { jumper.style.left = p.x + 'px'; jumper.style.top = p.y + 'px'; }
+  function place(p) { spark.style.left = p.x + 'px'; spark.style.top = p.y + 'px'; }
   function syncGame() {
-    place(pointOf(reached - 1));
+    if (onArc()) place(arcPoint(T[reached]));
     steps.forEach((s, i) => s.classList.toggle('is-on', i < reached));
-    arc.style.setProperty('--p', reached ? parseFloat(steps[reached - 1].style.getPropertyValue('--t')) : 0);
+    for (let k = 1; k <= 4; k++) emblem.classList.toggle('s' + k, reached >= k);
+    arc.style.setProperty('--p', T[reached]);
     leapCount.textContent = `${reached}/${steps.length}`;
-    $('span', leapBtn).textContent = t(reached >= steps.length ? 'game.again' : 'game.leap');
+    $('.leap__label', leapBtn).textContent = t(reached >= steps.length ? 'game.again' : 'game.leap');
     hint.innerHTML = reached >= steps.length ? `${esc(t('game.done'))} <a href="#contact">${esc(t('game.cta'))}</a>` : esc(t('game.hint'));
+  }
+  function land() {
+    reached++;
+    leaping = false;
+    const dot = $('.arc__dot', steps[reached - 1]);
+    dot.classList.remove('ping'); void dot.offsetWidth; dot.classList.add('ping');
+    syncGame();
   }
   function leap() {
     if (leaping) return;
+    leapBtn.classList.add('is-used');
+    leapBtn.classList.remove('is-charge'); void leapBtn.offsetWidth; leapBtn.classList.add('is-charge');
     if (reached >= steps.length) { reached = 0; syncGame(); return; }
-    const a = pointOf(reached - 1), b = pointOf(reached);
-    const dist = Math.hypot(b.x - a.x, b.y - a.y);
-    const hop = Math.max(70, dist * .55);
-    const dur = reduce.matches ? 0 : 720;
     leaping = true;
-    arc.style.setProperty('--p', parseFloat(steps[reached].style.getPropertyValue('--t')));
-    const t0 = performance.now();
-    const ease = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+    const t0 = T[reached], t1 = T[reached + 1];
+    arc.style.setProperty('--p', t1);
+    const dur = reduce.matches ? 0 : 900, began = performance.now();
+    const ease = u => 1 - Math.pow(1 - u, 3);
+    if (!onArc()) { setTimeout(land, dur ? 450 : 0); return; }
     const frame = now => {
-      const u = dur ? clamp((now - t0) / dur) : 1, e = ease(u);
-      place({ x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e - Math.sin(Math.PI * u) * hop });
-      jumper.style.rotate = `${Math.sin(Math.PI * u) * (b.x > a.x ? 12 : -12)}deg`;
+      const u = dur ? clamp((now - began) / dur) : 1;
+      place(arcPoint(t0 + (t1 - t0) * ease(u)));
       if (u < 1) return requestAnimationFrame(frame);
-      jumper.style.rotate = '';
-      reached++;
-      leaping = false;
-      jumper.classList.remove('is-land'); void jumper.offsetWidth; jumper.classList.add('is-land');
-      syncGame();
+      land();
     };
     requestAnimationFrame(frame);
   }
