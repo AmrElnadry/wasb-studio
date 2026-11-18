@@ -237,15 +237,16 @@
   function renderContact() {
     const c = CONTACT || {};
     const links = [];
-    if (c.whatsapp) links.push(`<a class="wa" aria-label="${esc(t('contact.whatsapp'))}" href="https://wa.me/${String(c.whatsapp).replace(/\D/g, '')}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg></a>`);
     if (c.email) links.push(`<a class="link" href="mailto:${esc(c.email)}"><span>${esc(t('contact.email'))}</span>${arrow}</a>`);
     ['instagram', 'behance', 'linkedin', 'x'].forEach(k => { if (c[k]) links.push(`<a class="link" href="${esc(c[k])}" target="_blank" rel="noopener"><span>${esc(t('contact.' + k))}</span>${arrow}</a>`); });
-    $('#contactLinks').innerHTML = links.length ? links.join('') : `<p class="contact__empty">${esc(t('contact.empty'))}</p>`;
-    const facts = [];
     const phones = (c.phones || []).map(p => String(p).replace(/\D/g, '').replace(/^(966|0)/, ''));
-    if (phones.length) facts.push(`<dt>${esc(t('contact.phone'))}</dt><dd>${phones.map(d => `<a href="tel:+966${d}">+966 ${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5)}</a>`).join('')}</dd>`);
-    facts.push(`<dt>${esc(t('contact.addressLabel'))}</dt><dd>${esc(t('contact.address'))}</dd>`);
-    $('#contactFacts').innerHTML = facts.join('');
+    const wa = c.whatsapp ? `<a class="wa" aria-label="${esc(t('contact.whatsapp'))}" href="https://wa.me/${String(c.whatsapp).replace(/\D/g, '')}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg></a>` : '';
+    $('#contactLinks').innerHTML = links.join('') || (wa || phones.length ? '' : `<p class="contact__empty">${esc(t('contact.empty'))}</p>`);
+    $('#contactLinks').hidden = !$('#contactLinks').innerHTML;
+    // the WhatsApp mark sits in the numbers' own column, so it centres over them
+    $('#contactFacts').innerHTML = (wa ? `<dt></dt><dd>${wa}</dd>` : '') +
+      (phones.length ? `<dt>${esc(t('contact.phone'))}</dt><dd>${phones.map(d => `<a href="tel:+966${d}">+966 ${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5)}</a>`).join('')}</dd>` : '');
+    $('#contactAddr').innerHTML = `<span>${esc(t('contact.addressLabel'))}</span>${esc(t('contact.address'))}`;
   }
 
   /* ---------- menu ---------- */
@@ -397,6 +398,7 @@
   $$('.year').forEach(el => { el.textContent = new Date().getFullYear(); });
   applyLang(lang, true);
   $$('[data-split]').forEach(watch);
+  watch($('#filters'));
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', () => { fitTrio(); alignHero(); syncGame(); });
   window.addEventListener('load', () => { fitTrio(); alignHero(); syncGame(); });
