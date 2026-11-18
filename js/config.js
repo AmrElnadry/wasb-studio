@@ -17,7 +17,9 @@ window.WASB_CONTACT = {
 /* 2) النصوص باللغتين */
 window.WASB_I18N = {
   ar: {
-    'nav.menu': 'القائمة',
+    'nav.menu': 'القائمة', 'nav.close': 'إغلاق', 'hero.folio': 'بورتفوليو', 'word.studio': 'استوديو',
+    'about.lead': 'الوثبة قفزة واحدة محسوبة، وهذا ما نصنعه لكل علامة.', 'index.label': 'فهرس الأعمال',
+    'say.line': 'نصنع للعلامة قفزتها: من حضورٍ عادي إلى حضورٍ يُرى.',
     'door.identity.t': 'شعار ودليل هوية متكامل.', 'door.website.t': 'واجهات وتجربة تعكس علامتك.', 'door.profile.t': 'ملف تعريفي يقدّم شركتك بوضوح.',
     'door.identity': 'الهوية البصرية', 'door.website': 'المواقع الإلكترونية', 'door.profile': 'بروفايلات الشركات',
     'filter.all': 'الكل', 'filter.identity': 'هوية بصرية', 'filter.website': 'مواقع', 'filter.profile': 'بروفايلات',
@@ -28,7 +30,7 @@ window.WASB_I18N = {
     'nav.works': 'الأعمال', 'nav.services': 'الخدمات', 'nav.approach': 'المنهجية', 'nav.about': 'عن وثب',
     'cta.start': 'ابدأ مشروعك', 'cta.works': 'شاهد الأعمال',
     'hero.title': 'علامتك تستحق قفزة.',
-    'hero.lede': 'وثب استوديو تصميم يبني لعلامتك هويتها البصرية، موقعها، وبروفايل شركتها.',
+    'hero.lede': 'نأخذ العلامة العادية ونعيد بناءها: أوضح، أقوى، وأصعب أن تُنسى.',
     'gate.a': 'من حضورٍ عادي', 'gate.b': 'إلى حضورٍ يُرى.',
     'works.title': 'أعمال مختارة',
     'works.note': 'ستة مشاريع وأربعة مواقع. كل عمل معروض بالطريقة التي تناسب طبيعته.',
@@ -60,7 +62,9 @@ window.WASB_I18N = {
     'plate.open': 'عرض المشروع'
   },
   en: {
-    'nav.menu': 'Menu',
+    'nav.menu': 'Menu', 'nav.close': 'Close', 'hero.folio': 'Portfolio', 'word.studio': 'Studio',
+    'about.lead': 'A wasb is one measured leap. That is what we make for every brand.', 'index.label': 'Work index',
+    'say.line': 'We build the leap a brand needs: from being present to being seen.',
     'door.identity.t': 'Logo and a complete brand guideline.', 'door.website.t': 'Interfaces and experience that carry your brand.', 'door.profile.t': 'A profile that presents your company clearly.',
     'door.identity': 'Brand identity', 'door.website': 'Websites', 'door.profile': 'Company profiles',
     'filter.all': 'All', 'filter.identity': 'Identity', 'filter.website': 'Websites', 'filter.profile': 'Profiles',
@@ -71,7 +75,7 @@ window.WASB_I18N = {
     'nav.works': 'Work', 'nav.services': 'Services', 'nav.approach': 'Approach', 'nav.about': 'About',
     'cta.start': 'Start a project', 'cta.works': 'See the work',
     'hero.title': 'Your brand deserves a leap.',
-    'hero.lede': 'WASB is a design studio that builds your brand\u2019s visual identity, its website, and its company profile.',
+    'hero.lede': 'We take an ordinary brand and rebuild it: clearer, stronger, harder to forget.',
     'gate.a': 'From being present', 'gate.b': 'to being seen.',
     'works.title': 'Selected work',
     'works.note': 'Six projects and four websites, each shown the way its nature calls for.',
@@ -117,7 +121,7 @@ window.WASB_TAGS = {
 
 /* 3) المشاريع
    لإضافة مشروع: انسخ أي عنصر، غيّر id والصور، وأضف الصور داخل assets/.
-   cover: صورة البطاقة (تُعرض كما هي).
+   cover: صورة المشروع (تُعرض كما هي).   focus: نقطة القص 'أفقي% رأسي%' حتى لا يضيع جوهر العمل.
    blocks: محتوى صفحة المشروع بالترتيب.
      full   : صورة واحدة بعرض كامل
      grid   : شبكة صور (cols = عدد الأعمدة)
@@ -134,7 +138,7 @@ window.WASB_TAGS = {
       name: { ar: 'فزت', en: 'FZT' },
       line: { ar: 'شركة فزت للتسويق وإدارة الفعاليات', en: 'FZT, marketing and event management' },
       tags: ['identity', 'profile', 'website'],
-      cover: A + 'fzt/profile-01.webp',
+      cover: A + 'fzt/profile-01.webp', focus: '80% 30%',
       blocks: [
         { type: 'full', src: A + 'fzt/guide-02.webp' },
         { type: 'strip', title: { ar: 'دليل الهوية', en: 'Brand guidelines' }, ratio: '16/9', items: seq('fzt', 'guide', ['01', '02', '03', '05', '06', '07', '09', '11', '13']) },
@@ -148,7 +152,7 @@ window.WASB_TAGS = {
       name: { ar: 'نادي العلا · Summer Camp', en: 'AlUla Club · Summer Camp' },
       line: { ar: 'طقم هدايا لاعبي المعسكر الصيفي، لصالح فزت ونادي العلا', en: 'Summer camp player gift set, for FZT and AlUla Club' },
       tags: ['identity', 'merch'],
-      cover: A + 'ula/artwork-h.webp',
+      cover: A + 'ula/artwork-h.webp', focus: '40% 45%',
       blocks: [
         { type: 'full', src: A + 'ula/artwork-h.webp' },
         { type: 'grid', cols: 2, items: [A + 'ula/backpack.webp', A + 'ula/scarf.webp'] },
@@ -161,7 +165,7 @@ window.WASB_TAGS = {
       name: { ar: 'آيار', en: 'IAAR' },
       line: { ar: 'شركة آيار للصناعات الخشبية والمعدنية', en: 'IAAR, wood and metal industries' },
       tags: ['identity', 'profile', 'print'],
-      cover: A + 'iaar/cards.webp',
+      cover: A + 'iaar/cards.webp', focus: '70% 45%',
       blocks: [
         { type: 'full', src: A + 'iaar/cards.webp' },
         { type: 'strip', title: { ar: 'دليل الهوية', en: 'Brand guidelines' }, ratio: '16/9', items: seq('iaar', 'guide', ['01', '02', '03', '05', '06', '08', '09', '10', '11', '12']) },
@@ -175,7 +179,7 @@ window.WASB_TAGS = {
       name: { ar: 'الكمال', en: 'Al Kamal' },
       line: { ar: 'شركة مقاولات: بروفايل مطبوع وموقع إلكتروني', en: 'Contracting company: printed profile and website' },
       tags: ['profile', 'website'],
-      cover: A + 'alkamal/cover-dark.webp',
+      cover: A + 'alkamal/cover-dark.webp', focus: '48% 45%',
       blocks: [
         { type: 'full', src: A + 'alkamal/cover-dark.webp' },
         { type: 'grid', cols: 2, items: [A + 'alkamal/spread-about.webp', A + 'alkamal/spread-structure.webp'] },
@@ -189,7 +193,7 @@ window.WASB_TAGS = {
       name: { ar: 'دان الرائدة', en: 'Dan AlRaeda' },
       line: { ar: 'فريقك المتكامل لنجاح أعمالك', en: 'Back office services' },
       tags: ['logo', 'profile'],
-      cover: A + 'dan/logo-2.webp',
+      cover: A + 'dan/logo-2.webp', focus: '40% 30%',
       blocks: [
         { type: 'full', src: A + 'dan/logo-1.webp' },
         { type: 'grid', cols: 2, items: [A + 'dan/logo-2.webp', A + 'dan/logo-4.webp'] },
@@ -202,7 +206,7 @@ window.WASB_TAGS = {
       name: { ar: 'Greazy', en: 'Greazy' },
       line: { ar: 'مطعم: شعار، واجهات المحل، ولوحات داخلية وقائمة طعام', en: 'Restaurant: logo, storefront, interior signage and menu' },
       tags: ['logo', 'signage', 'print'],
-      cover: A + 'greazy/front-0.webp',
+      cover: A + 'greazy/front-0.webp', focus: '50% 40%',
       blocks: [
         { type: 'full', src: A + 'greazy/front-0.webp' },
         { type: 'grid', cols: 2, items: [A + 'greazy/front-1.webp', A + 'greazy/front-2.webp', A + 'greazy/front-3.webp', A + 'greazy/front-4.webp'] },

@@ -7,9 +7,7 @@
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const arrow = '<svg aria-hidden="true"><use href="#i-arrow"/></svg>';
-
-  // which project tags each of the three services covers
-  const FILTERS = { identity: ['identity', 'logo', 'merch', 'signage'], website: ['website'], profile: ['profile'] };
+  const pad = n => String(n).padStart(2, '0');
 
   let lang = 'ar';
   try { lang = localStorage.getItem('wasb-lang') || 'ar'; } catch (e) {}
@@ -42,43 +40,53 @@
     const btn = $('#langToggle');
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
-    renderCards(); renderSites(); renderContact(); applyFilter(filter, true);
+    renderSlides(); renderSites(); renderContact(); syncMenuLabel();
     if (!first) { onScroll(); if (currentCase) renderCase(currentCase); }
   }
 
-  /* ---------- works ---------- */
-  const tagLine = p => p.tags.map(k => L(TAGS[k])).join(' · ');
-  function renderCards() {
-    const host = $('#cards');
-    const seen = host.childElementCount > 0;
-    host.innerHTML = PROJECTS.map(p => `<a class="card${seen ? ' in' : ''}" href="#/work/${p.id}" data-id="${p.id}" aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
-        <span class="card__media"><img src="${p.cover}" alt="" loading="lazy"></span>
-        <span class="card__cap">
-          <span class="card__name">${esc(L(p.name))}</span>
-          <span class="card__tags">${esc(tagLine(p))}</span>
-          ${arrow}
+  /* ---------- works: one project per screen ---------- */
+  const tagLine = p => p.tags.map(k => L(TAGS[k])).join(' / ');
+  const works = $('#works'), slidesHost = $('#slides'), indexHost = $('#index');
+  let slides = [], marks = [];
+  const STEP = .8; // scroll per project, in viewport heights
+  function renderSlides() {
+    const n = PROJECTS.length;
+    works.style.setProperty('--n', n);
+    slidesHost.innerHTML = PROJECTS.map((p, i) => `<a class="slide" href="#/work/${p.id}"${p.focus ? ` style="--focus:${p.focus}"` : ''} aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
+        <span class="slide__img"><img src="${p.cover}" alt="" decoding="async"${i > 1 ? ' fetchpriority="low"' : ''}></span>
+        <span class="slide__cap">
+          <span class="slide__count">${pad(i + 1)}/${pad(n)}</span>
+          <span class="slide__name">${esc(L(p.name))}</span>
+          <span class="slide__tags">${esc(tagLine(p))}</span>
         </span>
       </a>`).join('');
-    if (!seen) $$('.card', host).forEach(watch);
+    slides = $$('.slide', slidesHost);
+    indexHost.setAttribute('aria-label', t('index.label'));
+    indexHost.innerHTML = PROJECTS.map((p, i) => `<li><button type="button" data-i="${i}">${esc(L(p.name))}</button></li>`).join('');
+    marks = $$('button', indexHost);
+    runSlides();
+  }
+  function runSlides() {
+    if (reduce.matches || !slides.length) return;
+    const vh = window.innerHeight;
+    const P = clamp((window.scrollY - works.offsetTop) / (vh * STEP), 0, slides.length - 1);
+    const cur = Math.round(P);
+    marks.forEach((m, i) => { m.classList.toggle('is-on', i === cur); if (i === cur) m.setAttribute('aria-current', 'true'); else m.removeAttribute('aria-current'); });
+    slides.forEach((s, i) => {
+      const k = i === 0 ? 1 : clamp(P - (i - 1));
+      s.style.clipPath = k >= 1 ? 'none' : `inset(${(1 - k) * 100}% 0 0 0)`;
+      s.style.visibility = k <= 0 || P >= i + 1 ? 'hidden' : 'visible';
+      const img = s.firstElementChild.firstElementChild;
+      const drift = i === 0 ? clamp(P) : k - 1 + clamp(P - i);
+      img.style.transform = `translate3d(0, ${-6 + drift * -5}%, 0)`;
+    });
   }
 
-  let filter = 'all';
-  function applyFilter(f, quiet) {
-    filter = FILTERS[f] ? f : 'all';
-    $$('#filters button').forEach(b => { const on = b.dataset.filter === filter; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
-    const keys = FILTERS[filter];
-    PROJECTS.forEach(p => {
-      const el = $(`.card[data-id="${p.id}"]`);
-      if (!el) return;
-      el.hidden = !!keys && !p.tags.some(k => keys.includes(k));
-      if (!quiet && !el.hidden) { el.classList.remove('in'); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in'))); }
-    });
-    $('#sitesBlock').hidden = filter === 'identity' || filter === 'profile';
-  }
-  $('#filters').addEventListener('click', e => { const b = e.target.closest('button'); if (b) applyFilter(b.dataset.filter); });
-  document.addEventListener('click', e => {
-    const a = e.target.closest('a[data-filter]');
-    if (a) applyFilter(a.dataset.filter);
+  indexHost.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    const y = works.offsetTop + Number(b.dataset.i) * window.innerHeight * STEP + 2;
+    window.scrollTo({ top: y, behavior: reduce.matches ? 'auto' : 'smooth' });
   });
 
   function renderSites() {
@@ -102,34 +110,33 @@
     if (c.email) links.push(['contact.email', 'mailto:' + c.email]);
     ['instagram', 'behance', 'linkedin', 'x'].forEach(k => { if (c[k]) links.push(['contact.' + k, c[k]]); });
     host.innerHTML = links.length
-      ? links.map(([k, href]) => `<a class="btn btn--paper" href="${esc(href)}" target="_blank" rel="noopener"><span>${esc(t(k))}</span>${arrow}</a>`).join('')
+      ? links.map(([k, href]) => `<a class="link" href="${esc(href)}" target="_blank" rel="noopener"><span>${esc(t(k))}</span>${arrow}</a>`).join('')
       : `<p class="contact__empty">${esc(t('contact.empty'))}</p>`;
   }
 
-  /* ---------- header ---------- */
-  const nav = $('#nav'), burger = $('#burger'), menu = $('#menu');
-  const sections = $$('main > section');
-  let lastY = window.scrollY;
-  function runNav() {
-    const y = window.scrollY, open = burger.getAttribute('aria-expanded') === 'true';
-    if (!open) {
-      if (y > lastY + 6 && y > 200) nav.classList.add('is-away');
-      else if (y < lastY - 6 || y < 200) nav.classList.remove('is-away');
-    }
-    nav.classList.toggle('is-stuck', y > 8);
-    lastY = y;
-    let here = '';
-    for (const s of sections) { const r = s.getBoundingClientRect(); if (r.top <= innerHeight * .4 && r.bottom > innerHeight * .4) { here = s.id; break; } }
-    $$('.nav__links a').forEach(a => a.classList.toggle('is-here', a.getAttribute('href') === '#' + here));
-  }
+  /* ---------- menu ---------- */
+  const burger = $('#burger'), menu = $('#menu');
+  const menuOpen = () => burger.getAttribute('aria-expanded') === 'true';
+  function syncMenuLabel() { burger.lastElementChild.textContent = t(menuOpen() ? 'nav.close' : 'nav.menu'); }
   function setMenu(open) {
     burger.setAttribute('aria-expanded', open);
+    syncMenuLabel();
     document.body.classList.toggle('is-locked', open || !!currentCase);
-    if (open) { menu.hidden = false; nav.classList.remove('is-away'); requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('is-open'))); }
-    else { menu.classList.remove('is-open'); setTimeout(() => { if (burger.getAttribute('aria-expanded') !== 'true') menu.hidden = true; }, reduce.matches ? 0 : 350); }
+    if (open) { menu.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('is-open'))); }
+    else { menu.classList.remove('is-open'); setTimeout(() => { if (!menuOpen()) menu.hidden = true; }, reduce.matches ? 0 : 700); }
   }
-  burger.addEventListener('click', () => setMenu(burger.getAttribute('aria-expanded') !== 'true'));
+  burger.addEventListener('click', () => setMenu(!menuOpen()));
   menu.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
+
+  /* ---------- hero drift ---------- */
+  const slab = $('.hero__slab'), word = $('.hero__word');
+  function runHero() {
+    if (reduce.matches) return;
+    const y = window.scrollY, vh = window.innerHeight;
+    if (y > vh * 1.2) return;
+    slab.style.transform = `translate3d(0, ${y * .22}px, 0)`;
+    word.style.transform = `translate3d(0, ${y * -.08}px, 0)`;
+  }
 
   /* ---------- approach arc ---------- */
   const arc = $('#arc'), steps = $$('.arc__step');
@@ -144,7 +151,7 @@
   function onScroll() {
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(() => { runArc(); runNav(); ticking = false; });
+    requestAnimationFrame(() => { runHero(); runSlides(); runArc(); ticking = false; });
   }
 
   /* ---------- case study ---------- */
@@ -165,7 +172,7 @@
     const idx = PROJECTS.findIndex(p => p.id === id);
     if (idx < 0) return false;
     const p = PROJECTS[idx], next = PROJECTS[(idx + 1) % PROJECTS.length];
-    caseCrumb.textContent = L(p.name);
+    caseCrumb.textContent = `${pad(idx + 1)}/${pad(PROJECTS.length)}`;
     caseBody.innerHTML = `
       <header class="case__head">
         <div class="wrap">
@@ -203,7 +210,7 @@
     currentCase = null;
     caseEl.classList.remove('is-open');
     document.body.classList.remove('is-locked');
-    setTimeout(() => { if (!currentCase) { caseEl.hidden = true; caseBody.innerHTML = ''; } }, reduce.matches ? 0 : 500);
+    setTimeout(() => { if (!currentCase) { caseEl.hidden = true; caseBody.innerHTML = ''; } }, reduce.matches ? 0 : 800);
     if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
   function route() {
@@ -212,7 +219,7 @@
   }
   $('#caseClose').addEventListener('click', () => { history.pushState('', document.title, location.pathname + location.search); closeCase(); });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') { setMenu(false); burger.focus(); return; }
+    if (e.key === 'Escape' && menuOpen()) { setMenu(false); burger.focus(); return; }
     if (!currentCase) return;
     if (e.key === 'Escape') { $('#caseClose').click(); }
     if (e.key === 'Tab') {
@@ -227,16 +234,14 @@
 
   /* ---------- boot ---------- */
   $('#langToggle').addEventListener('click', () => applyLang(lang === 'ar' ? 'en' : 'ar'));
-  $('#year').textContent = new Date().getFullYear();
+  $$('.year').forEach(el => { el.textContent = new Date().getFullYear(); });
   applyLang(lang, true);
-  $$('[data-split]').forEach(el => { if (el.closest('.hero')) requestAnimationFrame(() => el.classList.add('in')); else watch(el); });
+  $$('[data-split]').forEach(watch);
 
-  const settle = () => onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', settle);
-  window.addEventListener('load', settle);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
-  if (reduce.addEventListener) reduce.addEventListener('change', settle);
-  settle();
+  window.addEventListener('resize', onScroll);
+  window.addEventListener('load', onScroll);
+  if (reduce.addEventListener) reduce.addEventListener('change', onScroll);
+  onScroll();
   route();
 })();
