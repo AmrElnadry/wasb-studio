@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=26">
+<link rel="stylesheet" href="css/style.css?v=31">
 <script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!/[?&]nointro/.test(location.search)&&!location.hash)document.documentElement.classList.add('intro-on')</script>
 </head>
 <body>
@@ -48,7 +48,7 @@
   <svg viewBox="0 0 263 358" aria-hidden="true"><use href="#wasb-symbol"/></svg>
 </a>
 <div class="dock dock--menu">
-  <button class="dock__btn dock__btn--menu" type="button" id="burger" aria-expanded="false" aria-controls="menu"><svg class="dots" viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="1.5" width="6" height="6" transform="rotate(45 10 4.5)"/><rect x="2.5" y="10" width="6" height="6" transform="rotate(45 5.5 13)"/><rect x="11.5" y="10" width="6" height="6" transform="rotate(45 14.5 13)"/></svg><span data-i18n="nav.menu">القائمة</span></button>
+  <button class="menu-btn" type="button" id="burger" aria-expanded="false" aria-controls="menu"><span class="menu-btn__roll"><span data-i18n="nav.menu">القائمة</span></span></button>
   <button class="dock__btn" type="button" id="langToggle" aria-label="Switch to English">EN</button>
 </div>
 
@@ -65,12 +65,18 @@
 <main id="top">
 
   <section class="hero" id="hero">
-    <div class="hero__slab" id="slab" aria-hidden="true">
-      <svg viewBox="0 0 263 358"><use href="#wasb-symbol"/></svg>
+    <div class="hero__slab" id="slab">
+      <div class="slab__in">
+        <svg class="slab__mark" viewBox="0 0 263 358" aria-hidden="true"><use href="#wasb-symbol"/></svg>
+        <ul class="trio" id="trio" aria-label="الخدمات">
+          <li><a href="#works" data-filter="identity" data-peek="assets/fzt/guide-05.webp"><span class="trio__t" data-i18n="hero.s1">الهوية البصرية</span></a></li>
+          <li><a href="#works" data-filter="website" data-peek="assets/web/alkamal.webp"><span class="trio__t" data-i18n="hero.s2">المواقع الإلكترونية</span></a></li>
+          <li><a href="#works" data-filter="profile" data-peek="assets/alkamal/spread-about.webp"><span class="trio__t" data-i18n="hero.s3">الملف التعريفي</span></a></li>
+        </ul>
+      </div>
     </div>
     <div class="hero__bar">
       <div class="hero__id">
-        <span data-i18n="foot.name">وثب استوديو</span>
         <p class="hero__by"><span data-i18n="hero.by">استوديو التصميم والهوية البصرية</span> <span class="nw"><span data-i18n="hero.of">لـ</span> <a class="blue" href="https://blue-network.sa" target="_blank" rel="noopener">Blue Network<svg aria-hidden="true"><use href="#i-arrow"/></svg></a></span></p>
       </div>
       <span class="hero__year"><span data-i18n="hero.folio">بورتفوليو</span> <span class="year">2026</span></span>
@@ -84,11 +90,6 @@
       <span class="hero__wordmark ar-only" aria-hidden="true"><svg viewBox="0 0 263 83" aria-hidden="true"><use href="#wasb-word"/></svg></span>
       <span class="hero__wordmark en-only" aria-hidden="true"><svg viewBox="0 0 258.13 59.97" aria-hidden="true"><use href="#wasb-latin"/></svg></span>
     </h1>
-    <ul class="bar" id="bar" aria-label="الخدمات">
-<li><a href="#works" data-filter="identity" data-peek="assets/fzt/guide-05.webp"><span data-i18n="door.identity">الهوية البصرية</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
-<li><a href="#works" data-filter="website" data-peek="assets/web/alkamal.webp"><span data-i18n="door.website">المواقع الإلكترونية</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
-<li><a href="#works" data-filter="profile" data-peek="assets/alkamal/spread-about.webp"><span data-i18n="door.profile">بروفايلات الشركات</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
-    </ul>
     <div class="peek" id="peek" aria-hidden="true"><img alt=""></div>
   </section>
 
@@ -99,7 +100,7 @@
         <div class="pair">
           <span class="pair__wasb"><svg class="pair__sym" viewBox="0 0 263 358" aria-hidden="true"><use href="#wasb-symbol"/></svg><span class="ar-only"><svg viewBox="0 0 263 83" aria-hidden="true"><use href="#wasb-word"/></svg></span><span class="en-only"><svg viewBox="0 0 258.13 59.97" aria-hidden="true"><use href="#wasb-latin"/></svg></span></span>
           <i class="pair__x" aria-hidden="true"></i>
-          <a class="pair__blue" href="https://blue-network.sa" target="_blank" rel="noopener" aria-label="Blue Network"><img src="assets/blue/blue-icon-white.webp?v=2" alt="" width="356" height="400"><span>Blue Network</span></a>
+          <a class="pair__blue" href="https://blue-network.sa" target="_blank" rel="noopener" aria-label="Blue Network"><img src="assets/blue/blue-icon-white.webp?v=31" alt="" width="356" height="400"><span>Blue Network</span></a>
         </div>
         <p data-i18n="about.p2">وثب هي الامتداد الإبداعي واستوديو التصميم والهوية البصرية لـ Blue Network. نبني للعلامات هويتها البصرية ومواقعها وملفاتها التعريفية، بفريق يجمع الإخراج الفني والتصميم والتطوير.</p>
       </div>
@@ -117,10 +118,7 @@
           <button type="button" data-filter="profile" data-i18n="filter.profile">بروفايلات</button>
         </div>
       </header>
-      <div class="list">
-        <ol class="list__rows" id="rows"></ol>
-        <div class="list__view" aria-hidden="true"><div class="list__frame" id="view"></div></div>
-      </div>
+      <div class="grid" id="grid"></div>
     </div>
   </section>
 
@@ -142,19 +140,28 @@
   </section>
 
   <section class="approach" id="approach">
-    <div class="approach__pin">
-      <div class="wrap">
+    <div class="wrap">
+      <div class="game" id="game">
         <div class="arc" id="arc">
           <svg class="arc__svg" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true">
             <path class="arc__base" d="M20 500 A480 480 0 0 1 980 500" pathLength="100"/>
             <path class="arc__run" d="M20 500 A480 480 0 0 1 980 500" pathLength="100"/>
           </svg>
-          <h2 class="arc__title"><span data-i18n="approach.t1">كيف نصل</span><br><span data-i18n="approach.t2">إلى القفزة</span></h2>
+          <span class="arc__start" id="arcStart" aria-hidden="true"></span>
+          <svg class="jumper" id="jumper" viewBox="0 0 263 358" aria-hidden="true"><use href="#wasb-symbol"/></svg>
+          <div class="arc__core">
+            <h2 class="arc__title"><span data-i18n="approach.t1">كيف نصل</span><br><span data-i18n="approach.t2">إلى القفزة</span></h2>
+            <p class="game__hint" id="gameHint" aria-live="polite" data-i18n="game.hint">اضغط «اقفز» وانتقل مع الحصان خطوة خطوة.</p>
+            <div class="game__ctrl">
+              <button class="leap" type="button" id="leapBtn"><span data-i18n="game.leap">اقفز</span><b id="leapCount">0/4</b></button>
+              <a class="game__skip" href="#contact" data-i18n="game.skip">تخطَّ إلى التواصل</a>
+            </div>
+          </div>
           <ol class="arc__steps">
-            <li class="arc__step" style="--t:.07"><h3 data-i18n="step.0.name">نفهم</h3><p data-i18n="step.0.text">نسمع، نسأل، وندرس السوق والمنافسين قبل أن نرسم خطاً واحداً.</p></li>
-            <li class="arc__step" style="--t:.3"><h3 data-i18n="step.1.name">نبني الفكرة</h3><p data-i18n="step.1.text">نحوّل ما فهمناه إلى فكرة واحدة واضحة تقود كل قرار بصري.</p></li>
-            <li class="arc__step" style="--t:.7"><h3 data-i18n="step.2.name">نصمّم</h3><p data-i18n="step.2.text">الشعار، النظام، الصفحات. نعمل على التفاصيل حتى يتماسك الكل.</p></li>
-            <li class="arc__step" style="--t:.93"><h3 data-i18n="step.3.name">نطبّق</h3><p data-i18n="step.3.text">نسلّم ملفات جاهزة للاستخدام ودليلاً يحفظ الهوية بعدنا.</p></li>
+            <li class="arc__step" style="--t:.07"><span class="arc__dot"></span><h3 data-i18n="step.0.name">نفهم</h3><p data-i18n="step.0.text">نسمع، نسأل، وندرس السوق والمنافسين قبل أن نرسم خطاً واحداً.</p></li>
+            <li class="arc__step" style="--t:.3"><span class="arc__dot"></span><h3 data-i18n="step.1.name">نبني الفكرة</h3><p data-i18n="step.1.text">نحوّل ما فهمناه إلى فكرة واحدة واضحة تقود كل قرار بصري.</p></li>
+            <li class="arc__step" style="--t:.7"><span class="arc__dot"></span><h3 data-i18n="step.2.name">نصمّم</h3><p data-i18n="step.2.text">الشعار، النظام، الصفحات. نعمل على التفاصيل حتى يتماسك الكل.</p></li>
+            <li class="arc__step" style="--t:.93"><span class="arc__dot"></span><h3 data-i18n="step.3.name">نطبّق</h3><p data-i18n="step.3.text">نسلّم ملفات جاهزة للاستخدام ودليلاً يحفظ الهوية بعدنا.</p></li>
           </ol>
         </div>
       </div>
@@ -186,7 +193,7 @@
   <div class="case__scroll" id="caseScroll" tabindex="-1"><article class="case__body" id="caseBody"></article></div>
 </div>
 
-<script src="js/config.js?v=26"></script>
-<script src="js/main.js?v=26"></script>
+<script src="js/config.js?v=31"></script>
+<script src="js/main.js?v=31"></script>
 </body>
 </html>

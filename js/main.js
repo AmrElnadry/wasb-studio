@@ -44,7 +44,7 @@
     const btn = $('#langToggle');
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
-    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter, true);
+    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); syncGame();
     if (!first) { onScroll(); if (currentCase) renderCase(currentCase); }
   }
 
@@ -83,17 +83,19 @@
     done();
   }
 
-  /* ---------- hero: services inside the ب, with a preview window ---------- */
-  const peek = $('#peek'), peekImg = $('img', peek), hero = $('#hero');
+  /* ---------- hero: three services under the mark, set to one length ---------- */
+  const peek = $('#peek'), peekImg = $('img', peek), hero = $('#hero'), slab = $('#slab');
   let peekTimer = 0;
-  $$('#bar a').forEach(a => {
+  $$('#trio a').forEach(a => {
     const show = () => {
       if (innerWidth <= 820) return;
       clearTimeout(peekTimer);
       peekImg.src = a.dataset.peek;
-      const hr = hero.getBoundingClientRect(), ar = a.getBoundingClientRect();
-      const w = peek.offsetWidth;
-      peek.style.left = clamp(ar.left + ar.width / 2 - w / 2 - hr.left, 12, hr.width - w - 12) + 'px';
+      const hr = hero.getBoundingClientRect(), sr = slab.getBoundingClientRect(), ar = a.getBoundingClientRect();
+      const w = peek.offsetWidth, h = peek.offsetHeight;
+      const side = lang === 'ar' ? sr.right + 28 - hr.left : sr.left - 28 - w - hr.left;
+      peek.style.left = clamp(side, 12, hr.width - w - 12) + 'px';
+      peek.style.top = clamp(ar.top + ar.height / 2 - h / 2 - hr.top, 12, hr.height - h - 12) + 'px';
       peek.classList.add('is-on');
     };
     const hide = () => { peekTimer = setTimeout(() => peek.classList.remove('is-on'), 80); };
@@ -101,71 +103,96 @@
     a.addEventListener('mouseleave', hide); a.addEventListener('blur', hide);
   });
 
-  /* ---------- works: an index with a live preview ---------- */
-  const rowsHost = $('#rows'), view = $('#view');
-  const tagLine = p => p.tags.map(k => L(TAGS[k])).join(' / ');
-  let current = 0;
-  function renderRows() {
-    rowsHost.innerHTML = PROJECTS.map((p, i) => `<li class="row" data-i="${i}"${p.focus ? ` style="--focus:${p.focus}"` : ''}>
-        <a href="#/work/${p.id}">
-          <span class="row__thumb"><img src="${p.cover}" alt="" loading="lazy"></span>
-          <span class="row__name">${esc(L(p.name))}</span>
-          <span class="row__tags">${esc(tagLine(p))}</span>
-          ${arrow}
-        </a>
-      </li>`).join('');
-    if (!view.childElementCount) {
-      view.innerHTML = PROJECTS.map((p, i) => `<img src="${p.cover}" alt="" decoding="async"${p.focus ? ` style="--focus:${p.focus}"` : ''}${i === 0 ? ' class="is-on"' : ''}>`).join('');
+  // Arabic lines are lengthened with kashida (ـ) between joining letters; Latin lines with letter-spacing.
+  const JOIN = 'بتثجحخسشصضطظعغفقكلمنهيئ';
+  const ARABIC = /[ء-ي]/;
+  function kashidaSlots(word) {
+    const slots = [];
+    for (let i = 0; i < word.length - 1; i++) {
+      const c = word[i], n = word[i + 1];
+      if (!JOIN.includes(c) || !ARABIC.test(n)) continue;
+      if (c === 'ل' && 'اأإآ'.includes(n)) continue;
+      if (i === 0 && c === 'ا') continue;
+      slots.push(i + 1);
     }
-    $$('.row', rowsHost).forEach(row => {
-      const a = $('a', row);
-      const go = () => setView(Number(row.dataset.i));
-      a.addEventListener('mouseenter', go); a.addEventListener('focus', go);
-    });
-    setView(current, true);
+    return slots;
   }
-  function setView(i, quiet) {
-    $$('.row', rowsHost).forEach(r => r.classList.toggle('is-on', Number(r.dataset.i) === i));
-    if (i === current && !quiet) return;
-    $$('img', view).forEach((im, k) => {
-      const was = im.classList.contains('is-on');
-      im.classList.toggle('was-on', was && k !== i);
-      im.classList.toggle('is-on', k === i);
-      if (was && k !== i) setTimeout(() => im.classList.remove('was-on'), 850);
+  function fitTrio() {
+    const els = $$('#trio .trio__t');
+    els.forEach(el => { el.textContent = t(el.dataset.i18n); el.style.letterSpacing = ''; });
+    const widths = els.map(el => el.getBoundingClientRect().width);
+    const target = Math.max(...widths);
+    els.forEach((el, k) => {
+      if (target - widths[k] < 2) return;
+      if (lang !== 'ar') {
+        const n = Math.max(1, el.textContent.length - 1);
+        el.style.letterSpacing = ((target - widths[k]) / n) + 'px';
+        return;
+      }
+      const words = el.textContent.split(' ');
+      // slots spread from the middle of each word outward, round robin across words
+      const order = [];
+      words.forEach((w, wi) => {
+        const s = kashidaSlots(w);
+        const mid = s.length / 2;
+        s.sort((a, b) => Math.abs(a - mid * 1.0 - 0.5) - Math.abs(b - mid * 1.0 - 0.5)).forEach((pos, r) => order.push({ wi, pos, r }));
+      });
+      order.sort((a, b) => a.r - b.r || a.wi - b.wi);
+      if (!order.length) return;
+      const extra = words.map(() => ({}));
+      for (let step = 0; step < 60; step++) {
+        const o = order[step % order.length];
+        extra[o.wi][o.pos] = (extra[o.wi][o.pos] || 0) + 1;
+        const text = words.map((w, wi) => w.split('').map((ch, ci) => 'ـ'.repeat(extra[wi][ci] || 0) + ch).join('')).join(' ');
+        const prev = el.textContent;
+        el.textContent = text;
+        const now = el.getBoundingClientRect().width;
+        if (now >= target - 1) {
+          if (now - target > (target - (step ? measure(prev, el) : widths[k]))) el.textContent = prev;
+          break;
+        }
+      }
     });
-    current = i;
+  }
+  function measure(text, el) { const keep = el.textContent; el.textContent = text; const w = el.getBoundingClientRect().width; el.textContent = keep; return w; }
+
+  /* ---------- works: a grid, the name on the work ---------- */
+  const grid = $('#grid');
+  const tagLine = p => p.tags.map(k => L(TAGS[k])).join(' / ');
+  function renderRows() {
+    const seen = grid.childElementCount > 0;
+    grid.innerHTML = PROJECTS.map((p, i) => `<a class="tile${seen ? ' in' : ''}" href="#/work/${p.id}" data-i="${i}" style="--i:${i % 3};${p.focus ? `--focus:${p.focus}` : ''}" aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
+        <img src="${p.cover}" alt="" loading="lazy" decoding="async">
+        <span class="tile__cap"><span class="tile__name">${esc(L(p.name))}</span><span class="tile__tags">${esc(tagLine(p))}</span></span>
+        <span class="tile__go" aria-hidden="true">${arrow}</span>
+      </a>`).join('');
+    if (!seen) $$('.tile', grid).forEach(watch);
   }
 
   let filter = 'all';
-  function applyFilter(f, quiet) {
+  function applyFilter(f) {
     filter = FILTERS[f] ? f : 'all';
     $$('#filters button').forEach(b => { const on = b.dataset.filter === filter; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
     const keys = FILTERS[filter];
-    let first = -1;
-    $$('.row', rowsHost).forEach(row => {
-      const p = PROJECTS[Number(row.dataset.i)];
-      row.hidden = !!keys && !p.tags.some(k => keys.includes(k));
-      if (!row.hidden && first < 0) first = Number(row.dataset.i);
+    grid.classList.toggle('is-filtered', !!keys);
+    $$('.tile', grid).forEach(tile => {
+      const p = PROJECTS[Number(tile.dataset.i)];
+      tile.hidden = !!keys && !p.tags.some(k => keys.includes(k));
     });
-    if (!quiet && first >= 0) setView(first);
   }
   $('#filters').addEventListener('click', e => { const b = e.target.closest('button'); if (b) applyFilter(b.dataset.filter); });
   document.addEventListener('click', e => { const a = e.target.closest('a[data-filter]'); if (a) applyFilter(a.dataset.filter); });
 
   /* ---------- sites: a panoramic hall ---------- */
   const pano = $('#pano'), stage = $('#panoStage');
-  let at = 0, cards = [], panoTimer = 0, panoPaused = false, panoSeen = false;
+  let at = 0, cards = [], panoTimer = 0, panoSeen = false;
   function renderPano() {
     stage.innerHTML = SITES.map((s, i) => `<div class="card" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${esc(s.label)}">
         <div class="card__bar"><i></i><i></i><i></i><span>${esc(s.label)}</span></div>
         <div class="card__view"><img src="${s.src}" alt="${esc(s.label)}" loading="lazy"></div>
       </div>`).join('');
     cards = $$('.card', stage);
-    cards.forEach(c => c.addEventListener('click', () => {
-      const i = Number(c.dataset.i);
-      if (i === at) window.open(SITES[i].url, '_blank', 'noopener');
-      else goPano(i);
-    }));
+    cards.forEach(c => c.addEventListener('click', () => window.open(SITES[Number(c.dataset.i)].url, '_blank', 'noopener')));
     sizePano(); goPano(at, true);
   }
   function sizePano() {}
@@ -186,15 +213,14 @@
     $('#panoLink').href = SITES[at].url;
     if (!quiet) restartPano();
   }
+  // each site holds for 2s after it settles, then the next one comes forward
   function restartPano() {
     clearTimeout(panoTimer);
-    if (reduce.matches || panoPaused || !panoSeen) return;
-    panoTimer = setTimeout(() => goPano(at + 1), 9000);
+    if (reduce.matches || !panoSeen) return;
+    panoTimer = setTimeout(() => goPano(at + 1), 3600);
   }
   $('#panoPrev').addEventListener('click', () => goPano(at - 1));
   $('#panoNext').addEventListener('click', () => goPano(at + 1));
-  pano.addEventListener('mouseenter', () => { panoPaused = true; clearTimeout(panoTimer); });
-  pano.addEventListener('mouseleave', () => { panoPaused = false; restartPano(); });
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(es => es.forEach(e => { panoSeen = e.isIntersecting; if (panoSeen) restartPano(); else clearTimeout(panoTimer); }), { threshold: .3 }).observe(pano);
   }
@@ -208,7 +234,8 @@
     ['instagram', 'behance', 'linkedin', 'x'].forEach(k => { if (c[k]) links.push(`<a class="link" href="${esc(c[k])}" target="_blank" rel="noopener"><span>${esc(t('contact.' + k))}</span>${arrow}</a>`); });
     $('#contactLinks').innerHTML = links.length ? links.join('') : `<p class="contact__empty">${esc(t('contact.empty'))}</p>`;
     const facts = [];
-    if (c.phone) facts.push(`<dt>${esc(t('contact.phone'))}</dt><dd><a href="tel:+966${String(c.phone).replace(/\D/g, '').replace(/^0/, '')}">${esc(c.phone)}</a></dd>`);
+    const phones = (c.phones || []).map(p => String(p).replace(/\D/g, '').replace(/^(966|0)/, ''));
+    if (phones.length) facts.push(`<dt>${esc(t('contact.phone'))}</dt><dd>${phones.map(d => `<a href="tel:+966${d}">+966 ${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5)}</a>`).join('')}</dd>`);
     facts.push(`<dt>${esc(t('contact.addressLabel'))}</dt><dd>${esc(t('contact.address'))}</dd>`);
     $('#contactFacts').innerHTML = facts.join('');
   }
@@ -216,7 +243,7 @@
   /* ---------- menu ---------- */
   const burger = $('#burger'), menu = $('#menu');
   const menuOpen = () => burger.getAttribute('aria-expanded') === 'true';
-  function syncMenuLabel() { burger.lastElementChild.textContent = t(menuOpen() ? 'nav.close' : 'nav.menu'); }
+  function syncMenuLabel() { $('.menu-btn__roll', burger).textContent = t(menuOpen() ? 'nav.close' : 'nav.menu'); }
   function setMenu(open) {
     burger.setAttribute('aria-expanded', open);
     syncMenuLabel();
@@ -227,27 +254,53 @@
   burger.addEventListener('click', () => setMenu(!menuOpen()));
   menu.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
 
-  /* ---------- approach: pinned, the line draws with the scroll ---------- */
-  const approach = $('#approach'), pin = $('.approach__pin'), arc = $('#arc'), steps = $$('.arc__step');
-  function runArc() {
-    let p;
-    if (getComputedStyle(pin).position === 'sticky') {
-      const r = approach.getBoundingClientRect();
-      p = clamp(-r.top / Math.max(1, approach.offsetHeight - innerHeight) * 1.08);
-    } else {
-      const r = arc.getBoundingClientRect();
-      p = clamp((innerHeight * .9 - r.top) / (r.height * .9));
-    }
-    arc.style.setProperty('--p', p.toFixed(3));
-    steps.forEach(s => s.classList.toggle('is-on', p >= parseFloat(s.style.getPropertyValue('--t')) - .005));
+  /* ---------- approach: the leap game ---------- */
+  const arc = $('#arc'), jumper = $('#jumper'), start = $('#arcStart'), leapBtn = $('#leapBtn'), leapCount = $('#leapCount'), hint = $('#gameHint');
+  const steps = $$('.arc__step');
+  let reached = 0, leaping = false;
+  function pointOf(i) {
+    const ar = arc.getBoundingClientRect();
+    let r;
+    if (i < 0) {
+      if (getComputedStyle(start).display !== 'none') r = start.getBoundingClientRect();
+      else { const d = $('.arc__dot', steps[0]).getBoundingClientRect(); return { x: d.left + d.width / 2 - ar.left, y: d.top - ar.top - 34 }; }
+    } else r = $('.arc__dot', steps[i]).getBoundingClientRect();
+    return { x: r.left + r.width / 2 - ar.left, y: r.top + r.height / 2 - ar.top };
   }
-
-  let ticking = false;
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => { runArc(); ticking = false; });
+  function place(p) { jumper.style.left = p.x + 'px'; jumper.style.top = p.y + 'px'; }
+  function syncGame() {
+    place(pointOf(reached - 1));
+    steps.forEach((s, i) => s.classList.toggle('is-on', i < reached));
+    arc.style.setProperty('--p', reached ? parseFloat(steps[reached - 1].style.getPropertyValue('--t')) : 0);
+    leapCount.textContent = `${reached}/${steps.length}`;
+    $('span', leapBtn).textContent = t(reached >= steps.length ? 'game.again' : 'game.leap');
+    hint.innerHTML = reached >= steps.length ? `${esc(t('game.done'))} <a href="#contact">${esc(t('game.cta'))}</a>` : esc(t('game.hint'));
   }
+  function leap() {
+    if (leaping) return;
+    if (reached >= steps.length) { reached = 0; syncGame(); return; }
+    const a = pointOf(reached - 1), b = pointOf(reached);
+    const dist = Math.hypot(b.x - a.x, b.y - a.y);
+    const hop = Math.max(70, dist * .55);
+    const dur = reduce.matches ? 0 : 720;
+    leaping = true;
+    const t0 = performance.now();
+    const ease = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+    const frame = now => {
+      const u = dur ? clamp((now - t0) / dur) : 1, e = ease(u);
+      place({ x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e - Math.sin(Math.PI * u) * hop });
+      jumper.style.rotate = `${Math.sin(Math.PI * u) * (b.x > a.x ? 12 : -12)}deg`;
+      if (u < 1) return requestAnimationFrame(frame);
+      jumper.style.rotate = '';
+      reached++;
+      leaping = false;
+      jumper.classList.remove('is-land'); void jumper.offsetWidth; jumper.classList.add('is-land');
+      syncGame();
+    };
+    requestAnimationFrame(frame);
+  }
+  leapBtn.addEventListener('click', leap);
+  function onScroll() {}
 
   /* ---------- case study ---------- */
   const caseEl = $('#case'), caseBody = $('#caseBody'), caseScroll = $('#caseScroll'), caseCrumb = $('#caseCrumb');
@@ -329,8 +382,9 @@
   applyLang(lang, true);
   $$('[data-split]').forEach(watch);
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', () => { sizePano(); onScroll(); });
-  window.addEventListener('load', () => { sizePano(); onScroll(); });
+  window.addEventListener('resize', () => { fitTrio(); syncGame(); });
+  window.addEventListener('load', () => { fitTrio(); syncGame(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitTrio(); syncGame(); });
   onScroll();
   route();
   runIntro();

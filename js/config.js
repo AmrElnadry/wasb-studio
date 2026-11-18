@@ -7,7 +7,7 @@
       الرابط الفارغ لا يظهر في الموقع. */
 window.WASB_CONTACT = {
   whatsapp: '966567561619',   // أرقام فقط مع مفتاح الدولة
-  phone: '0567561619',        // كما يظهر للزائر
+  phones: ['0567561619', '0531473116'],   // تظهر بصيغة +966 5X XXX XXXX
   email: '',
   instagram: '',
   behance: '',
@@ -23,6 +23,9 @@ window.WASB_I18N = {
     'approach.t1': 'كيف نصل', 'approach.t2': 'إلى القفزة',
     'contact.phone': 'موبايل', 'contact.addressLabel': 'العنوان', 'contact.address': 'حي الفلاح، الرياض، المملكة العربية السعودية',
     'pano.prev': 'الموقع السابق', 'pano.next': 'الموقع التالي',
+    'hero.s1': 'الهوية البصرية', 'hero.s2': 'المواقع الإلكترونية', 'hero.s3': 'الملف التعريفي',
+    'game.hint': 'اضغط «اقفز» وانتقل مع الحصان خطوة خطوة.', 'game.leap': 'اقفز', 'game.skip': 'تخطَّ إلى التواصل',
+    'game.done': 'وصلت. القفزة التالية لعلامتك.', 'game.again': 'من البداية', 'game.cta': 'ابدأ مشروعك',
     'nav.menu': 'القائمة', 'nav.close': 'إغلاق', 'hero.folio': 'بورتفوليو', 'word.studio': 'استوديو',
     'about.lead': 'الوثبة قفزة واحدة محسوبة، وهذا ما نصنعه لكل علامة.', 'index.label': 'فهرس الأعمال',
     'say.line': 'نصنع للعلامة قفزتها: من حضورٍ عادي إلى حضورٍ يُرى.',
@@ -73,6 +76,9 @@ window.WASB_I18N = {
     'approach.t1': 'How we get', 'approach.t2': 'to the leap',
     'contact.phone': 'Mobile', 'contact.addressLabel': 'Address', 'contact.address': 'Al Falah, Riyadh, Saudi Arabia',
     'pano.prev': 'Previous website', 'pano.next': 'Next website',
+    'hero.s1': 'Brand identity', 'hero.s2': 'Websites', 'hero.s3': 'Company profile',
+    'game.hint': 'Press Leap and follow the horse, one step at a time.', 'game.leap': 'Leap', 'game.skip': 'Skip to contact',
+    'game.done': 'You made it. The next leap is your brand\u2019s.', 'game.again': 'Start over', 'game.cta': 'Start a project',
     'nav.menu': 'Menu', 'nav.close': 'Close', 'hero.folio': 'Portfolio', 'word.studio': 'Studio',
     'about.lead': 'A wasb is one measured leap. That is what we make for every brand.', 'index.label': 'Work index',
     'say.line': 'We build the leap a brand needs: from being present to being seen.',
