@@ -245,9 +245,11 @@
     $('#contactLinks').innerHTML = links.join('') || (wa || phones.length ? '' : `<p class="contact__empty">${esc(t('contact.empty'))}</p>`);
     $('#contactLinks').hidden = !$('#contactLinks').innerHTML;
     // the WhatsApp mark sits in the numbers' own column, so it centres over them
-    $('#contactFacts').innerHTML = (wa ? `<dt></dt><dd>${wa}</dd>` : '') +
-      (phones.length ? `<dt>${esc(t('contact.phone'))}</dt><dd>${phones.map(d => `<a href="tel:+966${d}">+966 ${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5)}</a>`).join('')}</dd>` : '');
-    $('#contactAddr').innerHTML = `<span>${esc(t('contact.addressLabel'))}</span>${esc(t('contact.address'))}`;
+    // labels share one column; the WhatsApp mark floats over the numbers and centres on them
+    $('#contactFacts').innerHTML =
+      (phones.length || wa ? `<dt>${phones.length ? esc(t('contact.phone')) : ''}</dt><dd class="nums">${wa}${phones.map(d => `<a href="tel:+966${d}">+966 ${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5)}</a>`).join('')}</dd>` : '') +
+      `<dt>${esc(t('contact.addressLabel'))}</dt><dd class="addr">${esc(t('contact.address'))}</dd>`;
+    $('#contactAddr').hidden = true;
   }
 
   /* ---------- menu ---------- */
