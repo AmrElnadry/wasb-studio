@@ -267,7 +267,7 @@
   /* ---------- approach: build the identity ---------- */
   // Each leap sends a red diamond (a dot of the letter ث) along the arc to the next stage,
   // reveals that stage, and builds one more layer of the WASB mark in the centre.
-  const arc = $('#arc'), spark = $('#spark'), start = $('#arcStart'), leapBtn = $('#leapBtn'), leapCount = $('#leapCount'), hint = $('#gameHint'), emblem = $('#emblem');
+  const arc = $('#arc'), spark = $('#spark'), start = $('#arcStart'), leapBtn = $('#leapBtn'), leapLabel = $('#leapLabel'), hint = $('#gameHint'), emblem = $('#emblem');
   const steps = $$('.arc__step');
   const T = [0, ...steps.map(s => parseFloat(s.style.getPropertyValue('--t')))];
   let reached = 0, leaping = false;
@@ -287,8 +287,10 @@
     steps.forEach((s, i) => s.classList.toggle('is-on', i < reached));
     for (let k = 1; k <= 4; k++) emblem.classList.toggle('s' + k, reached >= k);
     arc.style.setProperty('--p', T[reached]);
-    leapCount.textContent = `${reached}/${steps.length}`;
-    $('.leap__label', leapBtn).textContent = t(reached >= steps.length ? 'game.again' : 'game.leap');
+    const playing = reached > 0 && reached < steps.length;
+    leapLabel.textContent = playing ? `${reached}/${steps.length}` : t('game.leap');
+    leapLabel.classList.toggle('is-count', playing);
+    leapBtn.setAttribute('aria-label', playing ? `${t('game.leap')} ${reached}/${steps.length}` : t('game.leap'));
     hint.innerHTML = reached >= steps.length ? `${esc(t('game.done'))} <a href="#contact">${esc(t('game.cta'))}</a>` : esc(t('game.hint'));
   }
   function land() {
@@ -302,7 +304,7 @@
     if (leaping) return;
     leapBtn.classList.add('is-used');
     leapBtn.classList.remove('is-charge'); void leapBtn.offsetWidth; leapBtn.classList.add('is-charge');
-    if (reached >= steps.length) { reached = 0; syncGame(); return; }
+    if (reached >= steps.length) { reached = 0; syncGame(); }
     leaping = true;
     const t0 = T[reached], t1 = T[reached + 1];
     arc.style.setProperty('--p', t1);

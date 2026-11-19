@@ -264,8 +264,9 @@ html[lang="en"] .arc__title { line-height: 1.02; letter-spacing: -.03em; }
 .game__hint { color: var(--mute); font-size: 1rem; line-height: 1.6; max-width: 26rem; min-height: 1.6em; }
 .game__hint a { color: var(--fg); box-shadow: 0 1px 0 var(--red); }
 .game__ctrl { display: flex; align-items: center; justify-content: center; margin-block-start: 6px; }
-.leap { position: relative; display: inline-flex; align-items: center; gap: 14px; height: 62px; padding-inline: 30px 22px; border-radius: 999px; background: var(--red); color: #fff; font-family: var(--display); font-weight: 800; font-size: 1.35rem; box-shadow: 0 16px 40px -16px rgba(196, 59, 43, .9); transition: translate .35s var(--out), scale .2s; isolation: isolate; }
-.leap b { font-weight: 500; font-size: .85rem; padding: 4px 10px; border-radius: 999px; background: rgba(0, 0, 0, .22); font-variant-numeric: tabular-nums; direction: ltr; }
+.leap { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 0; height: 62px; min-width: 150px; padding-inline: 30px; border-radius: 999px; background: var(--red); color: #fff; font-family: var(--display); font-weight: 800; font-size: 1.35rem; box-shadow: 0 16px 40px -16px rgba(196, 59, 43, .9); transition: translate .35s var(--out), scale .2s; isolation: isolate; }
+.leap__label { display: block; text-align: center; }
+.leap__label.is-count { direction: ltr; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
 .leap:hover { translate: 0 -3px; }
 .leap:active { scale: .95; }
 .leap__ring { position: absolute; inset: -6px; border-radius: inherit; border: 2px solid var(--red); opacity: 0; z-index: -1; }
