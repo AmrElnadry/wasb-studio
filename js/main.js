@@ -44,7 +44,7 @@
     const btn = $('#langToggle');
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
-    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); alignHero(); syncGame();
+    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); buildGhost(); alignHero(); syncGame();
     if (!first) { onScroll(); if (currentCase) renderCase(currentCase); }
   }
 
@@ -101,6 +101,25 @@
   }
   function alignHero() {}
 
+
+  // small marks in staggered rows; a soft wave of light travels across them
+  function buildGhost() {
+    const svg = $('#ghostGrid');
+    if (!svg) return;
+    const w = svg.clientWidth, hgt = svg.clientHeight;
+    if (!w || !hgt) { svg.innerHTML = ''; return; }
+    const dx = 32, dy = 42, iw = 16, ih = 21.8;
+    const cols = Math.ceil(w / dx) + 1, rows = Math.ceil(hgt / dy) + 1;
+    const ox = (w - (cols - 1) * dx) / 2 - iw / 2, oy = (hgt - (rows - 1) * dy) / 2 - ih / 2;
+    let out = '';
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const x = ox + c * dx + (r % 2 ? dx / 2 : 0), y = oy + r * dy;
+      const cc = lang === 'ar' ? cols - 1 - c : c;
+      out += `<use href="#wasb-symbol" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${iw}" height="${ih}" style="--d:${(-(cc * .16 + r * .22)).toFixed(2)}s"/>`;
+    }
+    svg.innerHTML = out;
+  }
+
   function fitTrio() {
     const els = $$('#trio .trio__t');
     if (!els.length) return;
@@ -109,11 +128,7 @@
     const target = Math.max(...widths);
     els.forEach((el, k) => {
       if (target - widths[k] < 2) return;
-      if (lang !== 'ar') {
-        const n = Math.max(1, el.textContent.length - 1);
-        el.style.letterSpacing = ((target - widths[k]) / n) + 'px';
-        return;
-      }
+      if (lang !== 'ar') return;
       const words = el.textContent.split(' ');
       // slots spread from the middle of each word outward, round robin across words
       const order = [];
@@ -255,7 +270,12 @@
   /* ---------- menu ---------- */
   const burger = $('#burger'), menu = $('#menu');
   const menuOpen = () => burger.getAttribute('aria-expanded') === 'true';
-  function syncMenuLabel() { $('.menu-btn__roll', burger).textContent = t(menuOpen() ? 'nav.close' : 'nav.menu'); }
+  function syncMenuLabel() {
+    const open = menuOpen();
+    $('.menu-btn__roll', burger).innerHTML = open ? `<svg class="back" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4.5 20 9l-5 4.5M19.5 9H8.5a5.5 5.5 0 0 0 0 11H16"/></svg>` : esc(t('nav.menu'));
+    if (open) burger.setAttribute('aria-label', t('nav.close')); else burger.removeAttribute('aria-label');
+    burger.classList.toggle('is-icon', open);
+  }
   function setMenu(open) {
     burger.setAttribute('aria-expanded', open);
     syncMenuLabel();
@@ -272,7 +292,7 @@
   const arc = $('#arc'), spark = $('#spark'), start = $('#arcStart'), leapBtn = $('#leapBtn'), leapLabel = $('#leapLabel'), hint = $('#gameHint'), emblem = $('#emblem');
   const steps = $$('.arc__step');
   const T = [0, ...steps.map(s => parseFloat(s.style.getPropertyValue('--t')))];
-  let reached = 0, leaping = false;
+  let reached = 0, leaping = false, done = false, finishTimer = 0;
   const onArc = () => getComputedStyle($('.arc__svg')).display !== 'none';
   function arcPoint(tt) {
     const w = arc.clientWidth, hgt = arc.clientHeight;
@@ -285,15 +305,16 @@
   }
   function place(p) { spark.style.left = p.x + 'px'; spark.style.top = p.y + 'px'; }
   function syncGame() {
-    if (onArc()) place(arcPoint(T[reached]));
+    if (onArc()) place(arcPoint(done ? 1 : T[reached]));
     steps.forEach((s, i) => s.classList.toggle('is-on', i < reached));
     for (let k = 1; k <= 4; k++) emblem.classList.toggle('s' + k, reached >= k);
-    arc.style.setProperty('--p', T[reached]);
-    const playing = reached > 0 && reached < steps.length;
+    arc.style.setProperty('--p', done ? 1 : T[reached]);
+    arc.classList.toggle('is-done', done);
+    const playing = reached > 0 && !done;
     leapLabel.textContent = playing ? `${reached}/${steps.length}` : t('game.leap');
     leapLabel.classList.toggle('is-count', playing);
     leapBtn.setAttribute('aria-label', playing ? `${t('game.leap')} ${reached}/${steps.length}` : t('game.leap'));
-    hint.innerHTML = reached >= steps.length ? `${esc(t('game.done'))} <a href="#contact">${esc(t('game.cta'))}</a>` : esc(t('game.hint'));
+    hint.innerHTML = done ? `${esc(t('game.done'))} <a href="#contact">${esc(t('game.cta'))}</a>` : esc(t('game.hint'));
   }
   function land() {
     reached++;
@@ -301,12 +322,31 @@
     const dot = $('.arc__dot', steps[reached - 1]);
     dot.classList.remove('ping'); void dot.offsetWidth; dot.classList.add('ping');
     syncGame();
+    if (reached >= steps.length) {
+      // 4/4 stays while the mark turns red, then the line runs on to its end point
+      leaping = true;
+      finishTimer = setTimeout(finish, reduce.matches ? 300 : 1800);
+    }
+  }
+  function finish() {
+    const t0 = T[reached], dur = reduce.matches ? 0 : 1100, began = performance.now();
+    arc.style.setProperty('--p', 1);
+    const ease = u => 1 - Math.pow(1 - u, 3);
+    const end = () => { done = true; leaping = false; syncGame(); };
+    if (!onArc() || !dur) return end();
+    const frame = now => {
+      const u = clamp((now - began) / dur);
+      place(arcPoint(t0 + (1 - t0) * ease(u)));
+      if (u < 1) return requestAnimationFrame(frame);
+      end();
+    };
+    requestAnimationFrame(frame);
   }
   function leap() {
     if (leaping) return;
     leapBtn.classList.add('is-used');
     leapBtn.classList.remove('is-charge'); void leapBtn.offsetWidth; leapBtn.classList.add('is-charge');
-    if (reached >= steps.length) { reached = 0; syncGame(); }
+    if (done) { clearTimeout(finishTimer); done = false; reached = 0; syncGame(); }
     leaping = true;
     const t0 = T[reached], t1 = T[reached + 1];
     arc.style.setProperty('--p', t1);
@@ -405,9 +445,9 @@
   $$('[data-split]').forEach(watch);
   watch($('#filters'));
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', () => { fitTrio(); alignHero(); syncGame(); });
-  window.addEventListener('load', () => { fitTrio(); alignHero(); syncGame(); });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitTrio(); alignHero(); syncGame(); });
+  window.addEventListener('resize', () => { fitTrio(); buildGhost(); alignHero(); syncGame(); });
+  window.addEventListener('load', () => { fitTrio(); buildGhost(); alignHero(); syncGame(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitTrio(); buildGhost(); alignHero(); syncGame(); });
   onScroll();
   route();
   runIntro();

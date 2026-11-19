@@ -26,7 +26,7 @@ window.WASB_I18N = {
     'hero.s1': 'الهوية البصرية', 'hero.s2': 'المواقع الإلكترونية', 'hero.s3': 'الملف التعريفي',
     'game.hint': 'اضغط «ابدأ» وابنِ الهوية مرحلة بعد مرحلة.', 'game.leap': 'ابدأ', 'game.skip': 'تخطَّ إلى التواصل',
     'game.done': 'اكتملت الهوية. القفزة التالية لعلامتك.', 'game.again': 'ابدأ', 'game.cta': 'ابدأ مشروعك',
-    'nav.menu': 'القائمة', 'nav.close': 'إغلاق', 'hero.folio': 'بورتفوليو', 'word.studio': 'استوديو',
+    'nav.menu': 'القائمة', 'nav.close': 'عودة', 'hero.folio': 'بورتفوليو', 'word.studio': 'استوديو',
     'about.lead': 'الوثبة قفزة واحدة محسوبة، وهذا ما نصنعه لكل علامة.', 'index.label': 'فهرس الأعمال',
     'say.line': 'نصنع للعلامة قفزتها: من حضورٍ عادي إلى حضورٍ يُرى.',
     'door.identity.t': 'شعار ودليل هوية متكامل.', 'door.website.t': 'واجهات وتجربة تعكس علامتك.', 'door.profile.t': 'ملف تعريفي يقدّم شركتك بوضوح.',
@@ -79,7 +79,7 @@ window.WASB_I18N = {
     'hero.s1': 'Brand identity', 'hero.s2': 'Websites', 'hero.s3': 'Company profile',
     'game.hint': 'Press Start and build the identity, one stage at a time.', 'game.leap': 'Start', 'game.skip': 'Skip to contact',
     'game.done': 'The identity is complete. The next leap is your brand\u2019s.', 'game.again': 'Start', 'game.cta': 'Start a project',
-    'nav.menu': 'Menu', 'nav.close': 'Close', 'hero.folio': 'Portfolio', 'word.studio': 'Studio',
+    'nav.menu': 'Menu', 'nav.close': 'Back', 'hero.folio': 'Portfolio', 'word.studio': 'Studio',
     'about.lead': 'A wasb is one measured leap. That is what we make for every brand.', 'index.label': 'Work index',
     'say.line': 'We build the leap a brand needs: from being present to being seen.',
     'door.identity.t': 'Logo and a complete brand guideline.', 'door.website.t': 'Interfaces and experience that carry your brand.', 'door.profile.t': 'A profile that presents your company clearly.',
@@ -242,7 +242,7 @@ window.WASB_TAGS = {
   /* 4) المواقع الحيّة */
   window.WASB_SITES = [
     { id: 'alkamal-site', label: 'alkamal-er.com', url: 'https://alkamal-er.com/', src: A + 'web/alkamal-full.webp' },
-    { id: 'vendviz', label: 'vendviz.com', url: 'https://www.vendviz.com/', src: A + 'web/vendviz-full.webp' },
+    { id: 'vendviz', label: 'vendviz.com', url: 'https://www.vendviz.com/', src: A + 'web/vendviz-full.webp?v=2' },
     { id: 'jadeed', label: 'jadeedsa.com', url: 'https://jadeedsa.com/', src: A + 'web/jadeed-full.webp' },
     { id: 'viora', label: 'viora-dev.com', url: 'https://viora-dev.com/', src: A + 'web/viora-full.webp' }
   ];
