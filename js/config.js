@@ -66,7 +66,7 @@ window.WASB_I18N = {
     'contact.whatsapp': 'واتساب', 'contact.email': 'البريد', 'contact.instagram': 'إنستغرام',
     'contact.behance': 'بيهانس', 'contact.linkedin': 'لينكدإن', 'contact.x': 'إكس',
     'foot.name': 'وثب استوديو', 'foot.top': 'إلى الأعلى',
-    'case.close': 'إغلاق', 'case.next': 'المشروع التالي', 'case.visit': 'زيارة الموقع', 'case.scope': 'نطاق العمل',
+    'case.close': 'عودة', 'case.next': 'المشروع التالي', 'case.visit': 'زيارة الموقع', 'case.scope': 'نطاق العمل',
     'case.drag': 'اسحب للتصفح',
     'plate.open': 'عرض المشروع'
   },
@@ -119,7 +119,7 @@ window.WASB_I18N = {
     'contact.whatsapp': 'WhatsApp', 'contact.email': 'Email', 'contact.instagram': 'Instagram',
     'contact.behance': 'Behance', 'contact.linkedin': 'LinkedIn', 'contact.x': 'X',
     'foot.name': 'WASB Studio', 'foot.top': 'Back to top',
-    'case.close': 'Close', 'case.next': 'Next project', 'case.visit': 'Visit site', 'case.scope': 'Scope',
+    'case.close': 'Back', 'case.next': 'Next project', 'case.visit': 'Visit site', 'case.scope': 'Scope',
     'case.drag': 'Drag to browse',
     'plate.open': 'View project'
   }

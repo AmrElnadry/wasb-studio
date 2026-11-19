@@ -103,6 +103,19 @@
 
 
   // small marks in staggered rows; a soft wave of light travels across them
+  // the service arrows spin one after another, each starting when the one before ends
+  (function spinTrio() {
+    let k = 0;
+    const step = () => {
+      const svgs = $$('#trio a svg');
+      if (!svgs.length || html.classList.contains('intro-on') || reduce.matches || document.hidden) return setTimeout(step, 400);
+      const el = svgs[k % svgs.length];
+      el.classList.toggle('is-spin', false); void el.getBoundingClientRect(); el.classList.add('is-spin');
+      setTimeout(() => { el.classList.toggle('is-spin', false); k++; setTimeout(step, k % svgs.length ? 0 : 900); }, 1500);
+    };
+    setTimeout(step, 1800);
+  })();
+
   function buildGhost() {
     const svg = $('#ghostGrid');
     if (!svg) return;

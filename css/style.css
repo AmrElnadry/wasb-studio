@@ -113,8 +113,8 @@ html[lang="en"] .trio { font-weight: 800; line-height: 1.3; }
 .trio a { position: relative; display: inline-flex; align-items: center; gap: .35em; color: var(--bg); white-space: nowrap; transition: color .35s var(--out); }
 .trio svg { width: .5em; height: .5em; padding: .17em; box-sizing: content-box; border-radius: 50%; box-shadow: inset 0 0 0 1.5px currentColor; flex: none; transition: translate .45s var(--out), background-color .35s, color .35s; }
 .trio a { cursor: pointer; }
-.trio a svg { animation: svc-float 3.2s cubic-bezier(.45, 0, .55, 1) infinite, svc-spin 5.4s cubic-bezier(.65, 0, .35, 1) infinite; animation-delay: calc(1.6s + var(--n, 0) * .28s), calc(1.8s + var(--n, 0) * 1.5s); }
-@keyframes svc-spin { 0% { rotate: 0deg; transform: scale(1); } 13.9% { transform: scale(1.1); } 27.8%, 100% { rotate: 720deg; transform: scale(1); } }
+.trio a svg { animation: svc-float 3.2s cubic-bezier(.45, 0, .55, 1) infinite; animation-delay: calc(1.6s + var(--n, 0) * .28s); }
+@keyframes svc-spin { 0% { rotate: 0deg; transform: scale(1); } 50% { transform: scale(1.1); } 100% { rotate: 720deg; transform: scale(1); } }
 .trio__t { animation: svc-text 3.2s cubic-bezier(.45, 0, .55, 1) infinite; animation-delay: calc(1.6s + var(--n, 0) * .28s); }
 @keyframes svc-float { 0%, 100% { translate: 0 0; } 50% { translate: calc(var(--dir) * 3.5px) -3.5px; } }
 @keyframes svc-text { 0%, 100% { translate: 0 0; } 50% { translate: calc(var(--dir) * 2px) 0; } }
@@ -122,6 +122,8 @@ html[lang="en"] .trio { font-weight: 800; line-height: 1.3; }
 .trio a:hover svg, .trio a:focus-visible svg, .trio a:hover .trio__t, .trio a:focus-visible .trio__t, html.intro-on .trio a svg, html.intro-on .trio__t { animation: none; }
 html[dir="rtl"] .trio svg { scale: -1 1; }
 .trio a:hover svg, .trio a:focus-visible svg { animation: none; translate: calc(var(--dir) * 3px) -3px; }
+/* one circle at a time, handed on by script: 1 > 2 > 3 */
+.trio a svg.is-spin { animation: svc-float 3.2s cubic-bezier(.45, 0, .55, 1) infinite, svc-spin 1.5s cubic-bezier(.65, 0, .35, 1); animation-delay: calc(1.6s + var(--n, 0) * .28s), 0s; }
 .trio a:hover, .trio a:focus-visible, .trio a:active { color: #fff; }
 .trio__t { display: inline-block; }
 .trio-box { position: relative; }
@@ -350,6 +352,9 @@ html[lang="en"] .marquee__unit em { letter-spacing: -.05em; line-height: 1; text
 .case__bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; padding-inline: var(--gutter); box-shadow: 0 1px 0 var(--rule); }
 .case__close { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-size: .95rem; height: 44px; padding-inline: 16px; background: var(--bg-2); border-radius: 8px; box-shadow: inset 0 0 0 1px var(--rule); transition: color .3s; }
 .case__close:hover { color: var(--red); }
+.case__close { justify-content: center; width: 56px; padding-inline: 0; border-radius: 999px; }
+.case__close .back { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+html[dir="ltr"] .case__close .back { scale: -1 1; }
 .case__crumb { font-family: var(--display); font-size: .9rem; color: var(--mute); }
 .case__scroll { overflow-y: auto; overscroll-behavior: contain; outline: none; }
 .case__head { padding-block: clamp(48px, 9vh, 110px) clamp(28px, 5vh, 56px); }
