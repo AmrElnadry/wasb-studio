@@ -263,6 +263,16 @@
         c.classList.toggle('is-far', Math.abs(off) > 1);
       }
       panoPos[k] = off;
+      // the page inside keeps the spot it scrolled to while it slides away; it rewinds only once out of sight
+      const im = c.querySelector('.card__view img');
+      if (im) {
+        clearTimeout(c._rst);
+        if (off === 0) { im.style.transition = ''; im.style.translate = ''; }
+        else {
+          if (was === 0) { const t = getComputedStyle(im).translate; im.style.transition = 'none'; im.style.translate = t === 'none' ? '0px 0px' : t; }
+          if (Math.abs(off) > 1 || wrap) c._rst = setTimeout(() => { im.style.transition = 'none'; im.style.translate = '0px 0px'; }, 1000);
+        }
+      }
       c.classList.toggle('is-on', off === 0);
       c.classList.toggle('is-play', off === 0 && panoSeen);
       c.setAttribute('aria-hidden', off !== 0);
