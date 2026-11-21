@@ -92,7 +92,7 @@ window.WASB_I18N = {
     'nav.works': 'Work', 'nav.services': 'Services', 'nav.approach': 'Approach', 'nav.about': 'About',
     'cta.start': 'Start a project', 'cta.works': 'See the work',
     'hero.title': 'Your brand deserves a leap.',
-    'hero.lede': 'We build and develop your visual identity to strengthen your digital presence,\ngrowing your influence and reaching your marketing goals.',
+    'hero.lede': 'We build and develop your visual identity to strengthen your digital presence, growing your influence and reaching your marketing goals.',
     'gate.a': 'From being present', 'gate.b': 'to being seen.',
     'works.title': 'Selected work',
     'works.note': 'Six projects and four websites, each shown the way its nature calls for.',
@@ -244,6 +244,7 @@ window.WASB_TAGS = {
     { id: 'alkamal-site', label: 'alkamal-er.com', url: 'https://alkamal-er.com/', src: A + 'web/alkamal-full.webp' },
     { id: 'vendviz', label: 'vendviz.com', url: 'https://www.vendviz.com/', src: A + 'web/vendviz-full.webp?v=2' },
     { id: 'jadeed', label: 'jadeedsa.com', url: 'https://jadeedsa.com/', src: A + 'web/jadeed-full.webp' },
-    { id: 'viora', label: 'viora-dev.com', url: 'https://viora-dev.com/', src: A + 'web/viora-full.webp' }
+    { id: 'viora', label: 'viora-dev.com', url: 'https://viora-dev.com/', src: A + 'web/viora-full.webp' },
+    { id: 'blue', label: 'blue-network.sa', url: 'https://blue-network.sa/', src: A + 'web/blue-full.webp' }
   ];
 })();

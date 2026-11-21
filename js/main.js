@@ -44,7 +44,7 @@
     const btn = $('#langToggle');
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
-    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); buildGhost(); alignHero(); syncGame();
+    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); buildGhost(); if (window.WASB_HAND) window.WASB_HAND(); alignHero(); syncGame();
     if (!first) { onScroll(); if (currentCase) renderCase(currentCase); }
   }
 
@@ -103,17 +103,40 @@
 
 
   // small marks in staggered rows; a soft wave of light travels across them
-  // the service arrows spin one after another, each starting when the one before ends
-  (function spinTrio() {
-    let k = 0;
-    const step = () => {
-      const svgs = $$('#trio a svg');
-      if (!svgs.length || html.classList.contains('intro-on') || reduce.matches || document.hidden) return setTimeout(step, 400);
-      const el = svgs[k % svgs.length];
-      el.classList.toggle('is-spin', false); void el.getBoundingClientRect(); el.classList.add('is-spin');
-      setTimeout(() => { el.classList.toggle('is-spin', false); k++; setTimeout(step, k % svgs.length ? 0 : 900); }, 1500);
+  // one hand points at each service in turn: two turns, then down to the next, and back up
+  (function handTrio() {
+    const hand = $('#trioHand');
+    if (!hand) return;
+    const spin = $('.trio__spin', hand);
+    let k = 0, hold = -1, timer = 0;
+    const items = () => $$('#trio .trio__t');
+    const place = i => {
+      const list = items(); if (!list[i]) return;
+      const box = hand.parentElement.getBoundingClientRect(), r = list[i].getBoundingClientRect();
+      const gap = parseFloat(getComputedStyle(hand).fontSize) * 1.05;
+      const x = lang === 'ar' ? r.right - box.left + gap : r.left - box.left - gap;
+      hand.style.setProperty('--hx', x.toFixed(1) + 'px');
+      hand.style.setProperty('--hy', (r.top - box.top + r.height * .5).toFixed(1) + 'px');
     };
-    setTimeout(step, 1800);
+    const turn = () => { spin.classList.toggle('is-spin', false); void spin.getBoundingClientRect(); spin.classList.add('is-spin'); };
+    const step = () => {
+      clearTimeout(timer);
+      const n = items().length;
+      if (!n || html.classList.contains('intro-on') || document.hidden || hold >= 0) { timer = setTimeout(step, 400); return; }
+      if (!hand.classList.contains('is-ready')) {
+        hand.classList.add('no-move'); place(k); void hand.getBoundingClientRect(); hand.classList.toggle('no-move', false); hand.classList.add('is-ready');
+      } else place(k);
+      timer = setTimeout(() => {
+        if (!reduce.matches) turn();
+        timer = setTimeout(() => { k = (k + 1) % n; step(); }, 1650);
+      }, 800);
+    };
+    $$('#trio a').forEach((a, i) => {
+      a.addEventListener('mouseenter', () => { hold = i; place(i); });
+      a.addEventListener('mouseleave', () => { hold = -1; k = i; });
+    });
+    window.WASB_HAND = () => place(hold >= 0 ? hold : k);
+    timer = setTimeout(step, 1600);
   })();
 
   function buildGhost() {
@@ -215,7 +238,17 @@
     const n = SITES.length;
     const prev = at;
     at = (i + n) % n;
+    // put a card straight onto its latest place, without animating
+    const snap = (c, k) => {
+      c.classList.add('no-anim');
+      c.style.setProperty('--off', panoPos[k]);
+      void c.offsetWidth;
+      c.classList.remove('no-anim');
+      c.classList.toggle('is-far', Math.abs(panoPos[k]) > 1);
+    };
     cards.forEach((c, k) => {
+      // a teleport still waiting from the last move would land on a stale place: finish it now
+      if (c._wrap) { clearTimeout(c._wrap); c._wrap = 0; snap(c, k); }
       let off = ((k - at) % n + n) % n;     // 0, 1, 2 … n-1
       if (off === n - 1) off = -1;           // the one just passed sits on the near side
       const was = panoPos[k];
@@ -224,13 +257,7 @@
         // move it out of sight first, then teleport while hidden
         c.classList.add('is-far');
         c.style.setProperty('--off', was < off ? was - 1 : was + 1);
-        setTimeout(() => {
-          c.classList.add('no-anim');
-          c.style.setProperty('--off', off);
-          void c.offsetWidth;
-          c.classList.remove('no-anim');
-          c.classList.toggle('is-far', Math.abs(off) > 1);
-        }, 1650);
+        c._wrap = setTimeout(() => { c._wrap = 0; snap(c, k); }, 1650);
       } else {
         c.style.setProperty('--off', off);
         c.classList.toggle('is-far', Math.abs(off) > 1);
@@ -458,9 +485,9 @@
   $$('[data-split]').forEach(watch);
   watch($('#filters'));
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', () => { fitTrio(); buildGhost(); alignHero(); syncGame(); });
-  window.addEventListener('load', () => { fitTrio(); buildGhost(); alignHero(); syncGame(); });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitTrio(); buildGhost(); alignHero(); syncGame(); });
+  window.addEventListener('resize', () => { fitTrio(); buildGhost(); if (window.WASB_HAND) window.WASB_HAND(); alignHero(); syncGame(); });
+  window.addEventListener('load', () => { fitTrio(); buildGhost(); if (window.WASB_HAND) window.WASB_HAND(); alignHero(); syncGame(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitTrio(); buildGhost(); if (window.WASB_HAND) window.WASB_HAND(); alignHero(); syncGame(); });
   onScroll();
   route();
   runIntro();
