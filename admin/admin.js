@@ -82,12 +82,12 @@
     btn.disabled = true; btn.textContent = 'جاري الدخول…'; err.textContent = '';
     try { await signIn($('#tokenInput').value, $('#remember').checked); await start(); }
     catch (x) {
-      err.textContent = x.status === 401 ? 'المفتاح غير صحيح أو انتهت صلاحيته.' : x.status === 403 || x.status === 404 ? 'الحساب ده مش عنده صلاحية تعديل على مستودع الموقع. اطلب إضافتك كمشارك (Collaborator) الأول.' : 'تعذّر الاتصال بـ GitHub: ' + x.message;
+      err.textContent = x.status === 401 ? 'المفتاح غير صحيح أو انتهت صلاحيته.' : x.status === 403 || x.status === 404 ? 'هذا الحساب لا يملك صلاحية التعديل على مستودع الموقع. اطلب إضافتك كمشارك (Collaborator) أولاً.' : 'تعذّر الاتصال بـ GitHub: ' + x.message;
     }
     btn.disabled = false; btn.textContent = 'دخول';
   });
   function signOut() {
-    if ((changedParts().length || staged.size) && !confirm('في تعديلات لسه ما اتحفظتش. تخرج برضه؟')) return;
+    if ((changedParts().length || staged.size) && !confirm('توجد تعديلات لم تُحفظ بعد. هل تريد الخروج؟')) return;
     store.clear(); location.reload();
   }
 
@@ -197,8 +197,8 @@
     grid.innerHTML = files.length ? files.slice().reverse().map(p => {
       const n = pick.chosen.indexOf(p);
       return `<button type="button" class="pick${n >= 0 ? ' is-on' : ''}" data-p="${esc(p)}" data-n="${n + 1}"><img src="${esc(imgUrl(p))}" alt="" loading="lazy"><span>${esc(p.split('/').pop())}</span></button>`;
-    }).join('') : '<p class="picker__empty">المجلد ده فاضي. ارفع صور من جهازك.</p>';
-    $('#pickerCount').textContent = pick.multi ? (pick.chosen.length ? `تم اختيار ${pick.chosen.length}` : 'اختار صورة أو أكتر، بالترتيب اللي يظهر بيه') : '';
+    }).join('') : '<p class="picker__empty">هذا المجلد فارغ. ارفع صوراً من جهازك.</p>';
+    $('#pickerCount').textContent = pick.multi ? (pick.chosen.length ? `تم اختيار ${pick.chosen.length}` : 'اختر صورة أو أكثر بالترتيب الذي تريده') : '';
   }
   function closePicker(result) { $('#picker').hidden = true; const p = pick; pick = null; if (p) p.done(result || []); }
   $('#pickerGrid').addEventListener('click', e => {
@@ -274,7 +274,7 @@
         <p class="panel__note" style="margin:0">اسحب المشاريع لتغيير ترتيبها في الموقع.</p>
         <div class="plist__items" id="plist"></div>
       </aside>
-      <section id="editor">${p ? editor(p) : '<p class="empty">مفيش مشاريع لسه.</p>'}</section>
+      <section id="editor">${p ? editor(p) : '<p class="empty">لا توجد مشاريع بعد.</p>'}</section>
     </div>`;
     drawList();
   }
@@ -294,17 +294,17 @@
         <h2>البيانات الأساسية</h2>
         ${pair('اسم المشروع / العميل', [...P, 'name'])}
         ${pair('سطر تعريفي', [...P, 'line'], { area: true, help: 'يظهر تحت الاسم وفي نتائج البحث.' })}
-        ${pair('نبذة عن المشروع', [...P, 'about'], { area: true, rows: 4, help: 'اختياري. لو فاضية مش هتظهر في الصفحة.' })}
+        ${pair('نبذة عن المشروع', [...P, 'about'], { area: true, rows: 4, help: 'اختياري. إذا تُركت فارغة فلن تظهر في الصفحة.' })}
         <div class="row3">
           ${input('السنة', [...P, 'year'], { ltr: true, ph: '2025' })}
-          ${isNew ? input('الرابط المختصر', [...P, 'id'], { ltr: true, help: 'حروف إنجليزي صغيرة وأرقام و - فقط. ما يتغيرش بعد الحفظ.' }) : `<label class="field"><span>الرابط المختصر</span><input value="${esc(p.id)}" dir="ltr" disabled></label>`}
+          ${isNew ? input('الرابط المختصر', [...P, 'id'], { ltr: true, help: 'حروف إنجليزية صغيرة وأرقام والشرطة (-) فقط. لا يمكن تغييره بعد الحفظ.' }) : `<label class="field"><span>الرابط المختصر</span><input value="${esc(p.id)}" dir="ltr" disabled></label>`}
         </div>
       </div>
 
       <div class="panel">
         <h2>الخدمات في المشروع</h2>
         <div class="chips">${Object.entries(data.tags).map(([k, v]) => `<label class="chip"><input type="checkbox" data-act="tag" value="${esc(k)}"${p.tags.includes(k) ? ' checked' : ''}><span>${esc(v.ar)}</span></label>`).join('')}</div>
-        <p class="panel__note" style="margin:12px 0 0">الهوية والشعار والتطبيقات واللوحات بتظهر تحت فلتر «هوية بصرية»، والمواقع تحت «مواقع»، والبروفايل تحت «بروفايلات».</p>
+        <p class="panel__note" style="margin:12px 0 0">الهوية والشعار والتطبيقات واللوحات تظهر تحت فلتر «هوية بصرية»، والمواقع تحت «مواقع»، والبروفايل تحت «بروفايلات».</p>
       </div>
 
       <div class="panel">
@@ -312,15 +312,15 @@
         ${p.cover ? `<div class="cover">
           <div class="cover__img" data-act="focus"><img src="${esc(imgUrl(p.cover))}" alt=""><span class="cover__dot" style="left:${esc((p.focus || '50% 50%').split(' ')[0])};top:${esc((p.focus || '50% 50%').split(' ')[1])}"></span></div>
           <div class="cover__side"><div class="cover__crop"><img src="${esc(imgUrl(p.cover))}" alt="" style="object-position:${esc(p.focus || '50% 50%')}"></div>
-          <p>اضغط على الصورة الكبيرة لتحديد أهم نقطة فيها، علشان القص في صفحة الأعمال ما يقطعهاش. المعاينة الصغيرة بتوضح الشكل.</p></div>
-        </div>` : '<p class="panel__note" style="margin:0">لازم يكون للمشروع صورة غلاف.</p>'}
+          <p>اضغط على الصورة الكبيرة لتحديد أهم نقطة فيها، حتى لا يقطعها القص في صفحة الأعمال. المعاينة الصغيرة توضح الشكل النهائي.</p></div>
+        </div>` : '<p class="panel__note" style="margin:0">يجب أن يكون للمشروع صورة غلاف.</p>'}
       </div>
 
       <div class="panel gpanel" id="gpanel">
         <div class="panel__head"><h2>صور المشروع</h2>
           <div class="acts"><button class="btn btn--sm" type="button" data-act="g-compact" aria-pressed="${compact}">${compact ? 'العرض الكامل' : 'عرض مصغّر للترتيب'}</button><button class="btn btn--sm" type="button" data-act="g-pick">من الصور المرفوعة</button><label class="btn btn--sm btn--red">رفع صور<input type="file" accept="image/*" multiple hidden data-act="g-files"></label></div>
         </div>
-        <p class="panel__note">اسحب الصور من جهازك وارميها هنا. الترتيب ده هو نفس اللي هيظهر في صفحة المشروع: كل صورة بعرض الصفحة، وأي صورتين ورا بعض عليهم «نص عرض» (◧) بيقعدوا جنب بعض. امسك أي صورة وحركها لمكان تاني، والباقي هيترتب لوحده.</p>
+        <p class="panel__note">اسحب الصور من جهازك وأفلتها هنا. هذا الترتيب هو نفسه الذي سيظهر في صفحة المشروع: كل صورة بعرض الصفحة، وأي صورتين متتاليتين عليهما «نصف عرض» (◧) تظهران جنباً إلى جنب. اسحب أي صورة إلى مكان آخر، وستترتب بقية الصور تلقائياً.</p>
         <div class="gdrop" id="gdrop">${galleryHtml(p)}</div>
       </div>`;
   }
@@ -363,7 +363,7 @@
         <div class="gal__tools">
           <button type="button" data-act="g-prev" title="قبل" ${i === 0 ? 'disabled' : ''}>→</button>
           <button type="button" data-act="g-next" title="بعد" ${i === n - 1 ? 'disabled' : ''}>←</button>
-          <button type="button" data-act="g-half" aria-pressed="${!!g.half}" title="${g.half ? 'رجّعها بعرض كامل' : 'نص عرض: تقعد جنب الصورة اللي بعدها لو هي كمان نص عرض'}">◧</button>
+          <button type="button" data-act="g-half" aria-pressed="${!!g.half}" title="${g.half ? 'إعادتها إلى العرض الكامل' : 'نصف عرض: تظهر بجانب الصورة التالية إذا كانت نصف عرض أيضاً'}">◧</button>
           <button type="button" data-act="g-cover" title="اجعلها صورة الغلاف">★</button>
           <button type="button" data-act="g-del" title="إزالة من المشروع">✕</button>
         </div>
@@ -396,7 +396,7 @@
   async function uploadToGallery(files) {
     const p = project();
     toast(`جاري تجهيز ${files.length} صورة…`);
-    try { addToGallery(p, await stageFiles(projDir(p), files)); toast('اتضافت. هتترفع مع «حفظ ونشر».'); }
+    try { addToGallery(p, await stageFiles(projDir(p), files)); toast('تمت الإضافة. ستُرفع الصور عند الضغط على «حفظ ونشر».'); }
     catch (x) { toast(x.message, true); }
   }
   // smooth reflow: every image glides from where it was to its new place
@@ -426,11 +426,11 @@
         return;
       }
       if (act === 'del-project') {
-        if (!confirm(`حذف «${p.name.ar || p.id}» من الموقع؟ الصور هتفضل محفوظة في المستودع.`)) return;
+        if (!confirm(`حذف «${p.name.ar || p.id}» من الموقع؟ ستبقى الصور محفوظة في المستودع.`)) return;
         data.projects.splice(sel, 1); fresh.delete(p); sel = Math.max(0, sel - 1); renderProjects(); syncDirty(); return;
       }
       if (act === 'cover') {
-        const [path] = await openPicker({ dir: projDir(p), multi: false, title: 'صورة الغلاف', hint: 'الصورة اللي بتظهر في صفحة الأعمال وفي مشاركة الرابط. تقدر كمان تضغط ★ على أي صورة في صور المشروع.' });
+        const [path] = await openPicker({ dir: projDir(p), multi: false, title: 'صورة الغلاف', hint: 'الصورة التي تظهر في صفحة الأعمال وعند مشاركة الرابط. يمكنك أيضاً الضغط على ★ فوق أي صورة من صور المشروع.' });
         if (path) { p.cover = path; p.focus = '50% 50%'; renderProjects(); syncDirty(); }
         return;
       }
@@ -443,7 +443,7 @@
         syncDirty(); return;
       }
       if (act === 'g-pick') {
-        addToGallery(p, await openPicker({ dir: projDir(p), multi: true, title: 'صور المشروع', hint: 'اختار الصور بالترتيب اللي عاوزها تتضاف بيه.' }));
+        addToGallery(p, await openPicker({ dir: projDir(p), multi: true, title: 'صور المشروع', hint: 'اختر الصور بالترتيب الذي تريد إضافتها به.' }));
         return;
       }
       if (act === 'g-prev' || act === 'g-next') {
@@ -468,7 +468,7 @@
         el.setAttribute('aria-pressed', !!g.half);
         flip($('#ggrid'), relayout); syncDirty(); return;
       }
-      if (act === 'g-cover') { p.cover = el.closest('.gal__it').dataset.p; p.focus = '50% 50%'; const y = scrollY; renderProjects(); scrollTo({ top: y }); syncDirty(); toast('بقت صورة الغلاف. حدد النقطة المهمة فيها من فوق.'); return; }
+      if (act === 'g-cover') { p.cover = el.closest('.gal__it').dataset.p; p.focus = '50% 50%'; const y = scrollY; renderProjects(); scrollTo({ top: y }); syncDirty(); toast('أصبحت صورة الغلاف. حدد النقطة المهمة فيها من الأعلى.'); return; }
     }
     if (tab === 'sites') {
       const card = el.closest('[data-i]'), i = card ? Number(card.dataset.i) : -1;
@@ -477,7 +477,7 @@
       if (act === 'site-up' || act === 'site-down') { const to = act === 'site-up' ? i - 1 : i + 1; [data.sites[i], data.sites[to]] = [data.sites[to], data.sites[i]]; renderSites(); syncDirty(); return; }
       if (act === 'site-del') { if (!confirm(`حذف «${data.sites[i].label || 'الموقع'}» من العرض؟`)) return; data.sites.splice(i, 1); renderSites(); syncDirty(); return; }
       if (act === 'site-img') {
-        const [path] = await openPicker({ dir: 'web', multi: false, title: 'لقطة الموقع', hint: 'لقطة طويلة للصفحة الرئيسية بعرض 1440px تقريباً. بتتقلّب جوه الكارت في عرض المواقع.' });
+        const [path] = await openPicker({ dir: 'web', multi: false, title: 'لقطة الموقع', hint: 'لقطة طويلة للصفحة الرئيسية بعرض 1440px تقريباً، تتحرك داخل البطاقة في عرض المواقع.' });
         if (path) { data.sites[i].src = path; renderSites(); syncDirty(); }
         return;
       }
@@ -506,6 +506,20 @@
       requestAnimationFrame(() => { it.classList.add('is-drag'); if (!compact) setSorting($('#ggrid'), true, { el: it, y }); drag && (drag.at = performance.now()); });
     }
     e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', '');
+    // the image in hand is a small square too, the same size as the zoomed-out gallery
+    if (drag.el) {
+      const im = $('img', it), size = 96, c = document.createElement('canvas');
+      c.width = c.height = size * 2; c.style.cssText = `position:fixed;top:-400px;left:0;width:${size}px;height:${size}px;border-radius:8px`;
+      const g = c.getContext('2d'); g.fillStyle = '#1b1b1b'; g.fillRect(0, 0, c.width, c.height);
+      if (im && im.naturalWidth) {
+        const k = Math.min((c.width - 16) / im.naturalWidth, (c.height - 16) / im.naturalHeight), w = im.naturalWidth * k, h = im.naturalHeight * k;
+        try { g.drawImage(im, (c.width - w) / 2, (c.height - h) / 2, w, h); } catch (x) {}
+      }
+      g.strokeStyle = '#C43B2B'; g.lineWidth = 4; g.strokeRect(2, 2, c.width - 4, c.height - 4);
+      document.body.appendChild(c);
+      e.dataTransfer.setDragImage(c, size / 2, size / 2);
+      setTimeout(() => c.remove(), 0);
+    }
   });
   $('#view').addEventListener('dragover', e => {
     if (!drag && hasFiles(e)) { const z = e.target.closest('#gpanel'); if (z) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; z.classList.add('is-over'); } return; }
@@ -560,13 +574,13 @@
 
   /* ---------- sites ---------- */
   function renderSites() {
-    $('#view').innerHTML = `<div class="page-head"><div><h1>المواقع</h1><p>كل المواقع بتظهر في صفحة المواقع. اللي عليها ★ بتظهر كمان في عرض المواقع في الرئيسية، بالترتيب ده.</p></div><button class="btn btn--sm" type="button" data-act="add-site">＋ موقع</button></div>
+    $('#view').innerHTML = `<div class="page-head"><div><h1>المواقع</h1><p>تظهر كل المواقع في صفحة المواقع، والمواقع المميزة بـ ★ تظهر أيضاً في عرض المواقع بالرئيسية بهذا الترتيب.</p></div><button class="btn btn--sm" type="button" data-act="add-site">＋ موقع</button></div>
       <div class="sites">${data.sites.map((s, i) => `<div class="panel site${s.featured !== false ? ' is-star' : ''}" data-i="${i}">
         <div class="site__shot">${s.src ? `<img src="${esc(imgUrl(s.src))}" alt="" loading="lazy">` : ''}<button class="btn btn--sm" type="button" data-act="site-img">${s.src ? 'تغيير اللقطة' : 'اختيار لقطة'}</button></div>
         ${input('الاسم الظاهر', ['sites', i, 'label'], { ltr: true, ph: 'example.com' })}
         ${input('الرابط', ['sites', i, 'url'], { ltr: true, ph: 'https://' })}
         <div class="site__tools">
-          <button class="star" type="button" data-act="site-star" aria-pressed="${s.featured !== false}" title="الظهور في الرئيسية"><span aria-hidden="true">★</span>${s.featured !== false ? 'في الرئيسية' : 'صفحة المواقع بس'}</button>
+          <button class="star" type="button" data-act="site-star" aria-pressed="${s.featured !== false}" title="الظهور في الرئيسية"><span aria-hidden="true">★</span>${s.featured !== false ? 'في الرئيسية' : 'صفحة المواقع فقط'}</button>
           <button class="icon-btn" type="button" data-act="site-up" title="قبل" ${i === 0 ? 'disabled' : ''}>→</button>
           <button class="icon-btn" type="button" data-act="site-down" title="بعد" ${i === data.sites.length - 1 ? 'disabled' : ''}>←</button>
           <button class="icon-btn is-del" type="button" data-act="site-del" title="حذف">✕</button>
@@ -577,13 +591,13 @@
   /* ---------- contact ---------- */
   function renderContact() {
     const c = data.contact;
-    $('#view').innerHTML = `<div class="page-head"><div><h1>التواصل</h1><p>أي خانة فاضية مش هتظهر في الموقع.</p></div></div>
+    $('#view').innerHTML = `<div class="page-head"><div><h1>التواصل</h1><p>أي خانة فارغة لن تظهر في الموقع.</p></div></div>
       <div class="panel stack" style="max-width:860px">
         <div class="row2">
           ${input('رقم واتساب', ['contact', 'whatsapp'], { ltr: true, help: 'أرقام فقط مع مفتاح الدولة، مثلاً 9665XXXXXXXX' })}
           ${input('البريد الإلكتروني', ['contact', 'email'], { ltr: true })}
         </div>
-        <label class="field"><span>أرقام الموبايل</span><textarea ${bind(['contact', 'phones'])} data-kind="lines" dir="ltr" rows="3">${esc((c.phones || []).join('\n'))}</textarea><small>رقم في كل سطر، بالشكل المحلي 05XXXXXXXX. بيظهر في الموقع بصيغة ‎+966.</small></label>
+        <label class="field"><span>أرقام الموبايل</span><textarea ${bind(['contact', 'phones'])} data-kind="lines" dir="ltr" rows="3">${esc((c.phones || []).join('\n'))}</textarea><small>رقم في كل سطر بالصيغة المحلية 05XXXXXXXX، ويظهر في الموقع بصيغة ‎+966.</small></label>
         <div class="row2">
           ${input('إنستغرام', ['contact', 'instagram'], { ltr: true, ph: 'https://instagram.com/…' })}
           ${input('بيهانس', ['contact', 'behance'], { ltr: true, ph: 'https://behance.net/…' })}
@@ -606,7 +620,7 @@
     const count = g => Object.keys(data.texts.ar).filter(k => groupOf(k) === g).length;
     const groups = order.filter(count);
     if (!groups.includes(textGroup)) textGroup = groups[0];
-    $('#view').innerHTML = `<div class="page-head"><div><h1>النصوص</h1><p>كل الكلام الثابت في الموقع باللغتين، مقسّم حسب مكانه في الصفحة.</p></div><input class="search" id="tq" type="search" placeholder="ابحث في كل النصوص…" value="${esc(textQuery)}"></div>
+    $('#view').innerHTML = `<div class="page-head"><div><h1>النصوص</h1><p>كل النصوص الثابتة في الموقع باللغتين، مقسمة حسب مكانها في الصفحة.</p></div><input class="search" id="tq" type="search" placeholder="ابحث في كل النصوص…" value="${esc(textQuery)}"></div>
       <nav class="subtabs" id="tgroups">${groups.map(g => `<button type="button" data-g="${esc(g)}"${g === textGroup ? ' class="is-on"' : ''}>${esc(g)}<small>${count(g)}</small></button>`).join('')}</nav>
       <div class="panel texts" id="tlist"></div>`;
     drawTexts();
@@ -632,7 +646,7 @@
       return head + `<div class="trow"><code>${esc(k)}</code>
         <label class="field"><textarea ${bind(['texts', 'ar', k])} rows="${long ? 3 : 1}" aria-label="${esc(k)} عربي">${esc(data.texts.ar[k])}</textarea></label>
         <label class="field"><textarea ${bind(['texts', 'en', k])} rows="${long ? 3 : 1}" dir="ltr" aria-label="${esc(k)} English">${esc(data.texts.en[k] || '')}</textarea></label></div>`;
-    }).join('') || '<p class="empty">مفيش نتائج.</p>';
+    }).join('') || '<p class="empty">لا توجد نتائج.</p>';
   }
 
   /* ---------- checks before saving ---------- */
@@ -640,14 +654,14 @@
     const out = [], ids = new Set();
     data.projects.forEach((p, i) => {
       const n = p.name.ar || p.id || `#${i + 1}`;
-      if (!/^[a-z0-9][a-z0-9-]*$/.test(p.id)) out.push(`«${n}»: الرابط المختصر لازم يكون حروف إنجليزي صغيرة وأرقام و - فقط.`);
-      if (ids.has(p.id)) out.push(`«${n}»: الرابط المختصر مستخدم في مشروع تاني.`);
+      if (!/^[a-z0-9][a-z0-9-]*$/.test(p.id)) out.push(`«${n}»: الرابط المختصر يجب أن يحتوي على حروف إنجليزية صغيرة وأرقام والشرطة (-) فقط.`);
+      if (ids.has(p.id)) out.push(`«${n}»: الرابط المختصر مستخدم في مشروع آخر.`);
       ids.add(p.id);
       if (!p.name.ar.trim()) out.push(`مشروع #${i + 1}: الاسم بالعربي ناقص.`);
       if (!p.cover) out.push(`«${n}»: صورة الغلاف ناقصة.`);
-      if (!p.gallery.length) out.push(`«${n}»: مفيش صور في المشروع.`);
+      if (!p.gallery.length) out.push(`«${n}»: لا توجد صور في المشروع.`);
     });
-    if (data.sites.length && !data.sites.some(s => s.featured !== false)) out.push('لازم موقع واحد على الأقل يكون عليه نجمة علشان يظهر في الرئيسية.');
+    if (data.sites.length && !data.sites.some(s => s.featured !== false)) out.push('يجب تمييز موقع واحد على الأقل بنجمة ليظهر في الرئيسية.');
     data.sites.forEach((s, i) => { if (!s.label || !/^https?:\/\/.+/.test(s.url) || !s.src) out.push(`موقع #${i + 1}: الاسم أو الرابط أو اللقطة ناقصة.`); });
     return out;
   }
@@ -665,7 +679,7 @@
     const message = `لوحة التحكم: ${parts.map(k => PART[k]).join('، ')}${imgs.length ? `${parts.length ? ' + ' : ''}${imgs.length} صورة` : ''}`;
     if (DEMO) {
       console.log('[demo] commit:', message, parts.map(k => FILES[k]), imgs);
-      toast('وضع التجربة: التعديلات ما اتحفظتش. ' + message);
+      toast('وضع التجربة: لم تُحفظ التعديلات. ' + message);
       return;
     }
     saving = true; $('#saveBtn').disabled = true;
@@ -678,8 +692,8 @@
         const cmp = await gh(`${R}/compare/${baseSha}...${head}`);
         const touched = (cmp.files || []).map(f => f.filename);
         const clash = parts.filter(k => touched.includes(FILES[k]));
-        if (clash.length && !confirm(`حد من الفريق حفظ تعديلات على «${clash.map(k => PART[k]).join('، ')}» بعد ما فتحت اللوحة.\n\nلو كمّلت، تعديلاتك هتحل محل تعديلاته في الجزء ده. الأفضل تنسخ تعديلاتك وتعيد تحميل الصفحة.\n\nتكمّل الحفظ؟`)) {
-          status('اتلغى الحفظ', 'err'); saving = false; syncDirty(); return;
+        if (clash.length && !confirm(`قام أحد أعضاء الفريق بحفظ تعديلات على «${clash.map(k => PART[k]).join('، ')}» بعد فتحك للوحة.\n\nإذا تابعت، ستحل تعديلاتك محل تعديلاته في هذا الجزء. الأفضل أن تنسخ تعديلاتك ثم تعيد تحميل الصفحة.\n\nهل تريد متابعة الحفظ؟`)) {
+          status('أُلغي الحفظ', 'err'); saving = false; syncDirty(); return;
         }
       }
       const commit = await gh(`${R}/git/commits/${head}`);
@@ -700,11 +714,11 @@
       for (const [p, s] of staged) { if (imgs.includes(p)) shown.set(p, s.url); }
       staged.clear(); fresh.clear();
       render(); syncDirty();
-      toast('اتحفظ. الموقع هيتحدّث خلال دقيقة أو اتنين.');
+      toast('تم الحفظ. سيتحدث الموقع خلال دقيقة أو دقيقتين.');
       watchDeploy(c.sha);
     } catch (x) {
       status('فشل الحفظ', 'err');
-      toast(x.status === 409 || x.status === 422 ? 'حصل تعارض مع تعديل تاني. اضغط حفظ تاني.' : 'فشل الحفظ: ' + x.message, true);
+      toast(x.status === 409 || x.status === 422 ? 'حدث تعارض مع تعديل آخر. اضغط «حفظ ونشر» مرة أخرى.' : 'فشل الحفظ: ' + x.message, true);
       syncDirty();
     }
     saving = false;
@@ -721,11 +735,11 @@
       let run;
       try { run = ((await gh(`${R}/actions/runs?head_sha=${sha}&per_page=1`)).workflow_runs || [])[0]; } catch (x) { continue; }
       if (!run || run.status !== 'completed') continue;
-      if (run.conclusion === 'success') status('', 'ok', 'اتنشر على الموقع · <a href="/" target="_blank" rel="noopener">فتح ↗</a>');
-      else status('', 'err', `النشر فشل · <a href="${esc(run.html_url)}" target="_blank" rel="noopener">التفاصيل ↗</a>`);
+      if (run.conclusion === 'success') status('', 'ok', 'تم النشر على الموقع · <a href="/" target="_blank" rel="noopener">فتح ↗</a>');
+      else status('', 'err', `فشل النشر · <a href="${esc(run.html_url)}" target="_blank" rel="noopener">التفاصيل ↗</a>`);
       return;
     }
-    status('النشر بياخد وقت أطول من المعتاد', 'busy');
+    status('النشر يستغرق وقتاً أطول من المعتاد', 'busy');
   }
 
   /* ---------- boot ---------- */

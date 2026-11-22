@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/admin/admin.css?v=4">
+<link rel="stylesheet" href="/admin/admin.css?v=5">
 </head>
 <body>
 
@@ -17,21 +17,21 @@
   <form class="login__card" id="loginForm">
     <img class="login__sym" src="/assets/wasb/symbol.svg" alt="" width="44" height="60">
     <h1>لوحة تحكم وثب</h1>
-    <p class="login__lede">ادخل بمفتاح الدخول الخاص بحسابك على GitHub. كل تعديل بيتسجل باسمك، وبيتنشر على الموقع خلال دقيقة أو اتنين.</p>
+    <p class="login__lede">سجّل الدخول بمفتاح الدخول الخاص بحسابك على GitHub. يُسجَّل كل تعديل باسمك، ويُنشر على الموقع خلال دقيقة أو دقيقتين.</p>
     <label class="field">
       <span>مفتاح الدخول (GitHub token)</span>
       <input type="password" id="tokenInput" autocomplete="off" spellcheck="false" dir="ltr" placeholder="ghp_… أو github_pat_…" required>
     </label>
-    <label class="check"><input type="checkbox" id="remember" checked> <span>افتكرني على الجهاز ده</span></label>
+    <label class="check"><input type="checkbox" id="remember" checked> <span>تذكّرني على هذا الجهاز</span></label>
     <button class="btn btn--red btn--wide" type="submit" id="loginBtn">دخول</button>
     <p class="login__err" id="loginErr" role="alert"></p>
     <details class="login__help">
-      <summary>إزاي أعمل مفتاح الدخول؟</summary>
+      <summary>كيف أنشئ مفتاح الدخول؟</summary>
       <ol>
-        <li>ادخل على حسابك في GitHub، وتأكد إنك مضاف كمشارك (Collaborator) على مستودع الموقع.</li>
-        <li>افتح <a href="https://github.com/settings/tokens/new?scopes=public_repo&amp;description=WASB%20admin" target="_blank" rel="noopener">صفحة إنشاء مفتاح جديد</a>. الصلاحية المطلوبة (public_repo) هتكون متعلّمة لوحدها.</li>
-        <li>اختار مدة صلاحية (مثلاً 90 يوم)، واضغط Generate token في آخر الصفحة.</li>
-        <li>انسخ المفتاح والصقه هنا. GitHub مش هيعرضه تاني، فاحفظه في مكان آمن لو هتحتاجه على جهاز تاني.</li>
+        <li>ادخل إلى حسابك في GitHub، وتأكد من إضافتك كمشارك (Collaborator) في مستودع الموقع.</li>
+        <li>افتح <a href="https://github.com/settings/tokens/new?scopes=public_repo&amp;description=WASB%20admin" target="_blank" rel="noopener">صفحة إنشاء مفتاح جديد</a>. ستكون الصلاحية المطلوبة (public_repo) محددة تلقائياً.</li>
+        <li>اختر مدة الصلاحية (مثلاً 90 يوماً)، ثم اضغط Generate token أسفل الصفحة.</li>
+        <li>انسخ المفتاح والصقه هنا. لن يعرضه GitHub مرة أخرى، لذا احفظه في مكان آمن إذا احتجت إليه على جهاز آخر.</li>
       </ol>
     </details>
   </form>
@@ -76,6 +76,6 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="/admin/admin.js?v=4"></script>
+<script src="/admin/admin.js?v=5"></script>
 </body>
 </html>
