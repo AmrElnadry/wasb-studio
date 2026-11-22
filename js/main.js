@@ -227,7 +227,7 @@
 
   /* ---------- sites: a panoramic hall ---------- */
   const pano = $('#pano'), stage = $('#panoStage');
-  let at = 0, cards = [], panoTimer = 0, panoSeen = false;
+  let at = 0, cards = [], panoTimer = 0, panoSeen = false, panoHover = null;
   const panoPos = [];
   function renderPano() {
     stage.innerHTML = SITES.map((s, i) => `<div class="card" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${esc(s.label)}">
@@ -244,6 +244,7 @@
     const n = SITES.length;
     const prev = at;
     at = (i + n) % n;
+    panoHover = null;
     // put a card straight onto its latest place, without animating
     const snap = (c, k) => {
       c.classList.add('no-anim');
@@ -294,6 +295,33 @@
     if (reduce.matches || !panoSeen) return;
     panoTimer = setTimeout(() => goPano(at + 1), 5600);
   }
+  // resting the pointer on the site in front pauses the tour; the wheel then scrolls that page
+  const imgY = im => {
+    const v = (getComputedStyle(im).translate || '0 0').split(' ')[1] || '0px';
+    return v.endsWith('%') ? parseFloat(v) * im.offsetHeight / 100 : parseFloat(v) || 0;
+  };
+  stage.addEventListener('mouseover', e => {
+    const c = e.target.closest('.card.is-on');
+    if (!c || c === panoHover) return;
+    panoHover = c; clearTimeout(panoTimer);
+    const im = $('.card__view img', c);
+    c._y = imgY(im);
+    im.style.transition = 'none'; im.style.translate = `0px ${c._y}px`;
+  });
+  stage.addEventListener('mouseout', e => {
+    if (!panoHover || panoHover.contains(e.relatedTarget)) return;
+    panoHover = null; restartPano();
+  });
+  stage.addEventListener('wheel', e => {
+    const c = panoHover;
+    if (!c || !c.classList.contains('is-on')) return;
+    const im = $('.card__view img', c), max = Math.max(0, im.offsetHeight - im.parentElement.clientHeight);
+    const y = Math.min(0, Math.max(-max, c._y - e.deltaY));
+    if (y === c._y) return;            // at the top or the bottom: let the page scroll on
+    e.preventDefault();
+    c._y = y;
+    im.style.transition = 'translate .45s cubic-bezier(.22, 1, .36, 1)'; im.style.translate = `0px ${y}px`;
+  }, { passive: false });
   $('#panoPrev').addEventListener('click', () => goPano(at - 1));
   $('#panoNext').addEventListener('click', () => goPano(at + 1));
   if ('IntersectionObserver' in window) {

@@ -245,6 +245,6 @@ window.WASB_TAGS = {
     { id: 'vendviz', label: 'vendviz.com', url: 'https://www.vendviz.com/', src: A + 'web/vendviz-full.webp?v=2' },
     { id: 'jadeed', label: 'jadeedsa.com', url: 'https://jadeedsa.com/', src: A + 'web/jadeed-full.webp' },
     { id: 'viora', label: 'viora-dev.com', url: 'https://viora-dev.com/', src: A + 'web/viora-full.webp' },
-    { id: 'blue', label: 'blue-network.sa', url: 'https://blue-network.sa/', src: A + 'web/blue-full.webp' }
+    { id: 'blue', label: 'blue-network.sa', url: 'https://blue-network.sa/', src: A + 'web/blue-full.webp?v=2' }
   ];
 })();
