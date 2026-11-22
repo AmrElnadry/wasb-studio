@@ -449,3 +449,31 @@ html[lang="en"] .case__title { line-height: .98; letter-spacing: -.04em; }
 }
 
 @media (prefers-reduced-motion: reduce) { .js .tile:not(.in) img { opacity: 1; scale: 1; } }
+
+/* ---------- project pages (/work/<id>/) ---------- */
+.pg__bar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 72px; padding-inline: var(--gutter); background: rgba(14, 14, 14, .86); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--rule); }
+.pg__home { display: flex; align-items: center; gap: 12px; color: var(--fg); }
+.pg__sym { width: 24px; height: auto; color: var(--red); }
+.pg__word { height: 20px; width: auto; }
+.pg__nav { display: flex; align-items: center; gap: clamp(14px, 2vw, 28px); font-family: var(--display); font-size: .95rem; }
+.pg__nav a { transition: color .3s, background-color .3s; }
+.pg__nav a:hover { color: var(--red); }
+.pg__nav .pg__cta { padding: 7px 18px 8px; border-radius: 999px; background: var(--red); color: #fff; }
+.pg__nav .pg__cta:hover { color: #fff; background: #a83224; }
+html[lang="en"] .pg__nav { text-transform: uppercase; letter-spacing: .06em; font-size: .8rem; }
+.pg__crumb { font-family: var(--display); font-size: .9rem; color: var(--mute); margin-block-end: 1rem; }
+.pg__crumb a:hover { color: var(--red); }
+.case__scope p { font-family: var(--display); font-size: 1.05rem; margin-block-start: 6px; }
+.case__scope ul + h2 { margin-block-start: 18px; }
+.pg__about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px 48px; padding-block: 0 clamp(36px, 6vh, 72px); }
+.pg__about h2 { font-family: var(--display); font-size: .85rem; color: var(--mute); padding-block-start: .5em; }
+.pg__about p { font-size: clamp(1.15rem, 1.6vw, 1.45rem); line-height: 1.85; max-width: 46rem; white-space: pre-line; }
+.pg__more { padding-block: 0 clamp(40px, 8vh, 90px); }
+.pg__tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.4vw, 20px); }
+.pg__tiles .tile { aspect-ratio: 4 / 3; }
+.pg .foot { padding-block-end: 28px; }
+@media (max-width: 820px) {
+  .pg__about, .case__head .wrap { grid-template-columns: minmax(0, 1fr); }
+  .pg__tiles { grid-template-columns: minmax(0, 1fr); }
+  .pg__nav .pg__all { display: none; }
+}

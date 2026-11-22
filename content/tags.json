@@ -1,0 +1,30 @@
+{
+  "identity": {
+    "ar": "هوية بصرية",
+    "en": "Brand identity"
+  },
+  "logo": {
+    "ar": "شعار",
+    "en": "Logo"
+  },
+  "profile": {
+    "ar": "بروفايل شركة",
+    "en": "Company profile"
+  },
+  "website": {
+    "ar": "موقع إلكتروني",
+    "en": "Website"
+  },
+  "merch": {
+    "ar": "تطبيقات الهوية",
+    "en": "Brand applications"
+  },
+  "signage": {
+    "ar": "واجهات ولوحات",
+    "en": "Signage"
+  },
+  "print": {
+    "ar": "مطبوعات",
+    "en": "Print"
+  }
+}

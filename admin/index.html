@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>لوحة التحكم | وثب استوديو</title>
+<link rel="icon" type="image/svg+xml" href="/assets/wasb/symbol.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/admin/admin.css?v=1">
+</head>
+<body>
+
+<section class="login" id="login" hidden>
+  <form class="login__card" id="loginForm">
+    <img class="login__sym" src="/assets/wasb/symbol.svg" alt="" width="44" height="60">
+    <h1>لوحة تحكم وثب</h1>
+    <p class="login__lede">ادخل بمفتاح الدخول الخاص بحسابك على GitHub. كل تعديل بيتسجل باسمك، وبيتنشر على الموقع خلال دقيقة أو اتنين.</p>
+    <label class="field">
+      <span>مفتاح الدخول (GitHub token)</span>
+      <input type="password" id="tokenInput" autocomplete="off" spellcheck="false" dir="ltr" placeholder="ghp_… أو github_pat_…" required>
+    </label>
+    <label class="check"><input type="checkbox" id="remember" checked> <span>افتكرني على الجهاز ده</span></label>
+    <button class="btn btn--red btn--wide" type="submit" id="loginBtn">دخول</button>
+    <p class="login__err" id="loginErr" role="alert"></p>
+    <details class="login__help">
+      <summary>إزاي أعمل مفتاح الدخول؟</summary>
+      <ol>
+        <li>ادخل على حسابك في GitHub، وتأكد إنك مضاف كمشارك (Collaborator) على مستودع الموقع.</li>
+        <li>افتح <a href="https://github.com/settings/tokens/new?scopes=public_repo&amp;description=WASB%20admin" target="_blank" rel="noopener">صفحة إنشاء مفتاح جديد</a>. الصلاحية المطلوبة (public_repo) هتكون متعلّمة لوحدها.</li>
+        <li>اختار مدة صلاحية (مثلاً 90 يوم)، واضغط Generate token في آخر الصفحة.</li>
+        <li>انسخ المفتاح والصقه هنا. GitHub مش هيعرضه تاني، فاحفظه في مكان آمن لو هتحتاجه على جهاز تاني.</li>
+      </ol>
+    </details>
+  </form>
+</section>
+
+<div class="app" id="app" hidden>
+  <header class="top">
+    <a class="top__brand" href="/" target="_blank" rel="noopener" title="فتح الموقع">
+      <img src="/assets/wasb/symbol.svg" alt="" width="22" height="30"><span>لوحة التحكم</span>
+    </a>
+    <nav class="tabs" id="tabs">
+      <button type="button" data-tab="projects">الأعمال</button>
+      <button type="button" data-tab="sites">المواقع</button>
+      <button type="button" data-tab="contact">التواصل</button>
+      <button type="button" data-tab="texts">النصوص</button>
+    </nav>
+    <div class="top__end">
+      <span class="pill" id="status"></span>
+      <button class="btn btn--red" type="button" id="saveBtn" disabled>حفظ ونشر</button>
+      <div class="me" id="me"></div>
+    </div>
+  </header>
+  <main class="view" id="view"></main>
+</div>
+
+<div class="modal" id="picker" hidden>
+  <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+    <header class="modal__head">
+      <h2 id="pickerTitle">اختيار صور</h2>
+      <label class="field field--inline"><span>المجلد</span><select id="pickerDir"></select></label>
+      <label class="btn">رفع من جهازك<input type="file" id="pickerFile" accept="image/*" multiple hidden></label>
+      <button class="btn btn--ghost" type="button" data-close>إغلاق</button>
+    </header>
+    <p class="modal__hint" id="pickerHint"></p>
+    <div class="picker" id="pickerGrid"></div>
+    <footer class="modal__foot">
+      <span id="pickerCount"></span>
+      <button class="btn btn--red" type="button" id="pickerOk">إضافة المحدد</button>
+    </footer>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/admin/admin.js?v=1"></script>
+</body>
+</html>

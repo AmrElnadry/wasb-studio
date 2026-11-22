@@ -14,8 +14,10 @@
   // which project tags each of the three services covers
   const FILTERS = { identity: ['identity', 'logo', 'merch', 'signage'], website: ['website'], profile: ['profile'] };
 
-  let lang = 'ar';
-  try { lang = localStorage.getItem('wasb-lang') || 'ar'; } catch (e) {}
+  // the address decides the language: / is Arabic, /en/ is English
+  let lang = html.lang === 'en' ? 'en' : 'ar';
+  const BASE = () => lang === 'en' ? '/en/' : '/';
+  const workUrl = id => `${BASE()}work/${id}/`;
   const t = key => (I18N[lang] && I18N[lang][key]) || I18N.ar[key] || key;
   const L = obj => (obj && (obj[lang] || obj.ar)) || '';
 
@@ -33,7 +35,7 @@
   /* ---------- language ---------- */
   function applyLang(next, first) {
     lang = next === 'en' ? 'en' : 'ar';
-    try { localStorage.setItem('wasb-lang', lang); } catch (e) {}
+    if (!first) { try { history.replaceState(null, '', BASE() + location.search + location.hash); } catch (e) {} }
     html.lang = lang; html.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.title = lang === 'ar' ? 'وثب استوديو | تصميم شعار وهوية بصرية، مواقع إلكترونية وبروفايل شركات في السعودية' : 'WASB Studio | Logo and brand identity design, websites and company profiles in Saudi Arabia';
     $$('[data-i18n]').forEach(el => {
@@ -45,7 +47,7 @@
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
     renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); buildGhost(); alignHero(); if (window.WASB_HAND) window.WASB_HAND(); syncGame();
-    if (!first) { onScroll(); if (currentCase) renderCase(currentCase); }
+    if (!first) onScroll();
   }
 
   /* ---------- intro: the red square flashes the work, then becomes the slab ---------- */
@@ -203,7 +205,7 @@
   const tagLine = p => p.tags.map(k => L(TAGS[k])).join(' / ');
   function renderRows() {
     const seen = !!grid.querySelector('.tile[data-i]');   // the plain list written by scripts/seo.mjs does not count
-    grid.innerHTML = PROJECTS.map((p, i) => `<a class="tile${seen ? ' in' : ''}" href="#/work/${p.id}" data-i="${i}" style="--i:${i % 3};${p.focus ? `--focus:${p.focus}` : ''}" aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
+    grid.innerHTML = PROJECTS.map((p, i) => `<a class="tile${seen ? ' in' : ''}" href="${workUrl(p.id)}" data-i="${i}" style="--i:${i % 3};${p.focus ? `--focus:${p.focus}` : ''}" aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
         <img src="${p.cover}" alt="${esc(L(p.line))}" loading="lazy" decoding="async">
         <span class="tile__cap"><span class="tile__name">${esc(L(p.name))}</span><span class="tile__tags">${esc(tagLine(p))}</span></span>
         <span class="tile__go" aria-hidden="true">${arrow}</span>
@@ -381,7 +383,7 @@
   function setMenu(open) {
     burger.setAttribute('aria-expanded', open);
     syncMenuLabel();
-    document.body.classList.toggle('is-locked', open || !!currentCase);
+    document.body.classList.toggle('is-locked', open);
     if (open) { menu.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('is-open'))); }
     else { menu.classList.remove('is-open'); setTimeout(() => { if (!menuOpen()) menu.hidden = true; }, reduce.matches ? 0 : 700); }
   }
@@ -466,78 +468,12 @@
   leapBtn.addEventListener('click', leap);
   function onScroll() {}
 
-  /* ---------- case study ---------- */
-  const caseEl = $('#case'), caseBody = $('#caseBody'), caseScroll = $('#caseScroll'), caseCrumb = $('#caseCrumb');
-  let currentCase = null, lastFocus = null;
-  function block(b, p) {
-    const title = b.title ? `<h2 class="blk__title wrap"><span>${esc(L(b.title))}</span>${b.type === 'strip' ? `<span class="blk__hint">${esc(t('case.drag'))}</span>` : ''}</h2>` : '';
-    const alt = esc(L(p.name) + ' · ' + tagLine(p));
-    if (b.type === 'full') return `<section class="blk blk--full">${title}<div class="wrap"><img src="${b.src}" alt="${alt}" loading="lazy"></div></section>`;
-    if (b.type === 'grid') return `<section class="blk blk--grid${b.fit === 'contain' ? ' is-contain' : ''}" style="--cols:${b.cols || 2}">${title}<div class="wrap"><div class="blk__items">${b.items.map(s => `<img src="${s}" alt="${alt}" loading="lazy">`).join('')}</div></div></section>`;
-    if (b.type === 'strip') return `<section class="blk blk--strip">${title}<div class="blk__rail" tabindex="0">${b.items.map(s => `<img src="${s}" alt="${alt}" loading="lazy" draggable="false">`).join('')}</div></section>`;
-    if (b.type === 'browser') return `<section class="blk blk--browser">${title}<div class="wrap"><div class="browser"><div class="browser__bar"><i></i><i></i><i></i><span>${esc(b.label || '')}</span>${b.url ? `<a href="${b.url}" target="_blank" rel="noopener">${esc(t('case.visit'))}${arrow}</a>` : ''}</div><div class="browser__view" tabindex="0"><img src="${b.src}" alt="${alt}" loading="lazy"></div></div></div></section>`;
-    return '';
-  }
-  function renderCase(id) {
-    const idx = PROJECTS.findIndex(p => p.id === id);
-    if (idx < 0) return false;
-    const p = PROJECTS[idx], next = PROJECTS[(idx + 1) % PROJECTS.length];
-    caseCrumb.textContent = `${pad(idx + 1)}/${pad(PROJECTS.length)}`;
-    caseBody.innerHTML = `
-      <header class="case__head">
-        <div class="wrap">
-          <div><h1 class="case__title" id="caseTitle">${esc(L(p.name))}</h1><p class="case__line">${esc(L(p.line))}</p></div>
-          <div class="case__scope"><h2>${esc(t('case.scope'))}</h2><ul>${p.tags.map(k => `<li>${esc(L(TAGS[k]))}</li>`).join('')}</ul></div>
-        </div>
-      </header>
-      <div class="case__blocks">${p.blocks.map(b => block(b, p)).join('')}</div>
-      <a class="case__next" href="#/work/${next.id}"><span class="wrap" style="display:block"><small>${esc(t('case.next'))}</small><strong>${esc(L(next.name))}${arrow}</strong></span></a>`;
-    $$('.blk__rail', caseBody).forEach(dragRail);
-    return true;
-  }
-  function dragRail(rail) {
-    let down = false, sx = 0, sl = 0;
-    rail.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; sx = e.clientX; sl = rail.scrollLeft; rail.classList.add('is-drag'); rail.setPointerCapture(e.pointerId); });
-    rail.addEventListener('pointermove', e => { if (down) rail.scrollLeft = sl - (e.clientX - sx); });
-    const up = () => { down = false; rail.classList.remove('is-drag'); };
-    rail.addEventListener('pointerup', up); rail.addEventListener('pointercancel', up);
-  }
-  function openCase(id) {
-    if (!renderCase(id)) return;
-    const wasOpen = !!currentCase;
-    currentCase = id;
-    caseScroll.scrollTop = 0;
-    if (wasOpen) return;
-    lastFocus = document.activeElement;
-    caseEl.hidden = false;
-    document.body.classList.add('is-locked');
-    requestAnimationFrame(() => requestAnimationFrame(() => { caseEl.classList.add('is-open'); $('#caseClose').focus({ preventScroll: true }); }));
-  }
-  function closeCase() {
-    if (!currentCase) return;
-    currentCase = null;
-    caseEl.classList.remove('is-open');
-    document.body.classList.remove('is-locked');
-    setTimeout(() => { if (!currentCase) { caseEl.hidden = true; caseBody.innerHTML = ''; } }, reduce.matches ? 0 : 800);
-    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
-  }
+  /* ---------- old links: #/work/<id> now has its own page ---------- */
   function route() {
     const m = location.hash.match(/^#\/work\/([\w-]+)/);
-    if (m) openCase(m[1]); else closeCase();
+    if (m && PROJECTS.some(p => p.id === m[1])) location.replace(workUrl(m[1]));
   }
-  $('#caseClose').addEventListener('click', () => { history.pushState('', document.title, location.pathname + location.search); closeCase(); });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && menuOpen()) { setMenu(false); burger.focus(); return; }
-    if (!currentCase) return;
-    if (e.key === 'Escape') { $('#caseClose').click(); }
-    if (e.key === 'Tab') {
-      const f = $$('a[href], button, [tabindex="0"]', caseEl).filter(el => el.offsetParent !== null);
-      if (!f.length) return;
-      const first = f[0], last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen()) { setMenu(false); burger.focus(); } });
   window.addEventListener('hashchange', route);
 
   /* ---------- boot ---------- */

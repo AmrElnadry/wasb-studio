@@ -3,6 +3,9 @@
 > استوديو تصميم وهوية بصرية في الرياض، المملكة العربية السعودية، وهو الذراع الإبداعي لـ Blue Network. يعمل مع الشركات الناشئة والمتوسطة في جميع القطاعات داخل السعودية.
 > WASB Studio is the design and brand identity studio of Blue Network, based in Riyadh, Saudi Arabia, working with startups and SMEs across all sectors in Saudi Arabia.
 
+- العربية: https://wasb.studio/
+- English: https://wasb.studio/en/
+
 ## الخدمات / Services
 
 - تصميم شعار وهوية بصرية / Logo and brand identity design: تصميم شعار وهوية بصرية لشركة أو منتج أو فعالية، وتطوير الهوية البصرية القائمة، مع دليل استخدام الهوية. Logo and visual identity for a company, product or event, rebranding of existing identities, and brand guidelines.
@@ -11,12 +14,12 @@
 
 ## أعمال مختارة / Selected work
 
-- [نادي العلا · Summer Camp / AlUla Club · Summer Camp](https://wasb.studio/#/work/ula): طقم هدايا لاعبي المعسكر الصيفي، لصالح فزت ونادي العلا. Summer camp player gift set, for FZT and AlUla Club. (هوية بصرية، تطبيقات الهوية / Brand identity، Brand applications)
-- [فزت / FZT](https://wasb.studio/#/work/fzt): شركة فزت للتسويق وإدارة الفعاليات. FZT, marketing and event management. (هوية بصرية، بروفايل شركة، موقع إلكتروني / Brand identity، Company profile، Website)
-- [آيار / IAAR](https://wasb.studio/#/work/iaar): شركة آيار للصناعات الخشبية والمعدنية. IAAR, wood and metal industries. (هوية بصرية، بروفايل شركة، مطبوعات / Brand identity، Company profile، Print)
-- [الكمال / Al Kamal](https://wasb.studio/#/work/alkamal): شركة مقاولات: بروفايل مطبوع وموقع إلكتروني. Contracting company: printed profile and website. (بروفايل شركة، موقع إلكتروني / Company profile، Website)
-- [دان الرائدة / Dan AlRaeda](https://wasb.studio/#/work/dan): فريقك المتكامل لنجاح أعمالك. Back office services. (شعار، بروفايل شركة / Logo، Company profile)
-- [Greazy / Greazy](https://wasb.studio/#/work/greazy): مطعم: شعار، واجهات المحل، ولوحات داخلية وقائمة طعام. Restaurant: logo, storefront, interior signage and menu. (شعار، واجهات ولوحات، مطبوعات / Logo، Signage، Print)
+- [نادي العلا · Summer Camp / AlUla Club · Summer Camp](https://wasb.studio/work/ula/): طقم هدايا لاعبي المعسكر الصيفي، لصالح فزت ونادي العلا. Summer camp player gift set, for FZT and AlUla Club. (هوية بصرية، تطبيقات الهوية / Brand identity, Brand applications)
+- [فزت / FZT](https://wasb.studio/work/fzt/): شركة فزت للتسويق وإدارة الفعاليات. FZT, marketing and event management. (هوية بصرية، بروفايل شركة، موقع إلكتروني / Brand identity, Company profile, Website)
+- [آيار / IAAR](https://wasb.studio/work/iaar/): شركة آيار للصناعات الخشبية والمعدنية. IAAR, wood and metal industries. (هوية بصرية، بروفايل شركة، مطبوعات / Brand identity, Company profile, Print)
+- [الكمال / Al Kamal](https://wasb.studio/work/alkamal/): شركة مقاولات: بروفايل مطبوع وموقع إلكتروني. Contracting company: printed profile and website. (بروفايل شركة، موقع إلكتروني / Company profile, Website)
+- [دان الرائدة / Dan AlRaeda](https://wasb.studio/work/dan/): فريقك المتكامل لنجاح أعمالك. Back office services. (شعار، بروفايل شركة / Logo, Company profile)
+- [Greazy / Greazy](https://wasb.studio/work/greazy/): مطعم: شعار، واجهات المحل، ولوحات داخلية وقائمة طعام. Restaurant: logo, storefront, interior signage and menu. (شعار، واجهات ولوحات، مطبوعات / Logo, Signage, Print)
 
 ## مواقع أطلقناها / Websites we launched
 
@@ -31,7 +34,6 @@
 - واتساب / WhatsApp: https://wa.me/966567561619
 - هاتف / Phone: +966567561619، +966531473116
 - البريد / Email: brand@wasb.studio
-
 - العنوان / Address: حي الفلاح، الرياض، المملكة العربية السعودية (Al Falah, Riyadh, Saudi Arabia)
 - الموقع / Website: https://wasb.studio/
 - Blue Network: https://blue-network.sa/
