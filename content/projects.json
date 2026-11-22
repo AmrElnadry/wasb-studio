@@ -22,18 +22,17 @@
     "focus": "40% 45%",
     "gallery": [
       {
-        "src": "assets/ula/backpack.webp",
-        "half": true
-      },
-      {
-        "src": "assets/ula/scarf.webp",
-        "half": true
+        "src": "assets/ula/backpack.webp"
       },
       {
         "src": "assets/ula/artwork-h.webp"
       },
       {
         "src": "assets/ula/pillow.webp"
+      },
+      {
+        "src": "assets/ula/scarf.webp",
+        "half": true
       },
       {
         "src": "assets/ula/pin.webp",
@@ -44,10 +43,12 @@
         "half": true
       },
       {
-        "src": "assets/ula/eyemask.webp"
+        "src": "assets/ula/eyemask.webp",
+        "half": true
       },
       {
-        "src": "assets/ula/tag.webp"
+        "src": "assets/ula/tag.webp",
+        "half": true
       }
     ]
   },
