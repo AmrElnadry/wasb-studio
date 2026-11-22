@@ -239,3 +239,13 @@ h1, h2, h3, p { margin: 0; }
 .subtabs button.is-on { color: var(--fg); background: rgba(196, 59, 43, .16); box-shadow: inset 0 0 0 1px var(--red); }
 .subtabs small { font-size: 11px; color: var(--mute); }
 .texts .trow:first-child, .texts h3 + .trow { border-top: 0; }
+
+/* small view while sorting: equal squares, the whole set in sight */
+.gal.is-sorting { --gap: 10px; }
+.gal.is-sorting .gal__it { flex: 0 0 calc((100% - 5 * var(--gap)) / 6) !important; aspect-ratio: 1 !important; background: #1b1b1b; border-radius: 8px; }
+.gal.is-sorting .gal__it img { object-fit: contain; padding: 6px; }
+.gal.is-sorting .tag, .gal.is-sorting .gal__it.is-half.is-full::before { display: none; }
+.gal.is-sorting .gal__it.is-half { box-shadow: inset 0 0 0 2px rgba(224, 168, 74, .65); }
+.gal.is-sorting .gal__tools button[data-act="g-half"], .gal.is-sorting .gal__tools button[data-act="g-cover"] { display: none; }
+.gal__tools button:disabled { opacity: .3; pointer-events: none; }
+.gpanel .btn[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--red); color: var(--fg); }

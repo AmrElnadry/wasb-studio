@@ -318,7 +318,7 @@
 
       <div class="panel gpanel" id="gpanel">
         <div class="panel__head"><h2>صور المشروع</h2>
-          <div class="acts"><button class="btn btn--sm" type="button" data-act="g-pick">من الصور المرفوعة</button><label class="btn btn--sm btn--red">رفع صور<input type="file" accept="image/*" multiple hidden data-act="g-files"></label></div>
+          <div class="acts"><button class="btn btn--sm" type="button" data-act="g-compact" aria-pressed="${compact}">${compact ? 'العرض الكامل' : 'عرض مصغّر للترتيب'}</button><button class="btn btn--sm" type="button" data-act="g-pick">من الصور المرفوعة</button><label class="btn btn--sm btn--red">رفع صور<input type="file" accept="image/*" multiple hidden data-act="g-files"></label></div>
         </div>
         <p class="panel__note">اسحب الصور من جهازك وارميها هنا. الترتيب ده هو نفس اللي هيظهر في صفحة المشروع: كل صورة بعرض الصفحة، وأي صورتين ورا بعض عليهم «نص عرض» (◧) بيقعدوا جنب بعض. امسك أي صورة وحركها لمكان تاني، والباقي هيترتب لوحده.</p>
         <div class="gdrop" id="gdrop">${galleryHtml(p)}</div>
@@ -356,15 +356,34 @@
   }, true);
   function galleryHtml(p) {
     if (!p.gallery.length) return '<div class="gdrop__empty"><b>اسحب صور المشروع هنا</b><span>أو اضغط «رفع صور»</span></div>';
-    return `<div class="gal" id="ggrid">${layout(p.gallery).map(({ g, r, s, full }) => `<div class="gal__it${full ? ' is-full' : ''}${g.half ? ' is-half' : ''}" draggable="true" data-p="${esc(g.src)}" data-half="${g.half ? 1 : 0}" style="--r:${r.toFixed(4)};--s:${s.toFixed(4)}">
+    const n = p.gallery.length;
+    return `<div class="gal${compact ? ' is-sorting' : ''}" id="ggrid">${layout(p.gallery).map(({ g, r, s, full }, i) => `<div class="gal__it${full ? ' is-full' : ''}${g.half ? ' is-half' : ''}" draggable="true" data-p="${esc(g.src)}" data-half="${g.half ? 1 : 0}" style="--r:${r.toFixed(4)};--s:${s.toFixed(4)}">
         <img src="${esc(imgUrl(g.src))}" alt="" draggable="false">
         ${staged.has(g.src) ? '<span class="tag tag--new">جديدة</span>' : ''}${p.cover === g.src ? '<span class="tag">الغلاف</span>' : ''}
         <div class="gal__tools">
+          <button type="button" data-act="g-prev" title="قبل" ${i === 0 ? 'disabled' : ''}>→</button>
+          <button type="button" data-act="g-next" title="بعد" ${i === n - 1 ? 'disabled' : ''}>←</button>
           <button type="button" data-act="g-half" aria-pressed="${!!g.half}" title="${g.half ? 'رجّعها بعرض كامل' : 'نص عرض: تقعد جنب الصورة اللي بعدها لو هي كمان نص عرض'}">◧</button>
           <button type="button" data-act="g-cover" title="اجعلها صورة الغلاف">★</button>
           <button type="button" data-act="g-del" title="إزالة من المشروع">✕</button>
         </div>
       </div>`).join('')}</div>`;
+  }
+  // the order on screen becomes the project's order
+  function commitOrder() {
+    const p = project(), els = $$('#ggrid .gal__it'), order = els.map(x => x.dataset.p);
+    els.forEach((el, i) => { $('[data-act="g-prev"]', el).disabled = i === 0; $('[data-act="g-next"]', el).disabled = i === els.length - 1; });
+    if (order.length && order.join('\n') !== p.gallery.map(g => g.src).join('\n')) { p.gallery = order.map(src => p.gallery.find(g => g.src === src)); syncDirty(); }
+  }
+  // small view: every image becomes the same small square, so moving one never reshapes the rest
+  let compact = false;
+  function setSorting(grid, on, keep) {
+    if (!grid || grid.classList.contains('is-sorting') === on) return;
+    flip(grid, () => {
+      grid.classList.toggle('is-sorting', on);
+      relayout();
+      if (keep) { const r = keep.el.getBoundingClientRect(); scrollBy(0, r.top + r.height / 2 - keep.y); }
+    });
   }
   function drawGallery() { const d = $('#gdrop'); if (d) d.innerHTML = galleryHtml(project()); }
   function addToGallery(p, paths) {
@@ -427,6 +446,20 @@
         addToGallery(p, await openPicker({ dir: projDir(p), multi: true, title: 'صور المشروع', hint: 'اختار الصور بالترتيب اللي عاوزها تتضاف بيه.' }));
         return;
       }
+      if (act === 'g-prev' || act === 'g-next') {
+        const it = el.closest('.gal__it'), grid = $('#ggrid');
+        const ref = act === 'g-prev' ? it.previousElementSibling : (it.nextElementSibling && it.nextElementSibling.nextElementSibling);
+        if (act === 'g-prev' && !ref) return;
+        flip(grid, () => { grid.insertBefore(it, ref); relayout(); });
+        commitOrder();
+        return;
+      }
+      if (act === 'g-compact') {
+        compact = !compact;
+        el.setAttribute('aria-pressed', compact); el.textContent = compact ? 'العرض الكامل' : 'عرض مصغّر للترتيب';
+        setSorting($('#ggrid'), compact, { el: $('#ggrid'), y: $('#ggrid') ? $('#ggrid').getBoundingClientRect().top + 20 : 0 });
+        return;
+      }
       if (act === 'g-del') { const x = el.closest('.gal__it').dataset.p; p.gallery = p.gallery.filter(g => g.src !== x); drawGallery(); syncDirty(); return; }
       if (act === 'g-half') {
         const it = el.closest('.gal__it'), g = p.gallery.find(y => y.src === it.dataset.p);
@@ -467,7 +500,11 @@
   $('#view').addEventListener('dragstart', e => {
     const it = e.target.closest('.pitem, .gal__it'); if (!it) return;
     drag = it.classList.contains('pitem') ? { list: true, from: Number(it.dataset.i) } : { el: it, at: 0 };
-    if (drag.el) requestAnimationFrame(() => it.classList.add('is-drag'));
+    if (drag.el) {
+      const y = e.clientY;
+      // zoom the gallery out while an image is held, keeping that image under the pointer
+      requestAnimationFrame(() => { it.classList.add('is-drag'); if (!compact) setSorting($('#ggrid'), true, { el: it, y }); drag && (drag.at = performance.now()); });
+    }
     e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', '');
   });
   $('#view').addEventListener('dragover', e => {
@@ -510,9 +547,10 @@
   });
   $('#view').addEventListener('dragend', () => {
     if (drag && drag.el) {
-      drag.el.classList.remove('is-drag');
-      const p = project(), order = $$('#ggrid .gal__it').map(x => x.dataset.p);
-      if (order.length && order.join('\n') !== p.gallery.map(g => g.src).join('\n')) { p.gallery = order.map(src => p.gallery.find(g => g.src === src)); syncDirty(); }
+      const el = drag.el;
+      el.classList.remove('is-drag');
+      commitOrder();
+      if (!compact) setSorting($('#ggrid'), false, { el, y: innerHeight / 2 });
     }
     drag = null; $$('.is-drop').forEach(x => x.classList.remove('is-drop'));
   });
