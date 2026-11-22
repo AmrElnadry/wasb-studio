@@ -44,7 +44,7 @@
     const btn = $('#langToggle');
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
-    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); buildGhost(); if (window.WASB_HAND) window.WASB_HAND(); alignHero(); syncGame();
+    renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); buildGhost(); alignHero(); if (window.WASB_HAND) window.WASB_HAND(); syncGame();
     if (!first) { onScroll(); if (currentCase) renderCase(currentCase); }
   }
 
@@ -71,7 +71,7 @@
     await sleep(380);
     for (let k = 0; k < imgs.length && !skipped; k++) {
       imgs.forEach((im, j) => im.classList.toggle('is-on', j === k));
-      await sleep(115);
+      await sleep(92);   // 10 images in about the same second as before
     }
     if (skipped) return;
     imgs.forEach(im => im.classList.remove('is-on'));
@@ -112,11 +112,14 @@
     const items = () => $$('#trio .trio__t');
     const place = i => {
       const list = items(); if (!list[i]) return;
-      const box = hand.parentElement.getBoundingClientRect(), r = list[i].getBoundingClientRect();
+      // layout offsets, not screen boxes: the services' fade-in lift must not throw the hand off
+      const t = list[i], box = hand.parentElement;
+      let left = 0, top = 0;
+      for (let el = t; el && el !== box; el = el.offsetParent) { left += el.offsetLeft; top += el.offsetTop; }
       const gap = parseFloat(getComputedStyle(hand).fontSize) * 1.05;
-      const x = lang === 'ar' ? r.right - box.left + gap : r.left - box.left - gap;
+      const x = lang === 'ar' ? left + t.offsetWidth + gap : left - gap;
       hand.style.setProperty('--hx', x.toFixed(1) + 'px');
-      hand.style.setProperty('--hy', (r.top - box.top + r.height * .5).toFixed(1) + 'px');
+      hand.style.setProperty('--hy', (top + t.offsetHeight * .5).toFixed(1) + 'px');
     };
     const turn = () => { spin.classList.toggle('is-spin', false); void spin.getBoundingClientRect(); spin.classList.add('is-spin'); };
     const step = () => {
@@ -124,6 +127,9 @@
       const n = items().length;
       if (!n || html.classList.contains('intro-on') || document.hidden || hold >= 0) { timer = setTimeout(step, 400); return; }
       if (!hand.classList.contains('is-ready')) {
+        // the hand comes last: only once every service has finished coming in
+        const pending = $$('#trio li').flatMap(li => li.getAnimations()).filter(an => an.playState !== 'finished');
+        if (pending.length) { Promise.all(pending.map(an => an.finished.catch(() => {}))).then(() => { timer = setTimeout(step, 150); }); return; }
         hand.classList.add('no-move'); place(k); void hand.getBoundingClientRect(); hand.classList.toggle('no-move', false); hand.classList.add('is-ready');
       } else place(k);
       timer = setTimeout(() => {
@@ -495,9 +501,9 @@
   $$('[data-split]').forEach(watch);
   watch($('#filters'));
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', () => { fitTrio(); buildGhost(); if (window.WASB_HAND) window.WASB_HAND(); alignHero(); syncGame(); });
-  window.addEventListener('load', () => { fitTrio(); buildGhost(); if (window.WASB_HAND) window.WASB_HAND(); alignHero(); syncGame(); });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitTrio(); buildGhost(); if (window.WASB_HAND) window.WASB_HAND(); alignHero(); syncGame(); });
+  window.addEventListener('resize', () => { fitTrio(); buildGhost(); alignHero(); if (window.WASB_HAND) window.WASB_HAND(); syncGame(); });
+  window.addEventListener('load', () => { fitTrio(); buildGhost(); alignHero(); if (window.WASB_HAND) window.WASB_HAND(); syncGame(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitTrio(); buildGhost(); alignHero(); if (window.WASB_HAND) window.WASB_HAND(); syncGame(); });
   onScroll();
   route();
   runIntro();
