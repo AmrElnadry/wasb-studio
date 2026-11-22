@@ -56,7 +56,20 @@ function imgSize(p) {
   return out;
 }
 // very tall images (long website shots) show their top part; the panel uses the same limits
-const ratio = p => { const [w, h] = imgSize(p); return Math.max(.56, Math.min(4, w / h)); };
+const ratio = p => { const [w, h] = imgSize(p); return w / h; };
+// gallery entries are { src, half }; older files may hold plain paths
+const gsrc = g => typeof g === 'string' ? g : g.src;
+const gimgs = p => (p.gallery || []).map(gsrc);
+// Behance-style column: every image at full width, except two half-width images in a row,
+// which share one line at the same height (the panel uses the same rule)
+function galLayout(items) {
+  const out = items.map(g => ({ src: gsrc(g), half: !!(g && g.half), r: ratio(gsrc(g)), s: 1, full: true }));
+  for (let i = 0; i < out.length - 1; i++) {
+    const a = out[i], b = out[i + 1];
+    if (a.half && b.half) { const sum = a.r + b.r; a.full = b.full = false; a.s = a.r / sum; b.s = b.r / sum; i++; }
+  }
+  return out;
+}
 
 // ---------- checks: a broken entry should fail the build, not the live site ----------
 const ids = new Set();
@@ -65,7 +78,7 @@ for (const p of P) {
   if (ids.has(p.id)) throw new Error('duplicate project id: ' + p.id);
   ids.add(p.id);
   if (!p.cover) throw new Error(p.id + ': no cover image');
-  for (const f of [p.cover, ...(p.gallery || [])])
+  for (const f of [p.cover, ...gimgs(p)])
     if (f && !/^https?:/.test(f) && !existsSync(root + abs(f).slice(1))) throw new Error(`${p.id}: missing image ${f}`);
 }
 
@@ -158,20 +171,24 @@ en = en.replace('id="sitesAll" href="/sites/"', 'id="sitesAll" href="/en/sites/"
 write('en/index.html', en);
 
 // ---------- project pages ----------
-const symbols = ['wasb-symbol', 'wasb-word', 'wasb-latin', 'i-arrow'].map(id => {
+const symbols = ['wasb-symbol', 'wasb-word', 'wasb-latin', 'i-arrow', 'i-wa'].map(id => {
   const m = ar.match(new RegExp(`<symbol id="${id}"[\\s\\S]*?</symbol>`));
   if (!m) throw new Error('symbol missing: ' + id);
   return m[0];
-}).join('\n  ');
+}).join('\n  ') + `
+  <symbol id="i-share" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></g></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></g></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></g></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.3-8.3L2 3h6.4l4.4 5.8L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.5l11.2 14.5Z"/></symbol>
+  <symbol id="i-in" viewBox="0 0 24 24"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-3.95v-11Z"/></symbol>`;
 const arrow = '<svg aria-hidden="true"><use href="#i-arrow"/></svg>';
 const pad = n => String(n).padStart(2, '0');
-// the project gallery: rows of one height, each image at its own proportions (the panel lays it out the same way)
 function gallery(p, l) {
   const alt = esc(L(p.name, l) + ' · ' + tags(p, l));
-  return `<section class="gal wrap"><div class="gal__grid">${(p.gallery || []).map(s => {
-    const [w, h] = imgSize(s);
-    return `<figure class="gal__it" style="--r:${ratio(s).toFixed(3)}"><img src="${abs(s)}" alt="${alt}" width="${w}" height="${h}" loading="lazy" decoding="async"></figure>`;
-  }).join('')}</div></section>`;
+  return `<section class="gal">${galLayout(p.gallery || []).map(g => {
+    const [w, h] = imgSize(g.src);
+    return `<figure class="gal__it${g.full ? ' is-full' : ''}" style="--r:${g.r.toFixed(4)};--s:${g.s.toFixed(4)}"><img src="${abs(g.src)}" alt="${alt}" width="${w}" height="${h}" loading="lazy" decoding="async"></figure>`;
+  }).join('')}</section>`;
 }
 const tile = (p, l) => `<a class="tile" href="${workPath(p.id, l)}" style="--focus:${esc(p.focus || '50% 50%')}" aria-label="${esc(L(p.name, l))}: ${esc(t('plate.open', l))}"><img src="${abs(p.cover)}" alt="${esc(L(p.line, l))}" loading="lazy" decoding="async"><span class="tile__cap"><span class="tile__name">${esc(L(p.name, l))}</span><span class="tile__tags">${esc(tags(p, l))}</span></span><span class="tile__go" aria-hidden="true">${arrow}</span></a>`;
 
@@ -240,17 +257,44 @@ ${body}
 `;
 }
 
+// the bar under every project: share it, or get in touch about it
+function bar(name, url, l) {
+  const wa = String(C.whatsapp || '').replace(/\D/g, '');
+  const msg = t('page.waMsg', l).replace('{name}', name) + '\n' + url;
+  const shareText = `${name} | ${l === 'ar' ? 'وثب استوديو' : 'WASB Studio'}`;
+  const enc = encodeURIComponent;
+  const ico = id => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
+  return `<div class="pbar" id="pbar" data-url="${esc(url)}" data-title="${esc(shareText)}" data-copied="${esc(t('page.copied', l))}">
+  <div class="pbar__in">
+    <p class="pbar__name">${esc(name)}</p>
+    <div class="pbar__share">
+      <button class="pbar__btn" type="button" id="shareBtn" aria-expanded="false" aria-controls="shareMenu">${ico('i-share')}<span>${esc(t('page.share', l))}</span></button>
+      <div class="share" id="shareMenu" hidden>
+        <button type="button" data-copy>${ico('i-link')}${esc(t('page.copy', l))}</button>
+        <a href="https://wa.me/?text=${enc(shareText + '\n' + url)}" target="_blank" rel="noopener">${ico('i-wa')}${esc(t('contact.whatsapp', l))}</a>
+        <a href="https://x.com/intent/post?url=${enc(url)}&amp;text=${enc(shareText)}" target="_blank" rel="noopener">${ico('i-x')}${esc(t('contact.x', l))}</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}" target="_blank" rel="noopener">${ico('i-in')}${esc(t('contact.linkedin', l))}</a>
+        <a href="mailto:?subject=${enc(shareText)}&amp;body=${enc(url)}">${ico('i-mail')}${esc(t('contact.email', l))}</a>
+      </div>
+    </div>
+    <span class="pbar__sep" aria-hidden="true"></span>
+    <p class="pbar__cta">${esc(t('page.contactNow', l))}</p>
+    ${wa ? `<a class="pbar__btn pbar__btn--wa" href="https://wa.me/${wa}?text=${enc(msg)}" target="_blank" rel="noopener">${ico('i-wa')}<span>${esc(t('contact.whatsapp', l))}</span></a>` : ''}
+    ${C.email ? `<a class="pbar__btn" href="mailto:${esc(C.email)}?subject=${enc(name)}&amp;body=${enc(msg)}">${ico('i-mail')}<span>${esc(t('contact.email', l))}</span></a>` : ''}
+  </div>
+</div>`;
+}
+
 function page(p, i, l) {
   const other = l === 'ar' ? 'en' : 'ar';
   const n = P.length, next = P[(i + 1) % n];
-  const more = [1, 2, 3].map(k => P[(i + k) % n]).filter(q => q !== p);
   const name = L(p.name, l), line = L(p.line, l), about = L(p.about, l);
   const studio = l === 'ar' ? 'وثب استوديو' : 'WASB Studio';
   const desc = [line, tags(p, l)].filter(Boolean).join('. ') + (about ? '. ' + about.replace(/\s+/g, ' ').slice(0, 150) : '');
   const url = SITE + workPath(p.id, l).slice(1);
   const ld = { '@context': 'https://schema.org', '@graph': [
     { '@type': 'CreativeWork', '@id': url + '#work', name, alternateName: L(p.name, other), headline: name, description: desc, url, inLanguage: l,
-      image: [p.cover, ...(p.gallery || [])].filter((s, k, a) => a.indexOf(s) === k).slice(0, 12).map(full),
+      image: [p.cover, ...gimgs(p)].filter((s, k, a) => a.indexOf(s) === k).slice(0, 12).map(full),
       keywords: tags(p, l), dateCreated: p.year || undefined, creator: { '@type': 'ProfessionalService', '@id': SITE + '#studio', name: 'وثب استوديو', url: SITE } },
     { '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: studio, item: SITE + base(l).slice(1) },
@@ -273,8 +317,8 @@ function page(p, i, l) {
     ${about ? `<section class="pg__about wrap"><h2>${esc(t('page.about', l))}</h2><p>${esc(about)}</p></section>` : ''}
     ${gallery(p, l)}
   </article>
-  ${more.length ? `<section class="pg__more"><div class="wrap"><h2 class="blk__title">${esc(t('page.more', l))}</h2><div class="pg__tiles">${more.map(q => tile(q, l)).join('')}</div></div></section>` : ''}
-  <a class="case__next" href="${workPath(next.id, l)}"><span class="wrap" style="display:block"><small>${esc(t('case.next', l))}</small><strong>${esc(L(next.name, l))}${arrow}</strong></span></a>`;
+  <a class="case__next" href="${workPath(next.id, l)}"><span class="wrap" style="display:block"><small>${esc(t('case.next', l))}</small><strong>${esc(L(next.name, l))}${arrow}</strong></span></a>
+${bar(name, url, l)}`;
   return shell(l, { path: `work/${p.id}/`, title: name, desc, image: full(p.cover), type: 'article', ld, body });
 }
 
@@ -318,7 +362,7 @@ writeFileSync(root + 'sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${entry('', 'en/', P.map(p => p.cover))}
 ${entry('sites/', 'en/sites/', S.map(x => x.src))}
-${P.map(p => entry(`work/${p.id}/`, `en/work/${p.id}/`, [p.cover, ...(p.gallery || [])].filter((s, k, a) => a.indexOf(s) === k).slice(0, 30))).join('\n')}
+${P.map(p => entry(`work/${p.id}/`, `en/work/${p.id}/`, [p.cover, ...gimgs(p)].filter((s, k, a) => a.indexOf(s) === k).slice(0, 30))).join('\n')}
 </urlset>
 `);
 

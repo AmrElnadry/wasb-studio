@@ -55,10 +55,10 @@
     <image:image><image:loc>https://wasb.studio/assets/ula/backpack.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/scarf.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/pillow.webp</image:loc></image:image>
-    <image:image><image:loc>https://wasb.studio/assets/ula/tag.webp</image:loc></image:image>
-    <image:image><image:loc>https://wasb.studio/assets/ula/eyemask.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/pin.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/bottle.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/ula/eyemask.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/ula/tag.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://wasb.studio/en/work/ula/</loc>
@@ -69,10 +69,10 @@
     <image:image><image:loc>https://wasb.studio/assets/ula/backpack.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/scarf.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/pillow.webp</image:loc></image:image>
-    <image:image><image:loc>https://wasb.studio/assets/ula/tag.webp</image:loc></image:image>
-    <image:image><image:loc>https://wasb.studio/assets/ula/eyemask.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/pin.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/bottle.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/ula/eyemask.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/ula/tag.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://wasb.studio/work/fzt/</loc>

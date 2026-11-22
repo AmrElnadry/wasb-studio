@@ -104,12 +104,16 @@
     "page.about": "عن المشروع",
     "page.year": "السنة",
     "page.client": "العميل",
-    "page.more": "مشاريع أخرى",
     "page.all": "كل الأعمال",
     "page.home": "الرئيسية",
     "sites.all": "كل المواقع",
     "page.sites": "المواقع",
-    "page.visit": "زيارة الموقع"
+    "page.visit": "زيارة الموقع",
+    "page.share": "مشاركة",
+    "page.copy": "نسخ الرابط",
+    "page.copied": "تم نسخ الرابط",
+    "page.contactNow": "تواصل معنا الآن",
+    "page.waMsg": "مرحباً، شاهدت مشروع «{name}» على موقعكم وأرغب في بدء مشروع."
   },
   "en": {
     "nav.sites": "Websites",
@@ -216,11 +220,15 @@
     "page.about": "About the project",
     "page.year": "Year",
     "page.client": "Client",
-    "page.more": "More work",
     "page.all": "All work",
     "page.home": "Home",
     "sites.all": "All websites",
     "page.sites": "Websites",
-    "page.visit": "Visit site"
+    "page.visit": "Visit site",
+    "page.share": "Share",
+    "page.copy": "Copy link",
+    "page.copied": "Link copied",
+    "page.contactNow": "Get in touch now",
+    "page.waMsg": "Hello, I saw the {name} project on your website and would like to start a project."
   }
 }

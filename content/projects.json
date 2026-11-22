@@ -21,14 +21,34 @@
     "cover": "assets/ula/artwork-h.webp",
     "focus": "40% 45%",
     "gallery": [
-      "assets/ula/backpack.webp",
-      "assets/ula/scarf.webp",
-      "assets/ula/artwork-h.webp",
-      "assets/ula/pillow.webp",
-      "assets/ula/pin.webp",
-      "assets/ula/bottle.webp",
-      "assets/ula/eyemask.webp",
-      "assets/ula/tag.webp"
+      {
+        "src": "assets/ula/backpack.webp",
+        "half": true
+      },
+      {
+        "src": "assets/ula/scarf.webp",
+        "half": true
+      },
+      {
+        "src": "assets/ula/artwork-h.webp"
+      },
+      {
+        "src": "assets/ula/pillow.webp"
+      },
+      {
+        "src": "assets/ula/pin.webp",
+        "half": true
+      },
+      {
+        "src": "assets/ula/bottle.webp",
+        "half": true
+      },
+      {
+        "src": "assets/ula/eyemask.webp"
+      },
+      {
+        "src": "assets/ula/tag.webp"
+      }
     ]
   },
   {
@@ -54,42 +74,116 @@
     "cover": "assets/fzt/profile-01.webp",
     "focus": "80% 30%",
     "gallery": [
-      "assets/fzt/guide-02.webp",
-      "assets/fzt/guide-01.webp",
-      "assets/fzt/guide-03.webp",
-      "assets/fzt/guide-05.webp",
-      "assets/fzt/guide-06.webp",
-      "assets/fzt/guide-07.webp",
-      "assets/fzt/guide-09.webp",
-      "assets/fzt/guide-11.webp",
-      "assets/fzt/guide-13.webp",
-      "assets/fzt/poster.webp",
-      "assets/fzt/pattern.webp",
-      "assets/fzt/profile-01.webp",
-      "assets/fzt/profile-02.webp",
-      "assets/fzt/profile-03.webp",
-      "assets/fzt/profile-04.webp",
-      "assets/fzt/profile-05.webp",
-      "assets/fzt/profile-08.webp",
-      "assets/fzt/profile-09.webp",
-      "assets/fzt/profile-10.webp",
-      "assets/fzt/profile-11.webp",
-      "assets/fzt/profile-12.webp",
-      "assets/fzt/profile-13.webp",
-      "assets/fzt/profile-16.webp",
-      "assets/fzt/profile-17.webp",
-      "assets/fzt/profile-18.webp",
-      "assets/fzt/profile-19.webp",
-      "assets/fzt/profile-20.webp",
-      "assets/fzt/profile-21.webp",
-      "assets/fzt/profile-22.webp",
-      "assets/fzt/profile-23.webp",
-      "assets/fzt/profile-24.webp",
-      "assets/fzt/profile-25.webp",
-      "assets/fzt/profile-26.webp",
-      "assets/fzt/profile-27.webp",
-      "assets/fzt/profile-28.webp",
-      "assets/fzt/website.webp"
+      {
+        "src": "assets/fzt/guide-02.webp"
+      },
+      {
+        "src": "assets/fzt/guide-01.webp"
+      },
+      {
+        "src": "assets/fzt/guide-03.webp"
+      },
+      {
+        "src": "assets/fzt/guide-05.webp"
+      },
+      {
+        "src": "assets/fzt/guide-06.webp"
+      },
+      {
+        "src": "assets/fzt/guide-07.webp"
+      },
+      {
+        "src": "assets/fzt/guide-09.webp"
+      },
+      {
+        "src": "assets/fzt/guide-11.webp"
+      },
+      {
+        "src": "assets/fzt/guide-13.webp"
+      },
+      {
+        "src": "assets/fzt/poster.webp",
+        "half": true
+      },
+      {
+        "src": "assets/fzt/pattern.webp",
+        "half": true
+      },
+      {
+        "src": "assets/fzt/profile-01.webp"
+      },
+      {
+        "src": "assets/fzt/profile-02.webp"
+      },
+      {
+        "src": "assets/fzt/profile-03.webp"
+      },
+      {
+        "src": "assets/fzt/profile-04.webp"
+      },
+      {
+        "src": "assets/fzt/profile-05.webp"
+      },
+      {
+        "src": "assets/fzt/profile-08.webp"
+      },
+      {
+        "src": "assets/fzt/profile-09.webp"
+      },
+      {
+        "src": "assets/fzt/profile-10.webp"
+      },
+      {
+        "src": "assets/fzt/profile-11.webp"
+      },
+      {
+        "src": "assets/fzt/profile-12.webp"
+      },
+      {
+        "src": "assets/fzt/profile-13.webp"
+      },
+      {
+        "src": "assets/fzt/profile-16.webp"
+      },
+      {
+        "src": "assets/fzt/profile-17.webp"
+      },
+      {
+        "src": "assets/fzt/profile-18.webp"
+      },
+      {
+        "src": "assets/fzt/profile-19.webp"
+      },
+      {
+        "src": "assets/fzt/profile-20.webp"
+      },
+      {
+        "src": "assets/fzt/profile-21.webp"
+      },
+      {
+        "src": "assets/fzt/profile-22.webp"
+      },
+      {
+        "src": "assets/fzt/profile-23.webp"
+      },
+      {
+        "src": "assets/fzt/profile-24.webp"
+      },
+      {
+        "src": "assets/fzt/profile-25.webp"
+      },
+      {
+        "src": "assets/fzt/profile-26.webp"
+      },
+      {
+        "src": "assets/fzt/profile-27.webp"
+      },
+      {
+        "src": "assets/fzt/profile-28.webp"
+      },
+      {
+        "src": "assets/fzt/website.webp"
+      }
     ]
   },
   {
@@ -115,28 +209,74 @@
     "cover": "assets/iaar/cards.webp",
     "focus": "70% 45%",
     "gallery": [
-      "assets/iaar/cards.webp",
-      "assets/iaar/guide-01.webp",
-      "assets/iaar/guide-02.webp",
-      "assets/iaar/guide-03.webp",
-      "assets/iaar/guide-05.webp",
-      "assets/iaar/guide-06.webp",
-      "assets/iaar/guide-08.webp",
-      "assets/iaar/guide-09.webp",
-      "assets/iaar/guide-10.webp",
-      "assets/iaar/guide-11.webp",
-      "assets/iaar/guide-12.webp",
-      "assets/iaar/logo-01.webp",
-      "assets/iaar/logo-05.webp",
-      "assets/iaar/logo-07.webp",
-      "assets/iaar/stationery-02.webp",
-      "assets/iaar/stationery-03.webp",
-      "assets/iaar/profile-1.webp",
-      "assets/iaar/profile-2.webp",
-      "assets/iaar/profile-3.webp",
-      "assets/iaar/profile-4.webp",
-      "assets/iaar/profile-5.webp",
-      "assets/iaar/profile-6.webp"
+      {
+        "src": "assets/iaar/cards.webp"
+      },
+      {
+        "src": "assets/iaar/guide-01.webp"
+      },
+      {
+        "src": "assets/iaar/guide-02.webp"
+      },
+      {
+        "src": "assets/iaar/guide-03.webp"
+      },
+      {
+        "src": "assets/iaar/guide-05.webp"
+      },
+      {
+        "src": "assets/iaar/guide-06.webp"
+      },
+      {
+        "src": "assets/iaar/guide-08.webp"
+      },
+      {
+        "src": "assets/iaar/guide-09.webp"
+      },
+      {
+        "src": "assets/iaar/guide-10.webp"
+      },
+      {
+        "src": "assets/iaar/guide-11.webp"
+      },
+      {
+        "src": "assets/iaar/guide-12.webp"
+      },
+      {
+        "src": "assets/iaar/logo-01.webp"
+      },
+      {
+        "src": "assets/iaar/logo-05.webp"
+      },
+      {
+        "src": "assets/iaar/logo-07.webp"
+      },
+      {
+        "src": "assets/iaar/stationery-02.webp",
+        "half": true
+      },
+      {
+        "src": "assets/iaar/stationery-03.webp",
+        "half": true
+      },
+      {
+        "src": "assets/iaar/profile-1.webp"
+      },
+      {
+        "src": "assets/iaar/profile-2.webp"
+      },
+      {
+        "src": "assets/iaar/profile-3.webp"
+      },
+      {
+        "src": "assets/iaar/profile-4.webp"
+      },
+      {
+        "src": "assets/iaar/profile-5.webp"
+      },
+      {
+        "src": "assets/iaar/profile-6.webp"
+      }
     ]
   },
   {
@@ -161,14 +301,32 @@
     "cover": "assets/alkamal/cover-dark.webp",
     "focus": "48% 45%",
     "gallery": [
-      "assets/alkamal/cover-dark.webp",
-      "assets/alkamal/spread-about.webp",
-      "assets/alkamal/spread-structure.webp",
-      "assets/alkamal/spread-city.webp",
-      "assets/alkamal/spread-p1.webp",
-      "assets/alkamal/spread-p2.webp",
-      "assets/alkamal/spread-p3.webp",
-      "assets/web/alkamal.webp"
+      {
+        "src": "assets/alkamal/cover-dark.webp"
+      },
+      {
+        "src": "assets/alkamal/spread-about.webp",
+        "half": true
+      },
+      {
+        "src": "assets/alkamal/spread-structure.webp",
+        "half": true
+      },
+      {
+        "src": "assets/alkamal/spread-city.webp"
+      },
+      {
+        "src": "assets/alkamal/spread-p1.webp"
+      },
+      {
+        "src": "assets/alkamal/spread-p2.webp"
+      },
+      {
+        "src": "assets/alkamal/spread-p3.webp"
+      },
+      {
+        "src": "assets/web/alkamal.webp"
+      }
     ]
   },
   {
@@ -193,19 +351,47 @@
     "cover": "assets/dan/logo-2.webp",
     "focus": "40% 30%",
     "gallery": [
-      "assets/dan/logo-1.webp",
-      "assets/dan/logo-2.webp",
-      "assets/dan/logo-4.webp",
-      "assets/dan/logo-3.webp",
-      "assets/dan/profile-1.webp",
-      "assets/dan/profile-2.webp",
-      "assets/dan/profile-3.webp",
-      "assets/dan/profile-4.webp",
-      "assets/dan/profile-5.webp",
-      "assets/dan/profile-6.webp",
-      "assets/dan/profile-7.webp",
-      "assets/dan/profile-8.webp",
-      "assets/dan/profile-9.webp"
+      {
+        "src": "assets/dan/logo-1.webp"
+      },
+      {
+        "src": "assets/dan/logo-2.webp",
+        "half": true
+      },
+      {
+        "src": "assets/dan/logo-4.webp",
+        "half": true
+      },
+      {
+        "src": "assets/dan/logo-3.webp"
+      },
+      {
+        "src": "assets/dan/profile-1.webp"
+      },
+      {
+        "src": "assets/dan/profile-2.webp"
+      },
+      {
+        "src": "assets/dan/profile-3.webp"
+      },
+      {
+        "src": "assets/dan/profile-4.webp"
+      },
+      {
+        "src": "assets/dan/profile-5.webp"
+      },
+      {
+        "src": "assets/dan/profile-6.webp"
+      },
+      {
+        "src": "assets/dan/profile-7.webp"
+      },
+      {
+        "src": "assets/dan/profile-8.webp"
+      },
+      {
+        "src": "assets/dan/profile-9.webp"
+      }
     ]
   },
   {
@@ -231,18 +417,48 @@
     "cover": "assets/greazy/front-0.webp",
     "focus": "50% 40%",
     "gallery": [
-      "assets/greazy/front-0.webp",
-      "assets/greazy/front-1.webp",
-      "assets/greazy/front-2.webp",
-      "assets/greazy/front-3.webp",
-      "assets/greazy/front-4.webp",
-      "assets/greazy/plan-1.webp",
-      "assets/greazy/plan-4.webp",
-      "assets/greazy/in-1.webp",
-      "assets/greazy/in-2.webp",
-      "assets/greazy/in-3.webp",
-      "assets/greazy/in-4.webp",
-      "assets/greazy/menu.webp"
+      {
+        "src": "assets/greazy/front-0.webp"
+      },
+      {
+        "src": "assets/greazy/front-1.webp",
+        "half": true
+      },
+      {
+        "src": "assets/greazy/front-2.webp",
+        "half": true
+      },
+      {
+        "src": "assets/greazy/front-3.webp",
+        "half": true
+      },
+      {
+        "src": "assets/greazy/front-4.webp",
+        "half": true
+      },
+      {
+        "src": "assets/greazy/plan-1.webp",
+        "half": true
+      },
+      {
+        "src": "assets/greazy/plan-4.webp",
+        "half": true
+      },
+      {
+        "src": "assets/greazy/in-1.webp"
+      },
+      {
+        "src": "assets/greazy/in-2.webp"
+      },
+      {
+        "src": "assets/greazy/in-3.webp"
+      },
+      {
+        "src": "assets/greazy/in-4.webp"
+      },
+      {
+        "src": "assets/greazy/menu.webp"
+      }
     ]
   }
 ]

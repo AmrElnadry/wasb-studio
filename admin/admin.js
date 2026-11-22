@@ -101,6 +101,8 @@
       baseSha = ref.object.sha;
       await Promise.all(Object.entries(FILES).map(async ([k, f]) => { const r = await gh(`${R}/contents/${f}?ref=${baseSha}`); data[k] = JSON.parse(b64utf8(r.content)); }));
     }
+    // gallery entries are { src, half }; older files held plain paths
+    data.projects.forEach(q => { q.gallery = (q.gallery || []).map(g => typeof g === 'string' ? { src: g } : g); });
     for (const k of Object.keys(FILES)) orig[k] = JSON.stringify(data[k]);
     staged.clear(); fresh.clear(); dirCache.clear();
     sel = Math.min(sel, Math.max(0, data.projects.length - 1));
@@ -318,32 +320,57 @@
         <div class="panel__head"><h2>صور المشروع</h2>
           <div class="acts"><button class="btn btn--sm" type="button" data-act="g-pick">من الصور المرفوعة</button><label class="btn btn--sm btn--red">رفع صور<input type="file" accept="image/*" multiple hidden data-act="g-files"></label></div>
         </div>
-        <p class="panel__note">اسحب الصور من جهازك وارميها هنا. الشبكة دي هي نفس اللي هتظهر في صفحة المشروع. امسك أي صورة وحركها لمكان تاني، والباقي هيترتب لوحده.</p>
+        <p class="panel__note">اسحب الصور من جهازك وارميها هنا. الترتيب ده هو نفس اللي هيظهر في صفحة المشروع: كل صورة بعرض الصفحة، وأي صورتين ورا بعض عليهم «نص عرض» (◧) بيقعدوا جنب بعض. امسك أي صورة وحركها لمكان تاني، والباقي هيترتب لوحده.</p>
         <div class="gdrop" id="gdrop">${galleryHtml(p)}</div>
       </div>`;
   }
-  // the same rows the project page draws: one height per row, each image at its own proportions
+  // the same column the project page draws: full width, or two half-width images side by side at one height
   const ratios = new Map();
-  const ratioOf = s => (ratios.get(s) || 1.333).toFixed(3);
+  const ratioOf = src => ratios.get(src) || 1.333;
+  function layout(list) {
+    const out = list.map(g => ({ g, r: ratioOf(g.src), s: 1, full: true }));
+    for (let i = 0; i < out.length - 1; i++) {
+      const a = out[i], b = out[i + 1];
+      if (a.g.half && b.g.half) { const sum = a.r + b.r; a.full = b.full = false; a.s = a.r / sum; b.s = b.r / sum; i++; }
+    }
+    return out;
+  }
+  // re-apply the layout to the images as they stand on screen (after a move, a toggle, or an image loading)
+  function relayout() {
+    const grid = $('#ggrid'); if (!grid) return;
+    const els = $$('.gal__it', grid);
+    layout(els.map(el => ({ src: el.dataset.p, half: el.dataset.half === '1' }))).forEach((x, i) => {
+      const el = els[i];
+      el.classList.toggle('is-full', x.full);
+      el.style.setProperty('--r', x.r.toFixed(4)); el.style.setProperty('--s', x.s.toFixed(4));
+    });
+  }
+  let relayoutQueued = 0;
   document.addEventListener('load', e => {
     const im = e.target, it = im.tagName === 'IMG' && im.closest('.gal__it');
     if (!it || !im.naturalWidth) return;
-    const r = Math.max(.56, Math.min(4, im.naturalWidth / im.naturalHeight));
-    if (ratios.get(it.dataset.p) !== r) { ratios.set(it.dataset.p, r); it.style.setProperty('--r', r.toFixed(3)); }
+    const r = im.naturalWidth / im.naturalHeight;
+    if (ratios.get(it.dataset.p) === r) return;
+    ratios.set(it.dataset.p, r);
+    cancelAnimationFrame(relayoutQueued); relayoutQueued = requestAnimationFrame(relayout);
   }, true);
   function galleryHtml(p) {
     if (!p.gallery.length) return '<div class="gdrop__empty"><b>اسحب صور المشروع هنا</b><span>أو اضغط «رفع صور»</span></div>';
-    return `<div class="gal"><div class="gal__grid" id="ggrid">${p.gallery.map(s => `<div class="gal__it" draggable="true" data-p="${esc(s)}" style="--r:${ratioOf(s)}">
-        <img src="${esc(imgUrl(s))}" alt="" draggable="false">
-        ${staged.has(s) ? '<span class="tag tag--new">جديدة</span>' : ''}${p.cover === s ? '<span class="tag">الغلاف</span>' : ''}
-        <div class="gal__tools"><button type="button" data-act="g-cover" title="اجعلها صورة الغلاف">★</button><button type="button" data-act="g-del" title="إزالة من المشروع">✕</button></div>
-      </div>`).join('')}</div></div>`;
+    return `<div class="gal" id="ggrid">${layout(p.gallery).map(({ g, r, s, full }) => `<div class="gal__it${full ? ' is-full' : ''}${g.half ? ' is-half' : ''}" draggable="true" data-p="${esc(g.src)}" data-half="${g.half ? 1 : 0}" style="--r:${r.toFixed(4)};--s:${s.toFixed(4)}">
+        <img src="${esc(imgUrl(g.src))}" alt="" draggable="false">
+        ${staged.has(g.src) ? '<span class="tag tag--new">جديدة</span>' : ''}${p.cover === g.src ? '<span class="tag">الغلاف</span>' : ''}
+        <div class="gal__tools">
+          <button type="button" data-act="g-half" aria-pressed="${!!g.half}" title="${g.half ? 'رجّعها بعرض كامل' : 'نص عرض: تقعد جنب الصورة اللي بعدها لو هي كمان نص عرض'}">◧</button>
+          <button type="button" data-act="g-cover" title="اجعلها صورة الغلاف">★</button>
+          <button type="button" data-act="g-del" title="إزالة من المشروع">✕</button>
+        </div>
+      </div>`).join('')}</div>`;
   }
   function drawGallery() { const d = $('#gdrop'); if (d) d.innerHTML = galleryHtml(project()); }
   function addToGallery(p, paths) {
-    const add = paths.filter(x => !p.gallery.includes(x));
+    const add = paths.filter(x => !p.gallery.some(g => g.src === x));
     if (!add.length) return;
-    p.gallery.push(...add);
+    p.gallery.push(...add.map(src => ({ src })));
     if (p === project()) drawGallery();
     syncDirty();
   }
@@ -400,7 +427,14 @@
         addToGallery(p, await openPicker({ dir: projDir(p), multi: true, title: 'صور المشروع', hint: 'اختار الصور بالترتيب اللي عاوزها تتضاف بيه.' }));
         return;
       }
-      if (act === 'g-del') { const x = el.closest('.gal__it').dataset.p; p.gallery = p.gallery.filter(y => y !== x); drawGallery(); syncDirty(); return; }
+      if (act === 'g-del') { const x = el.closest('.gal__it').dataset.p; p.gallery = p.gallery.filter(g => g.src !== x); drawGallery(); syncDirty(); return; }
+      if (act === 'g-half') {
+        const it = el.closest('.gal__it'), g = p.gallery.find(y => y.src === it.dataset.p);
+        if (g.half) delete g.half; else g.half = true;
+        it.dataset.half = g.half ? 1 : 0; it.classList.toggle('is-half', !!g.half);
+        el.setAttribute('aria-pressed', !!g.half);
+        flip($('#ggrid'), relayout); syncDirty(); return;
+      }
       if (act === 'g-cover') { p.cover = el.closest('.gal__it').dataset.p; p.focus = '50% 50%'; const y = scrollY; renderProjects(); scrollTo({ top: y }); syncDirty(); toast('بقت صورة الغلاف. حدد النقطة المهمة فيها من فوق.'); return; }
     }
     if (tab === 'sites') {
@@ -454,7 +488,7 @@
     const before = document.documentElement.dir === 'rtl' ? !left : left;   // Arabic reads right to left
     const ref = before ? it : it.nextElementSibling;
     if (ref === drag.el || drag.el.nextElementSibling === ref) return;
-    flip(grid, () => grid.insertBefore(drag.el, ref));
+    flip(grid, () => { grid.insertBefore(drag.el, ref); relayout(); });
     drag.at = performance.now();
   });
   $('#view').addEventListener('dragleave', e => { const z = e.target.closest('#gpanel'); if (z && !z.contains(e.relatedTarget)) z.classList.remove('is-over'); });
@@ -478,7 +512,7 @@
     if (drag && drag.el) {
       drag.el.classList.remove('is-drag');
       const p = project(), order = $$('#ggrid .gal__it').map(x => x.dataset.p);
-      if (order.length && order.join('\n') !== p.gallery.join('\n')) { p.gallery = order; syncDirty(); }
+      if (order.length && order.join('\n') !== p.gallery.map(g => g.src).join('\n')) { p.gallery = order.map(src => p.gallery.find(g => g.src === src)); syncDirty(); }
     }
     drag = null; $$('.is-drop').forEach(x => x.classList.remove('is-drop'));
   });
