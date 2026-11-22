@@ -7,12 +7,6 @@
   const R = `/repos/${OWNER}/${REPO}`;
   const FILES = { projects: 'content/projects.json', sites: 'content/sites.json', contact: 'content/contact.json', tags: 'content/tags.json', texts: 'content/texts.json' };
   const PART = { projects: 'الأعمال', sites: 'المواقع', contact: 'التواصل', tags: 'الخدمات', texts: 'النصوص' };
-  const BLOCKS = {
-    full: { name: 'صورة بعرض كامل', hint: 'صورة واحدة بعرض الصفحة.' },
-    grid: { name: 'شبكة صور', hint: 'مجموعة صور جنب بعض.' },
-    strip: { name: 'شريط صفحات', hint: 'صفحات تتسحب يمين وشمال، مناسبة لصفحات البروفايل ودليل الهوية.' },
-    browser: { name: 'موقع داخل متصفح', hint: 'لقطة طويلة لموقع، تتقلّب داخل إطار متصفح.' }
-  };
   const DEMO = /[?&]demo\b/.test(location.search);   // local preview: reads the files beside it, never writes
 
   const $ = (s, r = document) => r.querySelector(s);
@@ -27,7 +21,7 @@
   const shown = new Map();      // repo path -> object URL, for images saved this session but not yet published
   const fresh = new Set();      // projects added in this session: their link can still change
   const dirCache = new Map();
-  let tab = 'projects', sel = 0, textQuery = '';
+  let tab = 'projects', sel = 0, textQuery = '', textGroup = '';
 
   /* ---------- storage ---------- */
   const store = {
@@ -320,39 +314,54 @@
         </div>` : '<p class="panel__note" style="margin:0">لازم يكون للمشروع صورة غلاف.</p>'}
       </div>
 
-      <div class="panel">
-        <h2>محتوى صفحة المشروع</h2>
-        <p class="panel__note">الأقسام بتظهر في الصفحة بالترتيب ده. اسحب الصور لتغيير ترتيبها جوه القسم.</p>
-        <div class="blocks">${p.blocks.map((b, k) => blockCard(b, k, p)).join('')}
-          <div class="add-blk"><span>إضافة قسم:</span>${Object.entries(BLOCKS).map(([k, v]) => `<button class="btn btn--sm" type="button" data-act="add-block" data-type="${k}" title="${esc(v.hint)}">${esc(v.name)}</button>`).join('')}</div>
+      <div class="panel gpanel" id="gpanel">
+        <div class="panel__head"><h2>صور المشروع</h2>
+          <div class="acts"><button class="btn btn--sm" type="button" data-act="g-pick">من الصور المرفوعة</button><label class="btn btn--sm btn--red">رفع صور<input type="file" accept="image/*" multiple hidden data-act="g-files"></label></div>
         </div>
+        <p class="panel__note">اسحب الصور من جهازك وارميها هنا. الشبكة دي هي نفس اللي هتظهر في صفحة المشروع. امسك أي صورة وحركها لمكان تاني، والباقي هيترتب لوحده.</p>
+        <div class="gdrop" id="gdrop">${galleryHtml(p)}</div>
       </div>`;
   }
-  function blockCard(b, k, p) {
-    const P = ['projects', sel, 'blocks', k];
-    const many = b.type === 'grid' || b.type === 'strip';
-    const imgs = many ? (b.items || []) : (b.src ? [b.src] : []);
-    const wide = b.type !== 'grid';
-    return `<div class="blk" data-k="${k}">
-      <div class="blk__head">
-        <span class="blk__n">${String(k + 1).padStart(2, '0')}</span><span class="blk__type">${esc(BLOCKS[b.type].name)}</span>
-        <div class="blk__tools">
-          <button class="icon-btn" type="button" data-act="blk-up" title="لأعلى" ${k === 0 ? 'disabled' : ''}>↑</button>
-          <button class="icon-btn" type="button" data-act="blk-down" title="لأسفل" ${k === p.blocks.length - 1 ? 'disabled' : ''}>↓</button>
-          <button class="icon-btn is-del" type="button" data-act="blk-del" title="حذف القسم">✕</button>
-        </div>
-      </div>
-      ${pair('عنوان القسم', [...P, 'title'], { ph: 'اختياري' })}
-      ${b.type === 'grid' ? `<div class="blk__opts">
-        <label class="field"><span>عدد الأعمدة</span><select ${bind([...P, 'cols'])} data-kind="num">${[1, 2, 3, 4].map(n => `<option${(b.cols || 2) === n ? ' selected' : ''}>${n}</option>`).join('')}</select></label>
-        <label class="check"><input type="checkbox" data-act="fit"${b.fit === 'contain' ? ' checked' : ''}> <span>اعرض الصور كاملة على خلفية بيضاء (من غير قص)</span></label>
-      </div>` : ''}
-      ${b.type === 'browser' ? `<div class="row2">${input('اسم الموقع في شريط المتصفح', [...P, 'label'], { ltr: true, ph: 'example.com' })}${input('رابط الموقع', [...P, 'url'], { ltr: true, ph: 'https://' })}</div>` : ''}
-      <div class="thumbs" data-k="${k}">
-        ${imgs.map((s, j) => `<div class="thumb${wide && !many ? ' is-wide' : ''}" draggable="${many}" data-j="${j}"><img src="${esc(imgUrl(s))}" alt="" loading="lazy">${staged.has(s) ? '<span class="new">جديدة</span>' : ''}<button class="x" type="button" data-act="img-del" title="إزالة">✕</button></div>`).join('')}
-        <button class="thumb thumb--add${wide && !many ? ' is-wide' : ''}" type="button" data-act="img-add">${many ? '＋ إضافة صور' : imgs.length ? 'تغيير الصورة' : '＋ اختيار صورة'}</button>
-      </div>
-    </div>`;
+  // the same rows the project page draws: one height per row, each image at its own proportions
+  const ratios = new Map();
+  const ratioOf = s => (ratios.get(s) || 1.333).toFixed(3);
+  document.addEventListener('load', e => {
+    const im = e.target, it = im.tagName === 'IMG' && im.closest('.gal__it');
+    if (!it || !im.naturalWidth) return;
+    const r = Math.max(.56, Math.min(4, im.naturalWidth / im.naturalHeight));
+    if (ratios.get(it.dataset.p) !== r) { ratios.set(it.dataset.p, r); it.style.setProperty('--r', r.toFixed(3)); }
+  }, true);
+  function galleryHtml(p) {
+    if (!p.gallery.length) return '<div class="gdrop__empty"><b>اسحب صور المشروع هنا</b><span>أو اضغط «رفع صور»</span></div>';
+    return `<div class="gal"><div class="gal__grid" id="ggrid">${p.gallery.map(s => `<div class="gal__it" draggable="true" data-p="${esc(s)}" style="--r:${ratioOf(s)}">
+        <img src="${esc(imgUrl(s))}" alt="" draggable="false">
+        ${staged.has(s) ? '<span class="tag tag--new">جديدة</span>' : ''}${p.cover === s ? '<span class="tag">الغلاف</span>' : ''}
+        <div class="gal__tools"><button type="button" data-act="g-cover" title="اجعلها صورة الغلاف">★</button><button type="button" data-act="g-del" title="إزالة من المشروع">✕</button></div>
+      </div>`).join('')}</div></div>`;
+  }
+  function drawGallery() { const d = $('#gdrop'); if (d) d.innerHTML = galleryHtml(project()); }
+  function addToGallery(p, paths) {
+    const add = paths.filter(x => !p.gallery.includes(x));
+    if (!add.length) return;
+    p.gallery.push(...add);
+    if (p === project()) drawGallery();
+    syncDirty();
+  }
+  async function uploadToGallery(files) {
+    const p = project();
+    toast(`جاري تجهيز ${files.length} صورة…`);
+    try { addToGallery(p, await stageFiles(projDir(p), files)); toast('اتضافت. هتترفع مع «حفظ ونشر».'); }
+    catch (x) { toast(x.message, true); }
+  }
+  // smooth reflow: every image glides from where it was to its new place
+  function flip(grid, change) {
+    const items = $$('.gal__it', grid), before = new Map(items.map(el => [el, el.getBoundingClientRect()]));
+    change();
+    items.forEach(el => {
+      const a = before.get(el), b = el.getBoundingClientRect();
+      if (!b.width || (Math.abs(a.left - b.left) < 1 && Math.abs(a.top - b.top) < 1 && Math.abs(a.width - b.width) < 1)) return;
+      el.animate([{ transformOrigin: '0 0', transform: `translate(${a.left - b.left}px, ${a.top - b.top}px) scale(${a.width / b.width}, ${a.height / b.height})` }, { transformOrigin: '0 0', transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.2, .8, .2, 1)' });
+    });
   }
 
   const project = () => data.projects[sel];
@@ -361,11 +370,11 @@
     const el = e.target.closest('[data-act]'); if (!el) return;
     const act = el.dataset.act;
     if (tab === 'projects') {
-      const p = project(), blkEl = el.closest('.blk'), k = blkEl ? Number(blkEl.dataset.k) : -1, b = k >= 0 ? p.blocks[k] : null;
+      const p = project();
       if (act === 'add-project') {
         let n = data.projects.length + 1, id = 'project-' + n;
         while (data.projects.some(q => q.id === id)) id = 'project-' + (++n);
-        const q = { id, name: { ar: '', en: '' }, line: { ar: '', en: '' }, year: '', about: { ar: '', en: '' }, tags: [], cover: '', focus: '50% 50%', blocks: [] };
+        const q = { id, name: { ar: '', en: '' }, line: { ar: '', en: '' }, year: '', about: { ar: '', en: '' }, tags: [], cover: '', focus: '50% 50%', gallery: [] };
         data.projects.push(q); fresh.add(q); sel = data.projects.length - 1; renderProjects(); syncDirty();
         $('#editor [data-b]').focus();
         return;
@@ -375,7 +384,7 @@
         data.projects.splice(sel, 1); fresh.delete(p); sel = Math.max(0, sel - 1); renderProjects(); syncDirty(); return;
       }
       if (act === 'cover') {
-        const [path] = await openPicker({ dir: projDir(p), multi: false, title: 'صورة الغلاف', hint: 'الصورة اللي بتظهر في صفحة الأعمال وفي مشاركة الرابط.' });
+        const [path] = await openPicker({ dir: projDir(p), multi: false, title: 'صورة الغلاف', hint: 'الصورة اللي بتظهر في صفحة الأعمال وفي مشاركة الرابط. تقدر كمان تضغط ★ على أي صورة في صور المشروع.' });
         if (path) { p.cover = path; p.focus = '50% 50%'; renderProjects(); syncDirty(); }
         return;
       }
@@ -387,35 +396,17 @@
         $('.cover__crop img').style.objectPosition = p.focus;
         syncDirty(); return;
       }
-      if (act === 'add-block') {
-        const type = el.dataset.type;
-        const nb = type === 'grid' ? { type, cols: 2, items: [] } : type === 'strip' ? { type, items: [] } : type === 'browser' ? { type, src: '', label: '', url: '' } : { type, src: '' };
-        p.blocks.push(nb); renderProjects(); syncDirty();
-        const many = type === 'grid' || type === 'strip';
-        const paths = await openPicker({ dir: projDir(p), multi: many, title: BLOCKS[type].name, hint: BLOCKS[type].hint });
-        if (paths.length) { if (many) nb.items = paths; else nb.src = paths[0]; renderProjects(); syncDirty(); }
+      if (act === 'g-pick') {
+        addToGallery(p, await openPicker({ dir: projDir(p), multi: true, title: 'صور المشروع', hint: 'اختار الصور بالترتيب اللي عاوزها تتضاف بيه.' }));
         return;
       }
-      if (act === 'blk-up' || act === 'blk-down') {
-        const to = act === 'blk-up' ? k - 1 : k + 1;
-        [p.blocks[k], p.blocks[to]] = [p.blocks[to], p.blocks[k]]; renderProjects(); syncDirty(); return;
-      }
-      if (act === 'blk-del') { if (!confirm('حذف القسم ده من الصفحة؟')) return; p.blocks.splice(k, 1); renderProjects(); syncDirty(); return; }
-      if (act === 'img-del') {
-        const j = Number(el.closest('.thumb').dataset.j);
-        if (b.items) b.items.splice(j, 1); else b.src = '';
-        renderProjects(); syncDirty(); return;
-      }
-      if (act === 'img-add') {
-        const many = !!b.items;
-        const paths = await openPicker({ dir: projDir(p), multi: many, title: BLOCKS[b.type].name, hint: BLOCKS[b.type].hint });
-        if (paths.length) { if (many) b.items.push(...paths); else b.src = paths[0]; renderProjects(); syncDirty(); }
-        return;
-      }
+      if (act === 'g-del') { const x = el.closest('.gal__it').dataset.p; p.gallery = p.gallery.filter(y => y !== x); drawGallery(); syncDirty(); return; }
+      if (act === 'g-cover') { p.cover = el.closest('.gal__it').dataset.p; p.focus = '50% 50%'; const y = scrollY; renderProjects(); scrollTo({ top: y }); syncDirty(); toast('بقت صورة الغلاف. حدد النقطة المهمة فيها من فوق.'); return; }
     }
     if (tab === 'sites') {
       const card = el.closest('[data-i]'), i = card ? Number(card.dataset.i) : -1;
-      if (act === 'add-site') { data.sites.push({ id: 'site-' + Date.now().toString(36), label: '', url: 'https://', src: '' }); renderSites(); syncDirty(); return; }
+      if (act === 'add-site') { data.sites.push({ id: 'site-' + Date.now().toString(36), label: '', url: 'https://', src: '', featured: false }); renderSites(); syncDirty(); return; }
+      if (act === 'site-star') { const s = data.sites[i]; s.featured = s.featured === false; renderSites(); syncDirty(); return; }
       if (act === 'site-up' || act === 'site-down') { const to = act === 'site-up' ? i - 1 : i + 1; [data.sites[i], data.sites[to]] = [data.sites[to], data.sites[i]]; renderSites(); syncDirty(); return; }
       if (act === 'site-del') { if (!confirm(`حذف «${data.sites[i].label || 'الموقع'}» من العرض؟`)) return; data.sites.splice(i, 1); renderSites(); syncDirty(); return; }
       if (act === 'site-img') {
@@ -430,51 +421,80 @@
     if (tab !== 'projects') return;
     const p = project();
     if (el.dataset.act === 'tag') { p.tags = $$('[data-act="tag"]').filter(c => c.checked).map(c => c.value); syncDirty(); }
-    if (el.dataset.act === 'fit') { const b = p.blocks[Number(el.closest('.blk').dataset.k)]; if (el.checked) b.fit = 'contain'; else delete b.fit; syncDirty(); }
+    if (el.dataset.act === 'g-files') { const files = Array.from(el.files || []); el.value = ''; if (files.length) uploadToGallery(files); }
   });
-  // project list: select and drag to reorder
-  let drag = null;
+  // project list: select and drag to reorder; gallery: drag to move, drop files to add
   $('#view').addEventListener('click', e => {
     const it = e.target.closest('.pitem'); if (!it) return;
     sel = Number(it.dataset.i); renderProjects(); scrollTo({ top: 0 });
   });
+  let drag = null;
+  const hasFiles = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
   $('#view').addEventListener('dragstart', e => {
-    const it = e.target.closest('.pitem, .thumb[draggable="true"]'); if (!it) return;
-    drag = it.classList.contains('pitem') ? { list: true, from: Number(it.dataset.i) } : { k: Number(it.closest('.thumbs').dataset.k), from: Number(it.dataset.j) };
+    const it = e.target.closest('.pitem, .gal__it'); if (!it) return;
+    drag = it.classList.contains('pitem') ? { list: true, from: Number(it.dataset.i) } : { el: it, at: 0 };
+    if (drag.el) requestAnimationFrame(() => it.classList.add('is-drag'));
     e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', '');
   });
   $('#view').addEventListener('dragover', e => {
+    if (!drag && hasFiles(e)) { const z = e.target.closest('#gpanel'); if (z) { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; z.classList.add('is-over'); } return; }
     if (!drag) return;
-    const it = drag.list ? e.target.closest('.pitem') : e.target.closest(`.thumbs[data-k="${drag.k}"] .thumb[draggable="true"]`);
-    $$('.is-drop').forEach(x => x.classList.remove('is-drop'));
-    if (!it) return;
-    e.preventDefault(); it.classList.add('is-drop');
-  });
-  $('#view').addEventListener('drop', e => {
-    if (!drag) return;
-    const it = drag.list ? e.target.closest('.pitem') : e.target.closest(`.thumbs[data-k="${drag.k}"] .thumb[draggable="true"]`);
-    if (!it) return;
-    e.preventDefault();
-    const to = Number(drag.list ? it.dataset.i : it.dataset.j);
     if (drag.list) {
-      const cur = data.projects[sel], [m] = data.projects.splice(drag.from, 1);
-      data.projects.splice(to, 0, m); sel = data.projects.indexOf(cur);
-    } else {
-      const arr = project().blocks[drag.k].items, [m] = arr.splice(drag.from, 1);
-      arr.splice(to, 0, m);
+      const it = e.target.closest('.pitem');
+      $$('.is-drop').forEach(x => x.classList.remove('is-drop'));
+      if (it) { e.preventDefault(); it.classList.add('is-drop'); }
+      return;
     }
-    drag = null; renderProjects(); syncDirty();
+    const grid = $('#ggrid'); if (!grid || !grid.contains(e.target)) return;
+    e.preventDefault();
+    const it = e.target.closest('.gal__it');
+    if (!it || it === drag.el || performance.now() - drag.at < 120) return;
+    const r = it.getBoundingClientRect();
+    const left = (e.clientX - r.left) / r.width < .5;
+    const before = document.documentElement.dir === 'rtl' ? !left : left;   // Arabic reads right to left
+    const ref = before ? it : it.nextElementSibling;
+    if (ref === drag.el || drag.el.nextElementSibling === ref) return;
+    flip(grid, () => grid.insertBefore(drag.el, ref));
+    drag.at = performance.now();
   });
-  $('#view').addEventListener('dragend', () => { drag = null; $$('.is-drop').forEach(x => x.classList.remove('is-drop')); });
+  $('#view').addEventListener('dragleave', e => { const z = e.target.closest('#gpanel'); if (z && !z.contains(e.relatedTarget)) z.classList.remove('is-over'); });
+  $('#view').addEventListener('drop', e => {
+    if (!drag && hasFiles(e)) {
+      const z = e.target.closest('#gpanel'); if (!z) return;
+      e.preventDefault(); z.classList.remove('is-over');
+      uploadToGallery(Array.from(e.dataTransfer.files || []));
+      return;
+    }
+    if (!drag) return;
+    e.preventDefault();
+    if (drag.list) {
+      const it = e.target.closest('.pitem'); if (!it) return;
+      const to = Number(it.dataset.i), cur = data.projects[sel], [m] = data.projects.splice(drag.from, 1);
+      data.projects.splice(to, 0, m); sel = data.projects.indexOf(cur);
+      drag = null; renderProjects(); syncDirty();
+    }
+  });
+  $('#view').addEventListener('dragend', () => {
+    if (drag && drag.el) {
+      drag.el.classList.remove('is-drag');
+      const p = project(), order = $$('#ggrid .gal__it').map(x => x.dataset.p);
+      if (order.length && order.join('\n') !== p.gallery.join('\n')) { p.gallery = order; syncDirty(); }
+    }
+    drag = null; $$('.is-drop').forEach(x => x.classList.remove('is-drop'));
+  });
+  // a file dropped anywhere else must not open in the browser and leave the panel
+  window.addEventListener('dragover', e => { if (hasFiles(e)) e.preventDefault(); });
+  window.addEventListener('drop', e => { if (hasFiles(e)) e.preventDefault(); });
 
   /* ---------- sites ---------- */
   function renderSites() {
-    $('#view').innerHTML = `<div class="page-head"><div><h1>المواقع</h1><p>المواقع اللي بتتعرض في قسم «من التصميم إلى الإطلاق» بالترتيب ده.</p></div><button class="btn btn--sm" type="button" data-act="add-site">＋ موقع</button></div>
-      <div class="sites">${data.sites.map((s, i) => `<div class="panel site" data-i="${i}">
+    $('#view').innerHTML = `<div class="page-head"><div><h1>المواقع</h1><p>كل المواقع بتظهر في صفحة المواقع. اللي عليها ★ بتظهر كمان في عرض المواقع في الرئيسية، بالترتيب ده.</p></div><button class="btn btn--sm" type="button" data-act="add-site">＋ موقع</button></div>
+      <div class="sites">${data.sites.map((s, i) => `<div class="panel site${s.featured !== false ? ' is-star' : ''}" data-i="${i}">
         <div class="site__shot">${s.src ? `<img src="${esc(imgUrl(s.src))}" alt="" loading="lazy">` : ''}<button class="btn btn--sm" type="button" data-act="site-img">${s.src ? 'تغيير اللقطة' : 'اختيار لقطة'}</button></div>
         ${input('الاسم الظاهر', ['sites', i, 'label'], { ltr: true, ph: 'example.com' })}
         ${input('الرابط', ['sites', i, 'url'], { ltr: true, ph: 'https://' })}
         <div class="site__tools">
+          <button class="star" type="button" data-act="site-star" aria-pressed="${s.featured !== false}" title="الظهور في الرئيسية"><span aria-hidden="true">★</span>${s.featured !== false ? 'في الرئيسية' : 'صفحة المواقع بس'}</button>
           <button class="icon-btn" type="button" data-act="site-up" title="قبل" ${i === 0 ? 'disabled' : ''}>→</button>
           <button class="icon-btn" type="button" data-act="site-down" title="بعد" ${i === data.sites.length - 1 ? 'disabled' : ''}>←</button>
           <button class="icon-btn is-del" type="button" data-act="site-del" title="حذف">✕</button>
@@ -507,22 +527,35 @@
   }
 
   /* ---------- texts ---------- */
-  const GROUPS = [['hero.', 'الواجهة'], ['about.', 'عن وثب'], ['works.', 'الأعمال'], ['filter.', 'الأعمال'], ['sites.', 'المواقع'], ['pano.', 'المواقع'], ['svc.', 'الخدمات'], ['door.', 'الخدمات'], ['services.', 'الخدمات'], ['approach.', 'المنهجية'], ['step.', 'المنهجية'], ['game.', 'المنهجية'], ['contact.', 'التواصل'], ['page.', 'صفحة المشروع'], ['case.', 'صفحة المشروع'], ['plate.', 'صفحة المشروع'], ['nav.', 'القائمة'], ['cta.', 'القائمة']];
+  const GROUPS = [['hero.', 'الواجهة'], ['about.', 'عن وثب'], ['works.', 'الأعمال'], ['filter.', 'الأعمال'], ['sites.', 'المواقع'], ['pano.', 'المواقع'], ['svc.', 'الخدمات'], ['door.', 'الخدمات'], ['services.', 'الخدمات'], ['approach.', 'المنهجية'], ['step.', 'المنهجية'], ['game.', 'المنهجية'], ['contact.', 'التواصل'], ['page.', 'الصفحات الداخلية'], ['case.', 'الصفحات الداخلية'], ['plate.', 'الصفحات الداخلية'], ['foot.', 'عام'], ['nav.', 'القائمة'], ['cta.', 'القائمة']];
   const groupOf = k => (GROUPS.find(([p]) => k.startsWith(p)) || [0, 'عام'])[1];
   function renderTexts() {
-    $('#view').innerHTML = `<div class="page-head"><div><h1>النصوص</h1><p>كل الكلام الثابت في الموقع باللغتين.</p></div><input class="search" id="tq" type="search" placeholder="ابحث في النصوص…" value="${esc(textQuery)}"></div>
+    const order = [...new Set(GROUPS.map(g => g[1]).concat('عام'))];
+    const count = g => Object.keys(data.texts.ar).filter(k => groupOf(k) === g).length;
+    const groups = order.filter(count);
+    if (!groups.includes(textGroup)) textGroup = groups[0];
+    $('#view').innerHTML = `<div class="page-head"><div><h1>النصوص</h1><p>كل الكلام الثابت في الموقع باللغتين، مقسّم حسب مكانه في الصفحة.</p></div><input class="search" id="tq" type="search" placeholder="ابحث في كل النصوص…" value="${esc(textQuery)}"></div>
+      <nav class="subtabs" id="tgroups">${groups.map(g => `<button type="button" data-g="${esc(g)}"${g === textGroup ? ' class="is-on"' : ''}>${esc(g)}<small>${count(g)}</small></button>`).join('')}</nav>
       <div class="panel texts" id="tlist"></div>`;
     drawTexts();
     $('#tq').addEventListener('input', e => { textQuery = e.target.value; drawTexts(); });
+    $('#tgroups').addEventListener('click', e => {
+      const b = e.target.closest('button[data-g]'); if (!b) return;
+      textGroup = b.dataset.g; textQuery = ''; $('#tq').value = '';
+      $$('#tgroups button').forEach(x => x.classList.toggle('is-on', x === b));
+      drawTexts();
+    });
   }
   function drawTexts() {
     const q = textQuery.trim().toLowerCase();
-    const keys = Object.keys(data.texts.ar).filter(k => !q || k.includes(q) || String(data.texts.ar[k]).toLowerCase().includes(q) || String(data.texts.en[k] || '').toLowerCase().includes(q));
+    $('#tgroups').classList.toggle('is-dim', !!q);
+    // a search looks through every group; otherwise only the open tab shows
+    const keys = Object.keys(data.texts.ar).filter(k => q ? (k.toLowerCase().includes(q) || String(data.texts.ar[k]).toLowerCase().includes(q) || String(data.texts.en[k] || '').toLowerCase().includes(q)) : groupOf(k) === textGroup);
     const order = [...new Set(GROUPS.map(g => g[1]).concat('عام'))];
     keys.sort((a, b) => order.indexOf(groupOf(a)) - order.indexOf(groupOf(b)));
     let last = '';
     $('#tlist').innerHTML = keys.map(k => {
-      const g = groupOf(k), head = g !== last ? `<h3>${esc(g)}</h3>` : ''; last = g;
+      const g = groupOf(k), head = q && g !== last ? `<h3>${esc(g)}</h3>` : ''; last = g;
       const long = String(data.texts.ar[k]).length > 60;
       return head + `<div class="trow"><code>${esc(k)}</code>
         <label class="field"><textarea ${bind(['texts', 'ar', k])} rows="${long ? 3 : 1}" aria-label="${esc(k)} عربي">${esc(data.texts.ar[k])}</textarea></label>
@@ -540,23 +573,18 @@
       ids.add(p.id);
       if (!p.name.ar.trim()) out.push(`مشروع #${i + 1}: الاسم بالعربي ناقص.`);
       if (!p.cover) out.push(`«${n}»: صورة الغلاف ناقصة.`);
-      p.blocks.forEach((b, k) => { if ((b.items && !b.items.length) || (!b.items && !b.src)) out.push(`«${n}»: القسم ${k + 1} (${BLOCKS[b.type].name}) من غير صور.`); });
+      if (!p.gallery.length) out.push(`«${n}»: مفيش صور في المشروع.`);
     });
+    if (data.sites.length && !data.sites.some(s => s.featured !== false)) out.push('لازم موقع واحد على الأقل يكون عليه نجمة علشان يظهر في الرئيسية.');
     data.sites.forEach((s, i) => { if (!s.label || !/^https?:\/\/.+/.test(s.url) || !s.src) out.push(`موقع #${i + 1}: الاسم أو الرابط أو اللقطة ناقصة.`); });
     return out;
   }
-  // empty optional titles are dropped so the files stay tidy
-  function tidy(projects) {
-    projects.forEach(p => p.blocks.forEach(b => { if (b.title && !b.title.ar && !b.title.en) delete b.title; if (b.type === 'browser' && !b.url) delete b.url; }));
-  }
-
   /* ---------- save: one commit ---------- */
   let saving = false;
   async function save() {
     if (saving) return;
     const issues = problems();
     if (issues.length) { toast(issues[0], true); return; }
-    tidy(data.projects);
     const parts = changedParts();
     // only images still used somewhere are uploaded
     const used = JSON.stringify([data.projects, data.sites]);

@@ -477,3 +477,31 @@ html[lang="en"] .pg__nav { text-transform: uppercase; letter-spacing: .06em; fon
   .pg__tiles { grid-template-columns: minmax(0, 1fr); }
   .pg__nav .pg__all { display: none; }
 }
+
+/* ---------- project gallery: rows of one height, every image at its own proportions ---------- */
+.gal { container-type: inline-size; padding-block: 0 var(--space); }
+.gal__grid { --row: max(140px, 17.5cqw); --gap: clamp(8px, 1.1cqw, 16px); display: flex; flex-wrap: wrap; gap: var(--gap); }
+.gal__grid::after { content: ''; flex: 999 1 0; }   /* the last row keeps its natural size instead of stretching */
+.gal__it { position: relative; margin: 0; flex: var(--r) 1 calc(var(--r) * var(--row)); aspect-ratio: var(--r); overflow: hidden; border-radius: 6px; background: var(--bg-2); }
+.gal__it img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+@container (max-width: 640px) { .gal__grid { --row: 48cqw; } }
+
+/* ---------- all websites (/sites/) ---------- */
+.sgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: clamp(20px, 2.4vw, 36px); padding-block: 0 var(--space); }
+.scard { display: grid; gap: 14px; }
+.scard .browser { max-width: none; width: 100%; }
+.scard__view { aspect-ratio: 16 / 10; overflow: hidden; background: #fff; }
+.scard__view img { width: 100%; height: auto; transition: translate 7s cubic-bezier(.45, 0, .55, 1); }
+.scard:hover .scard__view img, .scard:focus-visible .scard__view img { translate: 0 -35%; }
+.scard__meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: var(--display); }
+.scard__meta b { font-weight: 700; font-size: 1.1rem; }
+.scard__meta span { display: inline-flex; align-items: center; gap: 8px; color: var(--mute); font-size: .92rem; transition: color .3s; }
+.scard__meta svg { width: 14px; height: 14px; }
+.scard:hover .scard__meta span { color: var(--red); }
+html[dir="rtl"] .scard__meta svg { scale: -1 1; }
+.pano__more { display: flex; justify-content: center; margin-top: clamp(8px, 2vh, 20px); }
+.pano__all { display: inline-flex; align-items: center; gap: 10px; padding: 10px 22px 11px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); font-family: var(--display); font-size: .95rem; transition: color .3s, box-shadow .3s; }
+.pano__all:hover { color: var(--red); box-shadow: inset 0 0 0 1px var(--red); }
+.pano__all svg { width: 14px; height: 14px; }
+html[dir="rtl"] .pano__all svg { scale: -1 1; }
+html[lang="en"] .pano__all { text-transform: uppercase; letter-spacing: .06em; font-size: .8rem; }

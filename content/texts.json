@@ -106,7 +106,10 @@
     "page.client": "العميل",
     "page.more": "مشاريع أخرى",
     "page.all": "كل الأعمال",
-    "page.home": "الرئيسية"
+    "page.home": "الرئيسية",
+    "sites.all": "كل المواقع",
+    "page.sites": "المواقع",
+    "page.visit": "زيارة الموقع"
   },
   "en": {
     "nav.sites": "Websites",
@@ -215,6 +218,9 @@
     "page.client": "Client",
     "page.more": "More work",
     "page.all": "All work",
-    "page.home": "Home"
+    "page.home": "Home",
+    "sites.all": "All websites",
+    "page.sites": "Websites",
+    "page.visit": "Visit site"
   }
 }

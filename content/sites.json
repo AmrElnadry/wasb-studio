@@ -3,30 +3,35 @@
     "id": "alkamal-site",
     "label": "alkamal-er.com",
     "url": "https://alkamal-er.com/",
-    "src": "assets/web/alkamal-full.webp"
+    "src": "assets/web/alkamal-full.webp",
+    "featured": true
   },
   {
     "id": "vendviz",
     "label": "vendviz.com",
     "url": "https://www.vendviz.com/",
-    "src": "assets/web/vendviz-full.webp"
+    "src": "assets/web/vendviz-full.webp",
+    "featured": true
   },
   {
     "id": "jadeed",
     "label": "jadeedsa.com",
     "url": "https://jadeedsa.com/",
-    "src": "assets/web/jadeed-full.webp"
+    "src": "assets/web/jadeed-full.webp",
+    "featured": true
   },
   {
     "id": "viora",
     "label": "viora-dev.com",
     "url": "https://viora-dev.com/",
-    "src": "assets/web/viora-full.webp"
+    "src": "assets/web/viora-full.webp",
+    "featured": true
   },
   {
     "id": "blue",
     "label": "blue-network.sa",
     "url": "https://blue-network.sa/",
-    "src": "assets/web/blue-full.webp"
+    "src": "assets/web/blue-full.webp",
+    "featured": true
   }
 ]

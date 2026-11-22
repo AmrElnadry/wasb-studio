@@ -25,6 +25,28 @@
     <image:image><image:loc>https://wasb.studio/assets/greazy/front-0.webp</image:loc></image:image>
   </url>
   <url>
+    <loc>https://wasb.studio/sites/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/sites/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/sites/"/>
+    <image:image><image:loc>https://wasb.studio/assets/web/alkamal-full.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/web/vendviz-full.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/web/jadeed-full.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/web/viora-full.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/web/blue-full.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://wasb.studio/en/sites/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/sites/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/sites/"/>
+    <image:image><image:loc>https://wasb.studio/assets/web/alkamal-full.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/web/vendviz-full.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/web/jadeed-full.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/web/viora-full.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/web/blue-full.webp</image:loc></image:image>
+  </url>
+  <url>
     <loc>https://wasb.studio/work/ula/</loc>
     <lastmod>2026-11-22</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/ula/"/>

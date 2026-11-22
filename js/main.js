@@ -2,7 +2,7 @@
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  const I18N = window.WASB_I18N, PROJECTS = window.WASB_PROJECTS, SITES = window.WASB_SITES, TAGS = window.WASB_TAGS, CONTACT = window.WASB_CONTACT;
+  const I18N = window.WASB_I18N, PROJECTS = window.WASB_PROJECTS, SITES = (window.WASB_SITES || []).filter(s => s.featured !== false), TAGS = window.WASB_TAGS, CONTACT = window.WASB_CONTACT;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -46,6 +46,7 @@
     const btn = $('#langToggle');
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
+    $('#sitesAll').href = BASE() + 'sites/';
     renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); buildGhost(); alignHero(); if (window.WASB_HAND) window.WASB_HAND(); syncGame();
     if (!first) onScroll();
   }

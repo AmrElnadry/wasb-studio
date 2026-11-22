@@ -20,36 +20,15 @@
     ],
     "cover": "assets/ula/artwork-h.webp",
     "focus": "40% 45%",
-    "blocks": [
-      {
-        "type": "full",
-        "src": "assets/ula/artwork-h.webp"
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/ula/backpack.webp",
-          "assets/ula/scarf.webp"
-        ],
-        "cols": 2
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/ula/pillow.webp",
-          "assets/ula/tag.webp",
-          "assets/ula/eyemask.webp"
-        ],
-        "cols": 3
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/ula/pin.webp",
-          "assets/ula/bottle.webp"
-        ],
-        "cols": 2
-      }
+    "gallery": [
+      "assets/ula/artwork-h.webp",
+      "assets/ula/backpack.webp",
+      "assets/ula/scarf.webp",
+      "assets/ula/pillow.webp",
+      "assets/ula/tag.webp",
+      "assets/ula/eyemask.webp",
+      "assets/ula/pin.webp",
+      "assets/ula/bottle.webp"
     ]
   },
   {
@@ -74,80 +53,43 @@
     ],
     "cover": "assets/fzt/profile-01.webp",
     "focus": "80% 30%",
-    "blocks": [
-      {
-        "type": "full",
-        "src": "assets/fzt/guide-02.webp"
-      },
-      {
-        "type": "strip",
-        "title": {
-          "ar": "دليل الهوية",
-          "en": "Brand guidelines"
-        },
-        "items": [
-          "assets/fzt/guide-01.webp",
-          "assets/fzt/guide-02.webp",
-          "assets/fzt/guide-03.webp",
-          "assets/fzt/guide-05.webp",
-          "assets/fzt/guide-06.webp",
-          "assets/fzt/guide-07.webp",
-          "assets/fzt/guide-09.webp",
-          "assets/fzt/guide-11.webp",
-          "assets/fzt/guide-13.webp"
-        ]
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/fzt/poster.webp",
-          "assets/fzt/pattern.webp"
-        ],
-        "cols": 2,
-        "fit": "contain"
-      },
-      {
-        "type": "strip",
-        "title": {
-          "ar": "بروفايل الشركة",
-          "en": "Company profile"
-        },
-        "items": [
-          "assets/fzt/profile-01.webp",
-          "assets/fzt/profile-02.webp",
-          "assets/fzt/profile-03.webp",
-          "assets/fzt/profile-04.webp",
-          "assets/fzt/profile-05.webp",
-          "assets/fzt/profile-08.webp",
-          "assets/fzt/profile-09.webp",
-          "assets/fzt/profile-10.webp",
-          "assets/fzt/profile-11.webp",
-          "assets/fzt/profile-12.webp",
-          "assets/fzt/profile-13.webp",
-          "assets/fzt/profile-16.webp",
-          "assets/fzt/profile-17.webp",
-          "assets/fzt/profile-18.webp",
-          "assets/fzt/profile-19.webp",
-          "assets/fzt/profile-20.webp",
-          "assets/fzt/profile-21.webp",
-          "assets/fzt/profile-22.webp",
-          "assets/fzt/profile-23.webp",
-          "assets/fzt/profile-24.webp",
-          "assets/fzt/profile-25.webp",
-          "assets/fzt/profile-26.webp",
-          "assets/fzt/profile-27.webp",
-          "assets/fzt/profile-28.webp"
-        ]
-      },
-      {
-        "type": "browser",
-        "title": {
-          "ar": "تصميم الموقع",
-          "en": "Website design"
-        },
-        "src": "assets/fzt/website.webp",
-        "label": "fzt.com.sa"
-      }
+    "gallery": [
+      "assets/fzt/guide-02.webp",
+      "assets/fzt/guide-01.webp",
+      "assets/fzt/guide-03.webp",
+      "assets/fzt/guide-05.webp",
+      "assets/fzt/guide-06.webp",
+      "assets/fzt/guide-07.webp",
+      "assets/fzt/guide-09.webp",
+      "assets/fzt/guide-11.webp",
+      "assets/fzt/guide-13.webp",
+      "assets/fzt/poster.webp",
+      "assets/fzt/pattern.webp",
+      "assets/fzt/profile-01.webp",
+      "assets/fzt/profile-02.webp",
+      "assets/fzt/profile-03.webp",
+      "assets/fzt/profile-04.webp",
+      "assets/fzt/profile-05.webp",
+      "assets/fzt/profile-08.webp",
+      "assets/fzt/profile-09.webp",
+      "assets/fzt/profile-10.webp",
+      "assets/fzt/profile-11.webp",
+      "assets/fzt/profile-12.webp",
+      "assets/fzt/profile-13.webp",
+      "assets/fzt/profile-16.webp",
+      "assets/fzt/profile-17.webp",
+      "assets/fzt/profile-18.webp",
+      "assets/fzt/profile-19.webp",
+      "assets/fzt/profile-20.webp",
+      "assets/fzt/profile-21.webp",
+      "assets/fzt/profile-22.webp",
+      "assets/fzt/profile-23.webp",
+      "assets/fzt/profile-24.webp",
+      "assets/fzt/profile-25.webp",
+      "assets/fzt/profile-26.webp",
+      "assets/fzt/profile-27.webp",
+      "assets/fzt/profile-28.webp",
+      "assets/fzt/website.webp"
     ]
   },
   {
@@ -172,63 +114,29 @@
     ],
     "cover": "assets/iaar/cards.webp",
     "focus": "70% 45%",
-    "blocks": [
-      {
-        "type": "full",
-        "src": "assets/iaar/cards.webp"
-      },
-      {
-        "type": "strip",
-        "title": {
-          "ar": "دليل الهوية",
-          "en": "Brand guidelines"
-        },
-        "items": [
-          "assets/iaar/guide-01.webp",
-          "assets/iaar/guide-02.webp",
-          "assets/iaar/guide-03.webp",
-          "assets/iaar/guide-05.webp",
-          "assets/iaar/guide-06.webp",
-          "assets/iaar/guide-08.webp",
-          "assets/iaar/guide-09.webp",
-          "assets/iaar/guide-10.webp",
-          "assets/iaar/guide-11.webp",
-          "assets/iaar/guide-12.webp"
-        ]
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/iaar/logo-01.webp",
-          "assets/iaar/logo-05.webp",
-          "assets/iaar/logo-07.webp"
-        ],
-        "cols": 3
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/iaar/stationery-02.webp",
-          "assets/iaar/stationery-03.webp"
-        ],
-        "cols": 2,
-        "fit": "contain"
-      },
-      {
-        "type": "strip",
-        "title": {
-          "ar": "بروفايل الشركة",
-          "en": "Company profile"
-        },
-        "items": [
-          "assets/iaar/profile-1.webp",
-          "assets/iaar/profile-2.webp",
-          "assets/iaar/profile-3.webp",
-          "assets/iaar/profile-4.webp",
-          "assets/iaar/profile-5.webp",
-          "assets/iaar/profile-6.webp"
-        ]
-      }
+    "gallery": [
+      "assets/iaar/cards.webp",
+      "assets/iaar/guide-01.webp",
+      "assets/iaar/guide-02.webp",
+      "assets/iaar/guide-03.webp",
+      "assets/iaar/guide-05.webp",
+      "assets/iaar/guide-06.webp",
+      "assets/iaar/guide-08.webp",
+      "assets/iaar/guide-09.webp",
+      "assets/iaar/guide-10.webp",
+      "assets/iaar/guide-11.webp",
+      "assets/iaar/guide-12.webp",
+      "assets/iaar/logo-01.webp",
+      "assets/iaar/logo-05.webp",
+      "assets/iaar/logo-07.webp",
+      "assets/iaar/stationery-02.webp",
+      "assets/iaar/stationery-03.webp",
+      "assets/iaar/profile-1.webp",
+      "assets/iaar/profile-2.webp",
+      "assets/iaar/profile-3.webp",
+      "assets/iaar/profile-4.webp",
+      "assets/iaar/profile-5.webp",
+      "assets/iaar/profile-6.webp"
     ]
   },
   {
@@ -252,42 +160,15 @@
     ],
     "cover": "assets/alkamal/cover-dark.webp",
     "focus": "48% 45%",
-    "blocks": [
-      {
-        "type": "full",
-        "src": "assets/alkamal/cover-dark.webp"
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/alkamal/spread-about.webp",
-          "assets/alkamal/spread-structure.webp"
-        ],
-        "cols": 2
-      },
-      {
-        "type": "full",
-        "src": "assets/alkamal/spread-city.webp"
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/alkamal/spread-p1.webp",
-          "assets/alkamal/spread-p2.webp",
-          "assets/alkamal/spread-p3.webp"
-        ],
-        "cols": 3
-      },
-      {
-        "type": "browser",
-        "title": {
-          "ar": "الموقع الإلكتروني",
-          "en": "Website"
-        },
-        "src": "assets/web/alkamal.webp",
-        "label": "alkamal-er.com",
-        "url": "https://alkamal-er.com/"
-      }
+    "gallery": [
+      "assets/alkamal/cover-dark.webp",
+      "assets/alkamal/spread-about.webp",
+      "assets/alkamal/spread-structure.webp",
+      "assets/alkamal/spread-city.webp",
+      "assets/alkamal/spread-p1.webp",
+      "assets/alkamal/spread-p2.webp",
+      "assets/alkamal/spread-p3.webp",
+      "assets/web/alkamal.webp"
     ]
   },
   {
@@ -311,41 +192,20 @@
     ],
     "cover": "assets/dan/logo-2.webp",
     "focus": "40% 30%",
-    "blocks": [
-      {
-        "type": "full",
-        "src": "assets/dan/logo-1.webp"
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/dan/logo-2.webp",
-          "assets/dan/logo-4.webp"
-        ],
-        "cols": 2
-      },
-      {
-        "type": "full",
-        "src": "assets/dan/logo-3.webp"
-      },
-      {
-        "type": "strip",
-        "title": {
-          "ar": "بروفايل الشركة",
-          "en": "Company profile"
-        },
-        "items": [
-          "assets/dan/profile-1.webp",
-          "assets/dan/profile-2.webp",
-          "assets/dan/profile-3.webp",
-          "assets/dan/profile-4.webp",
-          "assets/dan/profile-5.webp",
-          "assets/dan/profile-6.webp",
-          "assets/dan/profile-7.webp",
-          "assets/dan/profile-8.webp",
-          "assets/dan/profile-9.webp"
-        ]
-      }
+    "gallery": [
+      "assets/dan/logo-1.webp",
+      "assets/dan/logo-2.webp",
+      "assets/dan/logo-4.webp",
+      "assets/dan/logo-3.webp",
+      "assets/dan/profile-1.webp",
+      "assets/dan/profile-2.webp",
+      "assets/dan/profile-3.webp",
+      "assets/dan/profile-4.webp",
+      "assets/dan/profile-5.webp",
+      "assets/dan/profile-6.webp",
+      "assets/dan/profile-7.webp",
+      "assets/dan/profile-8.webp",
+      "assets/dan/profile-9.webp"
     ]
   },
   {
@@ -370,55 +230,19 @@
     ],
     "cover": "assets/greazy/front-0.webp",
     "focus": "50% 40%",
-    "blocks": [
-      {
-        "type": "full",
-        "src": "assets/greazy/front-0.webp"
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/greazy/front-1.webp",
-          "assets/greazy/front-2.webp",
-          "assets/greazy/front-3.webp",
-          "assets/greazy/front-4.webp"
-        ],
-        "cols": 2
-      },
-      {
-        "type": "grid",
-        "title": {
-          "ar": "مخططات التنفيذ",
-          "en": "Production layouts"
-        },
-        "items": [
-          "assets/greazy/plan-1.webp",
-          "assets/greazy/plan-4.webp"
-        ],
-        "cols": 2,
-        "fit": "contain"
-      },
-      {
-        "type": "full",
-        "src": "assets/greazy/in-1.webp"
-      },
-      {
-        "type": "grid",
-        "items": [
-          "assets/greazy/in-2.webp",
-          "assets/greazy/in-3.webp",
-          "assets/greazy/in-4.webp"
-        ],
-        "cols": 3
-      },
-      {
-        "type": "full",
-        "title": {
-          "ar": "قائمة الطعام",
-          "en": "Menu"
-        },
-        "src": "assets/greazy/menu.webp"
-      }
+    "gallery": [
+      "assets/greazy/front-0.webp",
+      "assets/greazy/front-1.webp",
+      "assets/greazy/front-2.webp",
+      "assets/greazy/front-3.webp",
+      "assets/greazy/front-4.webp",
+      "assets/greazy/plan-1.webp",
+      "assets/greazy/plan-4.webp",
+      "assets/greazy/in-1.webp",
+      "assets/greazy/in-2.webp",
+      "assets/greazy/in-3.webp",
+      "assets/greazy/in-4.webp",
+      "assets/greazy/menu.webp"
     ]
   }
 ]
