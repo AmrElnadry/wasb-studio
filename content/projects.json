@@ -21,14 +21,14 @@
     "cover": "assets/ula/artwork-h.webp",
     "focus": "40% 45%",
     "gallery": [
-      "assets/ula/artwork-h.webp",
       "assets/ula/backpack.webp",
       "assets/ula/scarf.webp",
+      "assets/ula/artwork-h.webp",
       "assets/ula/pillow.webp",
-      "assets/ula/tag.webp",
-      "assets/ula/eyemask.webp",
       "assets/ula/pin.webp",
-      "assets/ula/bottle.webp"
+      "assets/ula/bottle.webp",
+      "assets/ula/eyemask.webp",
+      "assets/ula/tag.webp"
     ]
   },
   {
