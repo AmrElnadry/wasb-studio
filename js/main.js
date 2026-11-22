@@ -309,7 +309,6 @@
   function renderContact() {
     const c = CONTACT || {};
     const links = [];
-    if (c.email) links.push(`<a class="link" href="mailto:${esc(c.email)}"><span>${esc(t('contact.email'))}</span>${arrow}</a>`);
     ['instagram', 'behance', 'linkedin', 'x'].forEach(k => { if (c[k]) links.push(`<a class="link" href="${esc(c[k])}" target="_blank" rel="noopener"><span>${esc(t('contact.' + k))}</span>${arrow}</a>`); });
     const phones = (c.phones || []).map(p => String(p).replace(/\D/g, '').replace(/^(966|0)/, ''));
     const wa = c.whatsapp ? `<a class="wa" aria-label="${esc(t('contact.whatsapp'))}" href="https://wa.me/${String(c.whatsapp).replace(/\D/g, '')}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg></a>` : '';
@@ -319,6 +318,7 @@
     // labels share one column; the WhatsApp mark floats over the numbers and centres on them
     $('#contactFacts').innerHTML =
       (phones.length || wa ? `<dt>${phones.length ? esc(t('contact.phone')) : ''}</dt><dd class="nums">${wa}${phones.map(d => `<a href="tel:+966${d}">+966 ${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5)}</a>`).join('')}</dd>` : '') +
+      (c.email ? `<dt>${esc(t('contact.email'))}</dt><dd class="mail"><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></dd>` : '') +
       `<dt>${esc(t('contact.addressLabel'))}</dt><dd class="addr">${esc(t('contact.address'))}</dd>`;
     $('#contactAddr').hidden = true;
   }

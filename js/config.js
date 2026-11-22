@@ -8,7 +8,7 @@
 window.WASB_CONTACT = {
   whatsapp: '966567561619',   // أرقام فقط مع مفتاح الدولة
   phones: ['0567561619', '0531473116'],   // تظهر بصيغة +966 5X XXX XXXX
-  email: '',
+  email: 'brand@wasb.studio',
   instagram: '',
   behance: '',
   linkedin: '',

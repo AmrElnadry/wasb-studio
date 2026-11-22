@@ -20,4 +20,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://amrelnadry.github.io/wasb-studio/sitemap.xml
+Sitemap: https://wasb.studio/sitemap.xml

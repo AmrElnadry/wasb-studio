@@ -11,12 +11,12 @@
 
 ## أعمال مختارة / Selected work
 
-- [نادي العلا · Summer Camp / AlUla Club · Summer Camp](https://amrelnadry.github.io/wasb-studio/#/work/ula): طقم هدايا لاعبي المعسكر الصيفي، لصالح فزت ونادي العلا. Summer camp player gift set, for FZT and AlUla Club. (هوية بصرية، تطبيقات الهوية / Brand identity، Brand applications)
-- [فزت / FZT](https://amrelnadry.github.io/wasb-studio/#/work/fzt): شركة فزت للتسويق وإدارة الفعاليات. FZT, marketing and event management. (هوية بصرية، بروفايل شركة، موقع إلكتروني / Brand identity، Company profile، Website)
-- [آيار / IAAR](https://amrelnadry.github.io/wasb-studio/#/work/iaar): شركة آيار للصناعات الخشبية والمعدنية. IAAR, wood and metal industries. (هوية بصرية، بروفايل شركة، مطبوعات / Brand identity، Company profile، Print)
-- [الكمال / Al Kamal](https://amrelnadry.github.io/wasb-studio/#/work/alkamal): شركة مقاولات: بروفايل مطبوع وموقع إلكتروني. Contracting company: printed profile and website. (بروفايل شركة، موقع إلكتروني / Company profile، Website)
-- [دان الرائدة / Dan AlRaeda](https://amrelnadry.github.io/wasb-studio/#/work/dan): فريقك المتكامل لنجاح أعمالك. Back office services. (شعار، بروفايل شركة / Logo، Company profile)
-- [Greazy / Greazy](https://amrelnadry.github.io/wasb-studio/#/work/greazy): مطعم: شعار، واجهات المحل، ولوحات داخلية وقائمة طعام. Restaurant: logo, storefront, interior signage and menu. (شعار، واجهات ولوحات، مطبوعات / Logo، Signage، Print)
+- [نادي العلا · Summer Camp / AlUla Club · Summer Camp](https://wasb.studio/#/work/ula): طقم هدايا لاعبي المعسكر الصيفي، لصالح فزت ونادي العلا. Summer camp player gift set, for FZT and AlUla Club. (هوية بصرية، تطبيقات الهوية / Brand identity، Brand applications)
+- [فزت / FZT](https://wasb.studio/#/work/fzt): شركة فزت للتسويق وإدارة الفعاليات. FZT, marketing and event management. (هوية بصرية، بروفايل شركة، موقع إلكتروني / Brand identity، Company profile، Website)
+- [آيار / IAAR](https://wasb.studio/#/work/iaar): شركة آيار للصناعات الخشبية والمعدنية. IAAR, wood and metal industries. (هوية بصرية، بروفايل شركة، مطبوعات / Brand identity، Company profile، Print)
+- [الكمال / Al Kamal](https://wasb.studio/#/work/alkamal): شركة مقاولات: بروفايل مطبوع وموقع إلكتروني. Contracting company: printed profile and website. (بروفايل شركة، موقع إلكتروني / Company profile، Website)
+- [دان الرائدة / Dan AlRaeda](https://wasb.studio/#/work/dan): فريقك المتكامل لنجاح أعمالك. Back office services. (شعار، بروفايل شركة / Logo، Company profile)
+- [Greazy / Greazy](https://wasb.studio/#/work/greazy): مطعم: شعار، واجهات المحل، ولوحات داخلية وقائمة طعام. Restaurant: logo, storefront, interior signage and menu. (شعار، واجهات ولوحات، مطبوعات / Logo، Signage، Print)
 
 ## مواقع أطلقناها / Websites we launched
 
@@ -30,6 +30,8 @@
 
 - واتساب / WhatsApp: https://wa.me/966567561619
 - هاتف / Phone: +966567561619، +966531473116
+- البريد / Email: brand@wasb.studio
+
 - العنوان / Address: حي الفلاح، الرياض، المملكة العربية السعودية (Al Falah, Riyadh, Saudi Arabia)
-- الموقع / Website: https://amrelnadry.github.io/wasb-studio/
+- الموقع / Website: https://wasb.studio/
 - Blue Network: https://blue-network.sa/

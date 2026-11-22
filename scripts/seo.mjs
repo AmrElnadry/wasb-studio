@@ -6,7 +6,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
-const SITE = 'https://amrelnadry.github.io/wasb-studio/';   // change here when the custom domain is set
+const SITE = 'https://wasb.studio/';   // change here when the custom domain is set
 const root = fileURLToPath(new URL('..', import.meta.url));
 
 const ctx = { window: {} };
@@ -40,10 +40,11 @@ const org = {
   logo: SITE + 'assets/wasb/symbol.svg',
   image: SITE + 'assets/og.jpg',
   telephone: C.phones.map(intl),
+  email: C.email || undefined,
   address: { '@type': 'PostalAddress', streetAddress: 'حي الفلاح', addressLocality: 'الرياض', addressCountry: 'SA' },
   areaServed: { '@type': 'Country', name: 'Saudi Arabia' },
   parentOrganization: { '@type': 'Organization', name: 'Blue Network', url: 'https://blue-network.sa/' },
-  contactPoint: { '@type': 'ContactPoint', contactType: 'sales', telephone: intl(C.phones[0]), availableLanguage: ['ar', 'en'], url: 'https://wa.me/' + C.whatsapp },
+  contactPoint: { '@type': 'ContactPoint', contactType: 'sales', telephone: intl(C.phones[0]), email: C.email || undefined, availableLanguage: ['ar', 'en'], url: 'https://wa.me/' + C.whatsapp },
   knowsLanguage: ['ar', 'en'],
   sameAs: ['https://blue-network.sa/', C.instagram, C.behance, C.linkedin, C.x].filter(Boolean),
   hasOfferCatalog: { '@type': 'OfferCatalog', name: 'الخدمات', itemListElement: SERVICES.map(s => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.ar, alternateName: s.en, description: s.dAr, areaServed: 'SA' } })) }
@@ -105,6 +106,7 @@ ${S.map(s => `- [${s.label}](${s.url})`).join('\n')}
 
 - واتساب / WhatsApp: https://wa.me/${C.whatsapp}
 - هاتف / Phone: ${C.phones.map(intl).join('، ')}
+${C.email ? `- البريد / Email: ${C.email}\n` : ''}
 - العنوان / Address: حي الفلاح، الرياض، المملكة العربية السعودية (Al Falah, Riyadh, Saudi Arabia)
 - الموقع / Website: ${SITE}
 - Blue Network: https://blue-network.sa/
