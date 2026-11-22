@@ -35,7 +35,7 @@
     lang = next === 'en' ? 'en' : 'ar';
     try { localStorage.setItem('wasb-lang', lang); } catch (e) {}
     html.lang = lang; html.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.title = lang === 'ar' ? 'وثب استوديو | هوية بصرية، مواقع، وبروفايلات شركات' : 'WASB Studio | Brand identity, websites and company profiles';
+    document.title = lang === 'ar' ? 'وثب استوديو | تصميم شعار وهوية بصرية، مواقع إلكترونية وبروفايل شركات في السعودية' : 'WASB Studio | Logo and brand identity design, websites and company profiles in Saudi Arabia';
     $$('[data-i18n]').forEach(el => {
       el.textContent = t(el.dataset.i18n);
       if (el.hasAttribute('data-split')) { split(el); if (!first) el.classList.add('in'); }
@@ -196,9 +196,9 @@
   const grid = $('#grid');
   const tagLine = p => p.tags.map(k => L(TAGS[k])).join(' / ');
   function renderRows() {
-    const seen = grid.childElementCount > 0;
+    const seen = !!grid.querySelector('.tile[data-i]');   // the plain list written by scripts/seo.mjs does not count
     grid.innerHTML = PROJECTS.map((p, i) => `<a class="tile${seen ? ' in' : ''}" href="#/work/${p.id}" data-i="${i}" style="--i:${i % 3};${p.focus ? `--focus:${p.focus}` : ''}" aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
-        <img src="${p.cover}" alt="" loading="lazy" decoding="async">
+        <img src="${p.cover}" alt="${esc(L(p.line))}" loading="lazy" decoding="async">
         <span class="tile__cap"><span class="tile__name">${esc(L(p.name))}</span><span class="tile__tags">${esc(tagLine(p))}</span></span>
         <span class="tile__go" aria-hidden="true">${arrow}</span>
       </a>`).join('');
@@ -226,7 +226,7 @@
   function renderPano() {
     stage.innerHTML = SITES.map((s, i) => `<div class="card" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${esc(s.label)}">
         <div class="card__bar"><i></i><i></i><i></i><span>${esc(s.label)}</span></div>
-        <div class="card__view"><img src="${s.src}" alt="${esc(s.label)}" loading="lazy"></div>
+        <div class="card__view"><img src="${s.src}" alt="${esc(t('nav.sites') + ' · ' + s.label)}" loading="lazy"></div>
       </div>`).join('');
     cards = $$('.card', stage);
     panoPos.length = 0;
@@ -419,7 +419,7 @@
   let currentCase = null, lastFocus = null;
   function block(b, p) {
     const title = b.title ? `<h2 class="blk__title wrap"><span>${esc(L(b.title))}</span>${b.type === 'strip' ? `<span class="blk__hint">${esc(t('case.drag'))}</span>` : ''}</h2>` : '';
-    const alt = esc(L(p.name));
+    const alt = esc(L(p.name) + ' · ' + tagLine(p));
     if (b.type === 'full') return `<section class="blk blk--full">${title}<div class="wrap"><img src="${b.src}" alt="${alt}" loading="lazy"></div></section>`;
     if (b.type === 'grid') return `<section class="blk blk--grid${b.fit === 'contain' ? ' is-contain' : ''}" style="--cols:${b.cols || 2}">${title}<div class="wrap"><div class="blk__items">${b.items.map(s => `<img src="${s}" alt="${alt}" loading="lazy">`).join('')}</div></div></section>`;
     if (b.type === 'strip') return `<section class="blk blk--strip">${title}<div class="blk__rail" tabindex="0">${b.items.map(s => `<img src="${s}" alt="${alt}" loading="lazy" draggable="false">`).join('')}</div></section>`;
