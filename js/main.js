@@ -225,12 +225,17 @@
       tile.hidden = !!keys && !p.tags.some(k => keys.includes(k));
     });
   }
-  $('#filters').addEventListener('click', e => { const b = e.target.closest('button'); if (b) applyFilter(b.dataset.filter); });
+  $('#filters').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    // websites live in their own showcase further down: go there instead of filtering the grid
+    if (b.dataset.filter === 'website') { $('#sites').scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth' }); return; }
+    applyFilter(b.dataset.filter);
+  });
   document.addEventListener('click', e => { const a = e.target.closest('a[data-filter]'); if (a) applyFilter(a.dataset.filter); });
 
   /* ---------- sites: a panoramic hall ---------- */
   const pano = $('#pano'), stage = $('#panoStage');
-  let at = 0, cards = [], panoTimer = 0, panoSeen = false, panoHover = null, panoDwell = 0, panoAim = null;
+  let at = 0, cards = [], panoTimer = 0, panoSeen = false;
   const panoPos = [];
   function renderPano() {
     stage.innerHTML = SITES.map((s, i) => `<div class="card" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${esc(s.label)}">
@@ -247,7 +252,6 @@
     const n = SITES.length;
     const prev = at;
     at = (i + n) % n;
-    panoHover = null; clearTimeout(panoDwell); panoDwell = 0; panoAim = null;
     // put a card straight onto its latest place, without animating
     const snap = (c, k) => {
       c.classList.add('no-anim');
@@ -298,51 +302,6 @@
     if (reduce.matches || !panoSeen) return;
     panoTimer = setTimeout(() => goPano(at + 1), 5600);
   }
-  // resting the pointer on the site in front for 2s pauses the tour; the wheel then scrolls that page
-  const imgY = im => {
-    const v = (getComputedStyle(im).translate || '0 0').split(' ')[1] || '0px';
-    return v.endsWith('%') ? parseFloat(v) * im.offsetHeight / 100 : parseFloat(v) || 0;
-  };
-  const engage = c => {
-    panoDwell = 0;
-    if (!c.classList.contains('is-on') || panoAim !== c) return;
-    panoHover = c; clearTimeout(panoTimer);
-    const im = $('.card__view img', c);
-    c._y = imgY(im);
-    im.style.transition = 'none'; im.style.translate = `0px ${c._y}px`;
-  };
-  const aim = e => {
-    const c = e.target.closest('.card.is-on');
-    if (c === panoAim) return;
-    clearTimeout(panoDwell); panoDwell = 0; panoAim = c;
-    if (c && c !== panoHover) panoDwell = setTimeout(() => engage(c), 2000);
-  };
-  stage.addEventListener('mouseover', aim);
-  stage.addEventListener('mousemove', aim);
-  stage.addEventListener('mouseout', e => {
-    if (panoAim && panoAim.contains(e.relatedTarget)) return;
-    clearTimeout(panoDwell); panoDwell = 0; panoAim = null;
-    const c = panoHover;
-    if (!c || c.contains(e.relatedTarget)) return;
-    panoHover = null;
-    if (reduce.matches || !panoSeen) return restartPano();
-    // let go: the page drifts on a little, as the tour does, then the next site comes forward
-    const im = $('.card__view img', c), max = Math.max(0, im.offsetHeight - im.parentElement.clientHeight);
-    const y = Math.max(-max, c._y - im.parentElement.clientHeight * .12);
-    im.style.transition = 'translate 1.4s cubic-bezier(.45, 0, .55, 1)'; im.style.translate = `0px ${y}px`;
-    clearTimeout(panoTimer);
-    panoTimer = setTimeout(() => goPano(at + 1), 1100);
-  });
-  stage.addEventListener('wheel', e => {
-    const c = panoHover;
-    if (!c || !c.classList.contains('is-on')) return;
-    const im = $('.card__view img', c), max = Math.max(0, im.offsetHeight - im.parentElement.clientHeight);
-    const y = Math.min(0, Math.max(-max, c._y - e.deltaY));
-    if (y === c._y) return;            // at the top or the bottom: let the page scroll on
-    e.preventDefault();
-    c._y = y;
-    im.style.transition = 'translate .45s cubic-bezier(.22, 1, .36, 1)'; im.style.translate = `0px ${y}px`;
-  }, { passive: false });
   $('#panoPrev').addEventListener('click', () => goPano(at - 1));
   $('#panoNext').addEventListener('click', () => goPano(at + 1));
   if ('IntersectionObserver' in window) {

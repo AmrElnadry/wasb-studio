@@ -96,7 +96,8 @@ window.WASB_SITES = ${JSON.stringify(sites)};
 write('js/content.js', contentJs);
 const V = hash(contentJs);
 const css = readFileSync(root + 'css/style.css', 'utf8'), pageJs = readFileSync(root + 'js/page.js', 'utf8');
-const VC = hash(css), VP = hash(pageJs);
+const mainJs = readFileSync(root + 'js/main.js', 'utf8');
+const VC = hash(css), VP = hash(pageJs), VM = hash(mainJs);
 
 // ---------- structured data ----------
 const SERVICES = [
@@ -111,7 +112,7 @@ const SERVICES = [
 const org = {
   '@type': 'ProfessionalService', '@id': SITE + '#studio', name: 'وثب استوديو', alternateName: ['WASB Studio', 'وثب', 'WASB'],
   description: 'استوديو تصميم وهوية بصرية في الرياض للشركات الناشئة والمتوسطة في السعودية: تصميم شعار وهوية بصرية، تطوير الهوية، بروفايل شركات وبروشورات، ومواقع إلكترونية.',
-  url: SITE, logo: SITE + 'assets/wasb/symbol.svg', image: SITE + 'assets/og.jpg',
+  url: SITE, logo: SITE + 'assets/wasb/symbol.svg', image: SITE + 'assets/share-ar.jpg',
   telephone: (C.phones || []).map(intl), email: C.email || undefined,
   address: { '@type': 'PostalAddress', streetAddress: 'حي الفلاح', addressLocality: 'الرياض', addressCountry: 'SA' },
   areaServed: { '@type': 'Country', name: 'Saudi Arabia' },
@@ -137,7 +138,7 @@ const put = (html, name, body) => {
   if (!re.test(html)) throw new Error('marker missing: ' + name);
   return html.replace(re, (m, a, b) => a + body + b);
 };
-const stamp = h => h.replace(/\/js\/content\.js\?v=[^"]*/, '/js/content.js?v=' + V).replace(/\/css\/style\.css\?v=[^"]*/, '/css/style.css?v=' + VC);
+const stamp = h => h.replace(/\/js\/content\.js\?v=[^"]*/, '/js/content.js?v=' + V).replace(/\/css\/style\.css\?v=[^"]*/, '/css/style.css?v=' + VC).replace(/\/js\/main\.js\?v=[^"]*/, '/js/main.js?v=' + VM);
 const tilesFor = l => P.map(p => `<a class="tile" href="${workPath(p.id, l)}"><img src="${abs(p.cover)}" alt="${esc(L(p.line, l))}" loading="lazy"><span class="tile__cap"><span class="tile__name">${esc(L(p.name, l))}</span><span class="tile__tags">${esc(tags(p, l))}</span></span></a>`).join('');
 const sitesList = `<ul>${S.map(s => `<li><a href="${esc(s.url)}">${esc(s.label)}</a></li>`).join('')}</ul>`;
 
@@ -162,6 +163,7 @@ en = meta(en, 'property', 'og:locale:alternate', 'ar_SA');
 en = meta(en, 'property', 'og:url', SITE + 'en/');
 en = meta(en, 'property', 'og:image:alt', 'WASB Studio, the design and brand identity studio of Blue Network');
 en = meta(en, 'name', 'twitter:description', EN_DESC);
+en = en.split(SITE + 'assets/share-ar.jpg').join(SITE + 'assets/share-en.jpg');
 en = en.replace('<link rel="canonical" href="https://wasb.studio/">', '<link rel="canonical" href="https://wasb.studio/en/">');
 en = en.replace(/(<([a-z0-9]+)\b[^>]*\sdata-i18n="([^"]+)"[^>]*>)([^<]*)(<\/\2>)/g, (m, open, tag, key, text, close) => open + esc(t(key, 'en')) + close);
 en = en.replace(/(\sdata-i18n-label="([^"]+)"\s+aria-label=")[^"]*"/g, (m, a, key) => a + esc(t(key, 'en')) + '"');
@@ -217,6 +219,7 @@ function shell(l, { path, title, desc, image, type = 'website', ld, body }) {
 <meta property="og:title" content="${esc(title)} | ${esc(studio)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${image}">
+<meta property="og:image:secure_url" content="${image}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)} | ${esc(studio)}">
 <meta name="twitter:description" content="${esc(desc)}">
@@ -237,13 +240,20 @@ ${ldTag(ld)}
     <svg class="pg__sym" viewBox="0 0 263 358" aria-hidden="true"><use href="#wasb-symbol"/></svg>
     ${l === 'ar' ? '<svg class="pg__word" viewBox="0 0 257.7 90.3" aria-hidden="true"><use href="#wasb-word"/></svg>' : '<svg class="pg__word" viewBox="0 0 263.17 69.84" aria-hidden="true"><use href="#wasb-latin"/></svg>'}
   </a>
-  <nav class="pg__nav" aria-label="${esc(t('nav.menu', l))}">
-    <a class="pg__all" href="${base(l)}#works">${esc(t('page.all', l))}</a>
-    <a class="pg__all" href="${base(l)}sites/">${esc(t('page.sites', l))}</a>
+  <div class="pg__nav">
     <a class="pg__lang" href="${base(other)}${path}" hreflang="${other}" lang="${other}">${other === 'en' ? 'EN' : 'عربي'}</a>
-    <a class="pg__cta" href="${base(l)}#contact">${esc(t('cta.start', l))}</a>
-  </nav>
+    <button class="menu-btn" type="button" id="burger" aria-expanded="false" aria-controls="menu" data-open="${esc(t('nav.menu', l))}" data-close="${esc(t('nav.close', l))}"><span class="menu-btn__roll">${esc(t('nav.menu', l))}</span></button>
+  </div>
 </header>
+<div class="menu" id="menu" hidden>
+  <nav class="menu__links" aria-label="${esc(t('nav.menu', l))}">
+    <a href="${base(l)}#works">${esc(t('nav.works', l))}</a>
+    <a href="${base(l)}sites/">${esc(t('nav.sites', l))}</a>
+    <a href="${base(l)}#approach">${esc(t('nav.approach', l))}</a>
+    <a href="${base(l)}#about">${esc(t('nav.about', l))}</a>
+    <a href="${base(l)}#contact">${esc(t('cta.start', l))}</a>
+  </nav>
+</div>
 <main>
 ${body}
 </main>
@@ -257,16 +267,16 @@ ${body}
 `;
 }
 
-// the bar under every project: share it, or get in touch about it
+// the bar under every project: share it, or start a project about it on WhatsApp
 function bar(name, url, l) {
   const wa = String(C.whatsapp || '').replace(/\D/g, '');
   const msg = t('page.waMsg', l).replace('{name}', name) + '\n' + url;
   const shareText = `${name} | ${l === 'ar' ? 'وثب استوديو' : 'WASB Studio'}`;
   const enc = encodeURIComponent;
   const ico = id => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
+  const start = wa ? `https://wa.me/${wa}?text=${enc(msg)}` : `${base(l)}#contact`;
   return `<div class="pbar" id="pbar" data-url="${esc(url)}" data-title="${esc(shareText)}" data-copied="${esc(t('page.copied', l))}">
   <div class="pbar__in">
-    <p class="pbar__name">${esc(name)}</p>
     <div class="pbar__share">
       <button class="pbar__btn" type="button" id="shareBtn" aria-expanded="false" aria-controls="shareMenu">${ico('i-share')}<span>${esc(t('page.share', l))}</span></button>
       <div class="share" id="shareMenu" hidden>
@@ -278,12 +288,20 @@ function bar(name, url, l) {
       </div>
     </div>
     <span class="pbar__sep" aria-hidden="true"></span>
-    <p class="pbar__cta">${esc(t('page.contactNow', l))}</p>
-    ${wa ? `<a class="pbar__btn pbar__btn--wa" href="https://wa.me/${wa}?text=${enc(msg)}" target="_blank" rel="noopener">${ico('i-wa')}<span>${esc(t('contact.whatsapp', l))}</span></a>` : ''}
-    ${C.email ? `<a class="pbar__btn" href="mailto:${esc(C.email)}?subject=${enc(name)}&amp;body=${enc(msg)}">${ico('i-mail')}<span>${esc(t('contact.email', l))}</span></a>` : ''}
+    <a class="pbar__btn pbar__btn--start" href="${esc(start)}"${wa ? ' target="_blank" rel="noopener"' : ''}>${wa ? ico('i-wa') : ''}<span>${esc(t('cta.start', l))}</span></a>
   </div>
 </div>`;
 }
+
+// similar work: most shared services first, then the nearest in the list
+function similar(p, i) {
+  const n = P.length;
+  return P.map((q, k) => ({ q, k, score: q.tags.filter(x => p.tags.includes(x)).length, dist: (k - i + n) % n }))
+    .filter(x => x.q !== p)
+    .sort((a, b) => b.score - a.score || a.dist - b.dist)
+    .slice(0, 4).map(x => x.q);
+}
+const chev = l => `<svg class="pg__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="${l === 'ar' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 function page(p, i, l) {
   const other = l === 'ar' ? 'en' : 'ar';
@@ -305,9 +323,16 @@ function page(p, i, l) {
     (p.year ? `<h2>${esc(t('page.year', l))}</h2><p>${esc(p.year)}</p>` : '');
   const body = `  <article>
     <header class="case__head">
+      <div class="wrap pg__top">
+        <p class="pg__crumb"><a href="${base(l)}#works">${esc(t('nav.works', l))}</a> <span aria-hidden="true">/</span> ${pad(i + 1)}</p>
+        <nav class="pg__pn" aria-label="${esc(t('nav.works', l))}">
+          <a href="${workPath(next.id, l)}" rel="next">${esc(t('page.next', l))}${chev(l)}</a>
+          <span class="pg__sep" aria-hidden="true"></span>
+          <a href="${base(l)}#works">${esc(t('page.all', l))}</a>
+        </nav>
+      </div>
       <div class="wrap">
         <div>
-          <p class="pg__crumb"><a href="${base(l)}#works">${esc(t('nav.works', l))}</a> <span aria-hidden="true">/</span> ${pad(i + 1)}</p>
           <h1 class="case__title">${esc(name)}</h1>
           <p class="case__line">${esc(line)}</p>
         </div>
@@ -317,7 +342,10 @@ function page(p, i, l) {
     ${about ? `<section class="pg__about wrap"><h2>${esc(t('page.about', l))}</h2><p>${esc(about)}</p></section>` : ''}
     ${gallery(p, l)}
   </article>
-  <a class="case__next" href="${workPath(next.id, l)}"><span class="wrap" style="display:block"><small>${esc(t('case.next', l))}</small><strong>${esc(L(next.name, l))}${arrow}</strong></span></a>
+  <section class="similar" aria-labelledby="similarTitle">
+    <div class="similar__head"><h2 id="similarTitle">${esc(t('page.similar', l))}</h2><a href="${base(l)}#works">${esc(t('page.all', l))}${chev(l)}</a></div>
+    <div class="similar__grid">${similar(p, i).map(q => tile(q, l)).join('')}</div>
+  </section>
 ${bar(name, url, l)}`;
   return shell(l, { path: `work/${p.id}/`, title: name, desc, image: full(p.cover), type: 'article', ld, body });
 }
@@ -342,7 +370,7 @@ function sitesPage(l) {
       <div class="browser"><div class="browser__bar"><i></i><i></i><i></i><span>${esc(s.label)}</span></div><div class="scard__view"><img src="${abs(s.src)}" alt="${esc(t('nav.sites', l) + ' · ' + s.label)}" loading="lazy" decoding="async"></div></div>
       <span class="scard__meta"><b>${esc(s.label)}</b><span>${esc(t('page.visit', l))}${arrow}</span></span>
     </a>`).join('')}</section>`;
-  return shell(l, { path: 'sites/', title, desc, image: SITE + 'assets/og.jpg', ld, body });
+  return shell(l, { path: 'sites/', title, desc, image: SITE + `assets/share-${l}.jpg`, ld, body });
 }
 
 for (const dir of ['work', 'en/work', 'sites', 'en/sites']) rmSync(root + dir, { recursive: true, force: true });

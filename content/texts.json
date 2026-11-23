@@ -112,8 +112,9 @@
     "page.share": "مشاركة",
     "page.copy": "نسخ الرابط",
     "page.copied": "تم نسخ الرابط",
-    "page.contactNow": "تواصل معنا الآن",
-    "page.waMsg": "مرحباً، شاهدت مشروع «{name}» على موقعكم وأرغب في بدء مشروع."
+    "page.waMsg": "مرحباً، شاهدت مشروع «{name}» على موقعكم وأرغب في بدء مشروع.",
+    "page.next": "التالي",
+    "page.similar": "أعمال مشابهة"
   },
   "en": {
     "nav.sites": "Websites",
@@ -228,7 +229,8 @@
     "page.share": "Share",
     "page.copy": "Copy link",
     "page.copied": "Link copied",
-    "page.contactNow": "Get in touch now",
-    "page.waMsg": "Hello, I saw the {name} project on your website and would like to start a project."
+    "page.waMsg": "Hello, I saw the {name} project on your website and would like to start a project.",
+    "page.next": "Next",
+    "page.similar": "Similar work"
   }
 }

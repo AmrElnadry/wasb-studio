@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://wasb.studio/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/"/>
     <image:image><image:loc>https://wasb.studio/assets/ula/artwork-h.webp</image:loc></image:image>
@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/en/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/"/>
     <image:image><image:loc>https://wasb.studio/assets/ula/artwork-h.webp</image:loc></image:image>
@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/sites/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/sites/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/sites/"/>
     <image:image><image:loc>https://wasb.studio/assets/web/alkamal-full.webp</image:loc></image:image>
@@ -37,7 +37,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/en/sites/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/sites/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/sites/"/>
     <image:image><image:loc>https://wasb.studio/assets/web/alkamal-full.webp</image:loc></image:image>
@@ -48,13 +48,13 @@
   </url>
   <url>
     <loc>https://wasb.studio/work/ula/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/ula/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/ula/"/>
     <image:image><image:loc>https://wasb.studio/assets/ula/artwork-h.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/backpack.webp</image:loc></image:image>
-    <image:image><image:loc>https://wasb.studio/assets/ula/scarf.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/pillow.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/ula/scarf.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/pin.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/bottle.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/eyemask.webp</image:loc></image:image>
@@ -62,13 +62,13 @@
   </url>
   <url>
     <loc>https://wasb.studio/en/work/ula/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/ula/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/ula/"/>
     <image:image><image:loc>https://wasb.studio/assets/ula/artwork-h.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/backpack.webp</image:loc></image:image>
-    <image:image><image:loc>https://wasb.studio/assets/ula/scarf.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/pillow.webp</image:loc></image:image>
+    <image:image><image:loc>https://wasb.studio/assets/ula/scarf.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/pin.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/bottle.webp</image:loc></image:image>
     <image:image><image:loc>https://wasb.studio/assets/ula/eyemask.webp</image:loc></image:image>
@@ -76,7 +76,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/work/fzt/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/fzt/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/fzt/"/>
     <image:image><image:loc>https://wasb.studio/assets/fzt/profile-01.webp</image:loc></image:image>
@@ -112,7 +112,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/en/work/fzt/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/fzt/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/fzt/"/>
     <image:image><image:loc>https://wasb.studio/assets/fzt/profile-01.webp</image:loc></image:image>
@@ -148,7 +148,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/work/iaar/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/iaar/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/iaar/"/>
     <image:image><image:loc>https://wasb.studio/assets/iaar/cards.webp</image:loc></image:image>
@@ -176,7 +176,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/en/work/iaar/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/iaar/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/iaar/"/>
     <image:image><image:loc>https://wasb.studio/assets/iaar/cards.webp</image:loc></image:image>
@@ -204,7 +204,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/work/alkamal/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/alkamal/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/alkamal/"/>
     <image:image><image:loc>https://wasb.studio/assets/alkamal/cover-dark.webp</image:loc></image:image>
@@ -218,7 +218,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/en/work/alkamal/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/alkamal/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/alkamal/"/>
     <image:image><image:loc>https://wasb.studio/assets/alkamal/cover-dark.webp</image:loc></image:image>
@@ -232,7 +232,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/work/dan/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/dan/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/dan/"/>
     <image:image><image:loc>https://wasb.studio/assets/dan/logo-2.webp</image:loc></image:image>
@@ -251,7 +251,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/en/work/dan/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/dan/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/dan/"/>
     <image:image><image:loc>https://wasb.studio/assets/dan/logo-2.webp</image:loc></image:image>
@@ -270,7 +270,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/work/greazy/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/greazy/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/greazy/"/>
     <image:image><image:loc>https://wasb.studio/assets/greazy/front-0.webp</image:loc></image:image>
@@ -288,7 +288,7 @@
   </url>
   <url>
     <loc>https://wasb.studio/en/work/greazy/</loc>
-    <lastmod>2026-11-22</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <xhtml:link rel="alternate" hreflang="ar" href="https://wasb.studio/work/greazy/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://wasb.studio/en/work/greazy/"/>
     <image:image><image:loc>https://wasb.studio/assets/greazy/front-0.webp</image:loc></image:image>
