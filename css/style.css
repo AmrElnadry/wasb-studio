@@ -415,12 +415,15 @@ html[lang="en"] .case__title { line-height: .98; letter-spacing: -.04em; }
   .hero { height: auto; min-height: 100svh; display: flex; flex-direction: column; gap: 0; padding: 0 var(--gutter) calc(var(--gutter) + 76px); container-type: normal; }
   .hero__bar, .hero__slab, .hero__pitch, .hero__word { position: relative; inset: auto; left: auto; top: auto; bottom: auto; width: auto; height: auto; max-width: none; translate: none; padding: 0; }
   .hero__id { max-width: none; }
-  .hero__slab { order: 1; flex: none; align-self: center; width: min(62%, 300px); height: max(300px, 52svh); border-radius: 0; display: grid; place-items: center; }
-  .slab__in { position: relative; top: auto; height: auto; width: 100%; gap: clamp(10px, 2svh, 16px); padding: 0 10px calc((100vw - 2 * var(--gutter)) * var(--wr) * .42); }
+  .hero__slab { order: 1; flex: none; align-self: center; width: min(62%, 300px); height: max(320px, 56svh); border-radius: 0; display: grid; place-items: center; }
+  /* the column ends behind the word: at the foot of the Arabic stroke (ب), inside the English letters */
+  .hero { --ov: .8; }
+  html[lang="en"] .hero { --ov: .62; }
+  .slab__in { position: relative; top: auto; height: auto; width: 100%; gap: clamp(10px, 2svh, 16px); padding: 0 10px calc((100vw - 2 * var(--gutter)) * var(--wr) * var(--ov)); }
   .slab__mark { height: clamp(62px, 11svh, 96px); }
   .trio, html[lang="ar"] .trio, .trio__hand { font-size: clamp(.95rem, 4.3vw, 1.18rem); }
   html[lang="ar"] .trio { line-height: 1.5; }
-  .hero__word { order: 2; width: 100%; margin-top: calc((100vw - 2 * var(--gutter)) * var(--wr) * -.42); z-index: 3; }
+  .hero__word { order: 2; width: 100%; margin-top: calc((100vw - 2 * var(--gutter)) * var(--wr) * var(--ov) * -1); z-index: 3; }
   .hero__pitch { order: 3; margin-top: clamp(18px, 3svh, 28px); align-items: center; text-align: center; }
   .hero__slogan { font-size: clamp(1.3rem, 6.2vw, 1.65rem); }
   .hero__lede { font-size: .9rem; margin-block-start: 10px; }

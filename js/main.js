@@ -399,7 +399,7 @@
     if (reached >= steps.length) {
       // 4/4 stays while the mark turns red, then the line runs on to its end point
       leaping = true;
-      finishTimer = setTimeout(finish, reduce.matches ? 300 : 1800);
+      finishTimer = setTimeout(finish, reduce.matches ? 300 : 3800);   // the last stage stays in view a little longer
     }
   }
   function finish() {
