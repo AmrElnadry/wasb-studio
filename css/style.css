@@ -417,7 +417,7 @@ html[lang="en"] .case__title { line-height: .98; letter-spacing: -.04em; }
   .hero__id { max-width: none; }
   .hero__slab { order: 1; flex: none; align-self: center; width: min(62%, 300px); height: max(320px, 56svh); border-radius: 0; display: grid; place-items: center; }
   /* the column ends behind the word: at the foot of the Arabic stroke (ب), inside the English letters */
-  .hero { --ov: .8; }
+  .hero { --ov: .595; }   /* the top edge of the ب stroke: no red shows in the gap beside ث */
   html[lang="en"] .hero { --ov: .62; }
   .slab__in { position: relative; top: auto; height: auto; width: 100%; gap: clamp(10px, 2svh, 16px); padding: 0 10px calc((100vw - 2 * var(--gutter)) * var(--wr) * var(--ov)); }
   .slab__mark { height: clamp(62px, 11svh, 96px); }
