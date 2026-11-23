@@ -378,6 +378,16 @@
     leapLabel.textContent = playing ? `${reached}/${steps.length}` : t('game.leap');
     leapLabel.classList.toggle('is-count', playing);
     leapBtn.setAttribute('aria-label', playing ? `${t('game.leap')} ${reached}/${steps.length}` : t('game.leap'));
+    // phones: the current stage stands where the title was, with four dots under it
+    arc.classList.toggle('is-step', playing);
+    $$('.arc__dots i').forEach((d, k) => d.classList.toggle('is-on', done || k < reached));
+    const now = $('#arcNow');
+    if (now && playing && now.dataset.k !== String(reached) + lang) {
+      const s = steps[reached - 1];
+      now.dataset.k = String(reached) + lang;
+      now.innerHTML = `<span class="arc__num">${pad(reached)} / ${pad(steps.length)}</span><h3>${esc($('h3', s).textContent)}</h3><p>${esc($('p', s).textContent)}</p>`;
+      now.classList.add('re'); void now.offsetWidth; now.classList.remove('re');
+    }
     hint.innerHTML = done ? `${esc(t('game.done'))} <a href="#contact">${esc(t('game.cta'))}</a>` : esc(t('game.hint'));
   }
   function land() {
