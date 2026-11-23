@@ -393,11 +393,11 @@ html[lang="en"] .case__title { line-height: .98; letter-spacing: -.04em; }
 
 
 /* the stage in the middle and its four dots: phones only */
-.arc__now { display: none; justify-items: center; gap: 6px; max-width: 30ch; animation: fade .6s var(--out) both; }
+.arc__now { display: none; justify-items: center; gap: 6px; max-width: 34ch; animation: fade .6s var(--out) both; }
 .arc__now.re { animation: none; }
 .arc__num { font-family: var(--display); font-size: .9rem; color: var(--red); letter-spacing: .08em; }
-.arc__now h3 { font-family: var(--display); font-weight: 900; font-size: clamp(2.2rem, 11vw, 3rem); line-height: 1.25; color: var(--red); }
-.arc__now p { font-size: 1rem; line-height: 1.8; color: rgba(240, 240, 240, .82); }
+.arc__now h3 { font-family: var(--display); font-weight: 900; font-size: clamp(2.2rem, 11vw, 3rem); line-height: 1.45; color: var(--red); margin-block-end: 10px; }
+.arc__now p { font-size: 1rem; line-height: 1.75; color: rgba(240, 240, 240, .82); max-width: 25ch; text-wrap: balance; }   /* two lines of similar length */
 .arc__dots { display: none; gap: 10px; justify-content: center; margin-block: 4px 2px; }
 .arc__dots i { width: 8px; height: 8px; border-radius: 50%; background: transparent; box-shadow: inset 0 0 0 1.5px rgba(240, 240, 240, .4); transition: background-color .4s, box-shadow .4s, scale .4s var(--out); }
 .arc__dots i.is-on { background: var(--red); box-shadow: inset 0 0 0 1.5px var(--red); scale: 1.15; }
@@ -452,7 +452,8 @@ html[lang="en"] .case__title { line-height: .98; letter-spacing: -.04em; }
   .arc__title { font-size: clamp(2.2rem, 10vw, 3rem); }
   /* one stage at a time, in the middle: each press puts the next stage where the title was */
   .arc__steps { display: none; }
-  .arc__core { min-height: min(78svh, 620px); align-content: center; }
+  .approach { padding-block: clamp(40px, 7svh, 64px); }
+  .arc__core { min-height: 440px; align-content: center; margin-block-end: 0; }   /* one height for every stage, so nothing jumps */
   .arc.is-step .arc__title, .arc.is-step .game__hint { display: none; }
   .arc.is-step .arc__now { display: grid; }
   .arc__dots { display: flex; }

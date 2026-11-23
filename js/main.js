@@ -356,7 +356,7 @@
   const arc = $('#arc'), spark = $('#spark'), start = $('#arcStart'), leapBtn = $('#leapBtn'), leapLabel = $('#leapLabel'), hint = $('#gameHint'), emblem = $('#emblem');
   const steps = $$('.arc__step');
   const T = [0, ...steps.map(s => parseFloat(s.style.getPropertyValue('--t')))];
-  let reached = 0, leaping = false, done = false, finishTimer = 0;
+  let reached = 0, leaping = false, done = false, finishTimer = 0, holdAt = null;
   const onArc = () => getComputedStyle($('.arc__svg')).display !== 'none';
   function arcPoint(tt) {
     const w = arc.clientWidth, hgt = arc.clientHeight;
@@ -397,6 +397,8 @@
     dot.classList.remove('ping'); void dot.offsetWidth; dot.classList.add('ping');
     syncGame();
     if (reached >= steps.length) {
+      // phones: the last stage stays until the visitor scrolls on (or presses again), then it starts over
+      if (!onArc()) { holdAt = scrollY; return; }
       // 4/4 stays while the mark turns red, then the line runs on to its end point
       leaping = true;
       finishTimer = setTimeout(finish, reduce.matches ? 300 : 3800);   // the last stage stays in view a little longer
@@ -416,8 +418,11 @@
     };
     requestAnimationFrame(frame);
   }
+  function restart() { holdAt = null; clearTimeout(finishTimer); done = false; reached = 0; syncGame(); }
+  addEventListener('scroll', () => { if (holdAt !== null && Math.abs(scrollY - holdAt) > 80) restart(); }, { passive: true });
   function leap() {
     if (leaping) return;
+    if (holdAt !== null) { restart(); return; }
     leapBtn.classList.add('is-used');
     leapBtn.classList.remove('is-charge'); void leapBtn.offsetWidth; leapBtn.classList.add('is-charge');
     if (done) { clearTimeout(finishTimer); done = false; reached = 0; syncGame(); }
