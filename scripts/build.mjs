@@ -172,6 +172,26 @@ en = put(en, 'works', tilesFor('en'));
 en = en.replace('id="sitesAll" href="/sites/"', 'id="sitesAll" href="/en/sites/"');
 write('en/index.html', en);
 
+// ---------- share images: each project's cover as a 1200x630 JPEG, cropped around its focus point ----------
+// (chat apps show these when a project link is shared; WebP covers are often skipped)
+let sharp = null;
+try { sharp = (await import('sharp')).default; } catch (e) { console.warn('build: sharp is not installed, project pages share their cover as is'); }
+const shareImg = new Map();
+if (sharp) {
+  rmSync(root + 'assets/share', { recursive: true, force: true });
+  mkdirSync(root + 'assets/share', { recursive: true });
+  for (const p of P) {
+    const [w, h] = imgSize(p.cover);
+    const [fx, fy] = (p.focus || '50% 50%').split(' ').map(v => (parseFloat(v) || 50) / 100);
+    const k = Math.max(1200 / w, 630 / h), sw = Math.ceil(w * k), sh = Math.ceil(h * k);
+    const name = `assets/share/${p.id}-${hash(p.cover + '|' + p.focus)}.jpg`;
+    await sharp(root + abs(p.cover).slice(1)).resize(sw, sh)
+      .extract({ left: Math.round(fx * (sw - 1200)), top: Math.round(fy * (sh - 630)), width: 1200, height: 630 })
+      .flatten({ background: '#0E0E0E' }).jpeg({ quality: 82, mozjpeg: true }).toFile(root + name);
+    shareImg.set(p.id, name);
+  }
+}
+
 // ---------- project pages ----------
 const symbols = ['wasb-symbol', 'wasb-word', 'wasb-latin', 'i-arrow', 'i-wa'].map(id => {
   const m = ar.match(new RegExp(`<symbol id="${id}"[\\s\\S]*?</symbol>`));
@@ -219,7 +239,10 @@ function shell(l, { path, title, desc, image, type = 'website', ld, body }) {
 <meta property="og:title" content="${esc(title)} | ${esc(studio)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${image}">
-<meta property="og:image:secure_url" content="${image}">
+<meta property="og:image:secure_url" content="${image}">${/\.jpg$/.test(image) ? `
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">` : ''}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)} | ${esc(studio)}">
 <meta name="twitter:description" content="${esc(desc)}">
@@ -288,7 +311,7 @@ function bar(name, url, l) {
       </div>
     </div>
     <span class="pbar__sep" aria-hidden="true"></span>
-    <a class="pbar__btn pbar__btn--start" href="${esc(start)}"${wa ? ' target="_blank" rel="noopener"' : ''}>${wa ? ico('i-wa') : ''}<span>${esc(t('cta.start', l))}</span></a>
+    <a class="pbar__btn pbar__btn--start" href="${esc(start)}"${wa ? ' target="_blank" rel="noopener"' : ''}><span>${esc(t('cta.start', l))}</span></a>
   </div>
 </div>`;
 }
@@ -347,7 +370,7 @@ function page(p, i, l) {
     <div class="similar__grid">${similar(p, i).map(q => tile(q, l)).join('')}</div>
   </section>
 ${bar(name, url, l)}`;
-  return shell(l, { path: `work/${p.id}/`, title: name, desc, image: full(p.cover), type: 'article', ld, body });
+  return shell(l, { path: `work/${p.id}/`, title: name, desc, image: full(shareImg.get(p.id) || p.cover), type: 'article', ld, body });
 }
 
 // every website, starred or not

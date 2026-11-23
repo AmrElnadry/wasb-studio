@@ -10,3 +10,5 @@ work/
 en/
 _site/
 sites/
+node_modules/
+assets/share/

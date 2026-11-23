@@ -27,9 +27,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Install the image tool for share images
+        run: npm install --no-save --no-package-lock sharp@0.33.5
       - run: node scripts/build.mjs
       - name: Collect the public files
-        run: rsync -a --exclude '.git' --exclude '.github' --exclude '_site' --exclude 'scripts' --exclude 'content' --exclude '*.md' --exclude '.gitignore' ./ _site/
+        run: rsync -a --exclude '.git' --exclude '.github' --exclude '_site' --exclude 'scripts' --exclude 'content' --exclude 'node_modules' --exclude '*.md' --exclude '.gitignore' ./ _site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
