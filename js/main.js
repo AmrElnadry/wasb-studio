@@ -102,7 +102,15 @@
     }
     return slots;
   }
-  function alignHero() {}
+  // desktop: the slogan sits level with the three services (their middles on one line)
+  function alignHero() {
+    const pitch = $('.hero__pitch'), trio = $('#trio'), hero = $('#hero');
+    if (!pitch || !trio || !hero) return;
+    if (matchMedia('(max-width: 820px)').matches) { pitch.style.top = ''; pitch.style.height = ''; return; }
+    const hr = hero.getBoundingClientRect(), tr = trio.getBoundingClientRect();
+    pitch.style.height = 'auto';
+    pitch.style.top = (tr.top + tr.height / 2 - hr.top - pitch.offsetHeight / 2).toFixed(1) + 'px';
+  }
 
 
   // small marks in staggered rows; a soft wave of light travels across them
