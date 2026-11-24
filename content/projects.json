@@ -1,5 +1,54 @@
 [
   {
+    "id": "qimam",
+    "name": {
+      "ar": "قمم الكمال لتقنية المعلومات",
+      "en": "Qimam Al-Kamal for IT"
+    },
+    "line": {
+      "ar": "تصميم البروفايل التعريفي لشركة قمم الكمال لتقنية المعلومات بنسختيه العربية والإنجليزية",
+      "en": "Bilingual company profile design for Qimam Al-Kamal for Information Technology"
+    },
+    "year": "2026",
+    "about": {
+      "ar": "تصميم وتنفيذ البروفايل التعريفي لشركة قمم الكمال لتقنية المعلومات بنسختين عربية وإنجليزية، بتوجه بصري تقني يعتمد على الأزرق الكحلي وعناصر الدوائر الرقمية ليعكس هوية الشركة في التحول الرقمي والحلول التقنية المتكاملة. يستعرض البروفايل من نحن والرؤية والرسالة والقيم، ومجالات الخبرة من غرف التحكم والتيار الخفيف إلى أنظمة الأمن والإنذار والشبكات، إلى جانب الشراكات التقنية العالمية وأبرز المشاريع المنفذة في المملكة، والعملاء والشهادات، في تسلسل بصري منظم وواضح.",
+      "en": "Designing the bilingual Arabic and English company profile for Qimam Al-Kamal for Information Technology, with a tech-driven visual direction built on deep navy and digital circuit elements that reflect the company's role in digital transformation and integrated technology solutions. The profile covers who they are, their vision, mission and values, and their areas of expertise from control rooms and low-current systems to security, fire alarm and network infrastructure, alongside global technology partnerships, flagship projects across the Kingdom, clients and certifications, in a clear and organized visual flow."
+    },
+    "tags": [
+      "profile",
+      "print"
+    ],
+    "cover": "assets/qimam/spread-values-cover.webp",
+    "focus": "50% 50%",
+    "gallery": [
+      {
+        "src": "assets/qimam/spread-values-cover.webp"
+      },
+      {
+        "src": "assets/qimam/covers.webp",
+        "half": true
+      },
+      {
+        "src": "assets/qimam/closed-stack.webp",
+        "half": true
+      },
+      {
+        "src": "assets/qimam/spread-who-we-are.webp"
+      },
+      {
+        "src": "assets/qimam/page-flip.webp",
+        "half": true
+      },
+      {
+        "src": "assets/qimam/rolled-cover.webp",
+        "half": true
+      },
+      {
+        "src": "assets/qimam/spread-projects.webp"
+      }
+    ]
+  },
+  {
     "id": "sapac",
     "name": {
       "ar": "عبر المملكة SAPAC",
