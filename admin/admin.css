@@ -249,3 +249,9 @@ h1, h2, h3, p { margin: 0; }
 .gal.is-sorting .gal__tools button[data-act="g-half"], .gal.is-sorting .gal__tools button[data-act="g-cover"] { display: none; }
 .gal__tools button:disabled { opacity: .3; pointer-events: none; }
 .gpanel .btn[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--red); color: var(--fg); }
+
+/* projects: the home page star, and hidden ones dimmed in the list */
+.page-head .acts { align-items: center; }
+.page-head .star { margin-inline-end: 0; }
+.pitem.is-hidden img { opacity: .4; filter: grayscale(1); }
+.pitem.is-hidden b { color: var(--mute); }

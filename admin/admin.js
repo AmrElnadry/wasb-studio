@@ -260,9 +260,9 @@
   /* ---------- projects ---------- */
   function drawList() {
     const box = $('#plist'); if (!box) return;
-    box.innerHTML = data.projects.map((p, i) => `<div class="pitem${i === sel ? ' is-on' : ''}" draggable="true" data-i="${i}">
+    box.innerHTML = data.projects.map((p, i) => `<div class="pitem${i === sel ? ' is-on' : ''}${p.featured === false ? ' is-hidden' : ''}" draggable="true" data-i="${i}">
         <img src="${esc(imgUrl(p.cover))}" alt="" loading="lazy">
-        <div><b>${esc(p.name.ar || p.name.en || 'مشروع جديد')}</b><small>${esc(p.id)}</small></div>
+        <div><b>${esc(p.name.ar || p.name.en || 'مشروع جديد')}</b><small>${p.featured === false ? 'مخفي من الرئيسية · ' : ''}${esc(p.id)}</small></div>
         <span class="grip" title="اسحب لتغيير الترتيب" aria-hidden="true">⋮⋮</span>
       </div>`).join('');
   }
@@ -285,6 +285,7 @@
       <div class="page-head">
         <div><h1>${esc(p.name.ar || 'مشروع جديد')}</h1><p dir="ltr" style="text-align:end">wasb.studio/work/${esc(p.id)}/</p></div>
         <div class="acts">
+          <button class="star" type="button" data-act="feature" aria-pressed="${p.featured !== false}" title="الظهور في شبكة الأعمال بالصفحة الرئيسية"><span aria-hidden="true">★</span>${p.featured !== false ? 'في الرئيسية' : 'مخفي من الرئيسية'}</button>
           ${isNew ? '' : `<a class="btn btn--sm" href="/work/${esc(p.id)}/" target="_blank" rel="noopener">عرض الصفحة ↗</a>`}
           <button class="btn btn--sm btn--danger" type="button" data-act="del-project">حذف المشروع</button>
         </div>
@@ -424,6 +425,14 @@
         data.projects.push(q); fresh.add(q); sel = data.projects.length - 1; renderProjects(); syncDirty();
         $('#editor [data-b]').focus();
         return;
+      }
+      if (act === 'feature') {
+        // hidden projects keep their own page; they just leave the home page grid
+        p.featured = p.featured === false;
+        if (p.featured) delete p.featured;
+        el.setAttribute('aria-pressed', p.featured !== false);
+        el.innerHTML = `<span aria-hidden="true">★</span>${p.featured !== false ? 'في الرئيسية' : 'مخفي من الرئيسية'}`;
+        drawList(); syncDirty(); return;
       }
       if (act === 'del-project') {
         if (!confirm(`حذف «${p.name.ar || p.id}» من الموقع؟ ستبقى الصور محفوظة في المستودع.`)) return;
@@ -661,6 +670,7 @@
       if (!p.cover) out.push(`«${n}»: صورة الغلاف ناقصة.`);
       if (!p.gallery.length) out.push(`«${n}»: لا توجد صور في المشروع.`);
     });
+    if (data.projects.length && !data.projects.some(p => p.featured !== false)) out.push('يجب أن يظهر مشروع واحد على الأقل في الرئيسية.');
     if (data.sites.length && !data.sites.some(s => s.featured !== false)) out.push('يجب تمييز موقع واحد على الأقل بنجمة ليظهر في الرئيسية.');
     data.sites.forEach((s, i) => { if (!s.label || !/^https?:\/\/.+/.test(s.url) || !s.src) out.push(`موقع #${i + 1}: الاسم أو الرابط أو اللقطة ناقصة.`); });
     return out;
