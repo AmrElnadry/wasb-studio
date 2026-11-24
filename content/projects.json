@@ -67,28 +67,36 @@
       "profile",
       "print"
     ],
-    "cover": "assets/sapac/cover-spread.webp",
+    "cover": "assets/sapac/ps-industrial-cover.webp",
     "focus": "50% 50%",
     "gallery": [
       {
-        "src": "assets/sapac/cover-spread.webp"
+        "src": "assets/sapac/ps-industrial-cover.webp"
       },
       {
-        "src": "assets/sapac/spread-competence.webp"
-      },
-      {
-        "src": "assets/sapac/closed-books.webp",
+        "src": "assets/sapac/ps-cover.webp",
         "half": true
       },
       {
-        "src": "assets/sapac/spread-contents.webp",
+        "src": "assets/sapac/ps-stack.webp",
         "half": true
       },
       {
-        "src": "assets/sapac/spread-figures.webp"
+        "src": "assets/sapac/ps-competence.webp"
       },
       {
-        "src": "assets/sapac/spread-ongoing.webp"
+        "src": "assets/sapac/ps-contents.webp",
+        "half": true
+      },
+      {
+        "src": "assets/sapac/ps-snapshot.webp",
+        "half": true
+      },
+      {
+        "src": "assets/sapac/ps-ongoing.webp"
+      },
+      {
+        "src": "assets/sapac/ps-neom.webp"
       }
     ]
   },
@@ -172,28 +180,33 @@
       "profile",
       "print"
     ],
-    "cover": "assets/darsas/cover-spread.webp",
+    "cover": "assets/darsas/ps-spread-cover.webp",
     "focus": "50% 50%",
     "gallery": [
       {
-        "src": "assets/darsas/cover-spread.webp"
+        "src": "assets/darsas/ps-spread-cover.webp"
       },
       {
-        "src": "assets/darsas/spread-about.webp"
-      },
-      {
-        "src": "assets/darsas/closed-books.webp",
+        "src": "assets/darsas/ps-covers.webp",
         "half": true
       },
       {
-        "src": "assets/darsas/spread-contact.webp",
+        "src": "assets/darsas/ps-closed-stack.webp",
         "half": true
       },
       {
-        "src": "assets/darsas/spreads-grid.webp"
+        "src": "assets/darsas/ps-spread-about.webp"
       },
       {
-        "src": "assets/darsas/spread-services.webp"
+        "src": "assets/darsas/ps-page-flip.webp",
+        "half": true
+      },
+      {
+        "src": "assets/darsas/ps-rolled-cover.webp",
+        "half": true
+      },
+      {
+        "src": "assets/darsas/ps-spread-services.webp"
       }
     ]
   },
