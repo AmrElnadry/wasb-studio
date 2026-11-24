@@ -617,12 +617,12 @@ html[dir="rtl"] .pano__all svg { scale: -1 1; }
 html[lang="en"] .pano__all { text-transform: uppercase; letter-spacing: .06em; font-size: .8rem; }
 .pbar:not(.is-on) .share { display: none; }
 
-/* ---------- phones: the first screens are slides, and scrolling settles on each section ---------- */
+/* ---------- phones: the first screens are slides; a script lets each scroll settle on the nearest section (js/main.js) ---------- */
 @media (max-width: 820px) {
-  html { scroll-snap-type: y mandatory; }
-  html.intro-on { scroll-snap-type: none; }
-  .hero, .say { scroll-snap-align: start; scroll-snap-stop: always; }
-  .works, .sites, .approach, .contact { scroll-snap-align: start; scroll-margin-top: 28px; }
+  .works, .sites, .contact { scroll-margin-top: 28px; }
+  .approach { scroll-margin-top: 0; }
+  /* the approach has the screen to itself, its stage in the middle */
+  .approach { min-height: 100svh; display: grid; align-content: center; padding-block: var(--gutter) calc(var(--gutter) + 78px); margin-block-start: 0; }
   /* slide 1: the red column, the word and the slogan fill the screen, clear of the menu at the bottom */
   .hero { height: 100svh; min-height: 540px; padding-bottom: calc(var(--gutter) + 78px); }
   .hero__slab { flex: 1 1 auto; height: auto; min-height: 0; }

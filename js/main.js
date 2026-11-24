@@ -459,6 +459,66 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen()) { setMenu(false); burger.focus(); } });
   window.addEventListener('hashchange', route);
 
+  /* ---------- phones: each scroll settles on the nearest section, slowly and smoothly ---------- */
+  // (CSS scroll snapping is quick and stiff on phones, and fights links that jump to a section)
+  (function settleScroll() {
+    const phone = matchMedia('(max-width: 820px)');
+    const STOPS = [['hero', 0], ['about', 0], ['works', 28], ['sites', 28], ['approach', 0], ['contact', 28]];
+    let anim = 0, timer = 0, lastY = scrollY, dir = 1, busy = false, until = 0;
+    const points = () => STOPS.map(([id, m]) => { const el = document.getElementById(id); return el ? Math.max(0, Math.round(el.getBoundingClientRect().top + scrollY - m)) : null; }).filter(v => v !== null);
+    const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+    const stop = () => { if (!busy) return; cancelAnimationFrame(anim); busy = false; html.style.scrollBehavior = ''; };
+    function go(to) {
+      stop();
+      const from = scrollY, d = to - from;
+      if (Math.abs(d) < 3) return;
+      const dur = Math.min(1100, 650 + Math.abs(d) * .35), t0 = performance.now();
+      busy = true; html.style.scrollBehavior = 'auto';
+      const frame = now => {
+        const u = Math.min(1, (now - t0) / dur);
+        scrollTo(0, from + d * ease(u));
+        if (u < 1) anim = requestAnimationFrame(frame);
+        else { busy = false; html.style.scrollBehavior = ''; lastY = scrollY; until = performance.now() + 250; }
+      };
+      anim = requestAnimationFrame(frame);
+    }
+    function settle() {
+      if (!phone.matches || reduce.matches || busy || performance.now() < until || html.classList.contains('intro-on') || menuOpen()) return;
+      const y = scrollY, H = innerHeight, ps = points();
+      let prev = 0, next = null;
+      for (const p of ps) { if (p <= y + 1) prev = p; else { next = p; break; } }
+      if (next === null) return;
+      if (next - prev > H * 1.08) {
+        // a section taller than the screen: read freely inside it; near either end, settle on that end
+        if (dir > 0 && next - y < H * .4) go(next);
+        else if (dir < 0 && y - prev < H * .4) go(prev);
+        return;
+      }
+      // a screen-sized slide: a small push is enough to move on, a smaller one falls back
+      go(dir > 0 ? (y - prev > H * .1 ? next : prev) : (next - y > H * .1 ? prev : next));
+    }
+    addEventListener('scroll', () => {
+      if (busy) return;
+      const y = scrollY;
+      if (y !== lastY) dir = y > lastY ? 1 : -1;
+      lastY = y;
+      clearTimeout(timer); timer = setTimeout(settle, 160);
+    }, { passive: true });
+    addEventListener('touchstart', stop, { passive: true });
+    addEventListener('wheel', stop, { passive: true });
+    // links to a section (the hero's services, the menu) glide there the same way
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a || !phone.matches || reduce.matches) return;
+      const id = a.getAttribute('href').slice(1), stopFor = STOPS.find(([k]) => k === id);
+      const el = id && document.getElementById(id);
+      if (!el) return;
+      e.preventDefault();
+      if (a.dataset.filter) applyFilter(a.dataset.filter);
+      requestAnimationFrame(() => go(Math.max(0, Math.round(el.getBoundingClientRect().top + scrollY - (stopFor ? stopFor[1] : 0)))));
+    });
+  })();
+
   /* ---------- boot ---------- */
   $('#langToggle').addEventListener('click', () => applyLang(lang === 'ar' ? 'en' : 'ar'));
   $$('.year').forEach(el => { el.textContent = new Date().getFullYear(); });
