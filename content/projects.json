@@ -1,5 +1,49 @@
 [
   {
+    "id": "sapac",
+    "name": {
+      "ar": "عبر المملكة SAPAC",
+      "en": "SAPAC"
+    },
+    "line": {
+      "ar": "تصميم البروفايل التعريفي لشركة عبر المملكة SAPAC للمقاولات",
+      "en": "Company profile design for SAPAC, a leading Saudi contractor"
+    },
+    "year": "2026",
+    "about": {
+      "ar": "تصميم وتنفيذ البروفايل التعريفي لشركة عبر المملكة SAPAC، إحدى أبرز شركات المقاولات في المملكة منذ عام 1992. اعتمد التصميم على توجه بصري هادئ وفاخر يجمع بين أخضر الهوية ودرجات الصحراء والتصوير الجوي للمشاريع، ليعكس حجم الأعمال وانتشارها في أنحاء المملكة. يستعرض البروفايل لمحة عن الشركة وأرقامها الرئيسية وهيكلها المؤسسي وعملاءها ومجالات خبرتها، وصولًا إلى سلسلة الإمداد ومعايير الجودة والسلامة، ثم المشاريع الجارية والمنجزة في تسلسل بصري واضح يمنح كل مشروع مساحته.",
+      "en": "Designing the company profile for SAPAC, one of Saudi Arabia's leading contractors since 1992. The design follows a calm, refined visual direction that pairs the brand green with desert tones and aerial project photography, reflecting the scale and nationwide reach of the company's work. The profile covers the executive snapshot, key figures, corporate structure, clients and areas of competence, the supply chain and HSE standards, and then the ongoing and completed projects, in a clear visual flow that gives each project its own space."
+    },
+    "tags": [
+      "profile",
+      "print"
+    ],
+    "cover": "assets/sapac/cover-spread.webp",
+    "focus": "50% 50%",
+    "gallery": [
+      {
+        "src": "assets/sapac/cover-spread.webp"
+      },
+      {
+        "src": "assets/sapac/spread-competence.webp"
+      },
+      {
+        "src": "assets/sapac/closed-books.webp",
+        "half": true
+      },
+      {
+        "src": "assets/sapac/spread-contents.webp",
+        "half": true
+      },
+      {
+        "src": "assets/sapac/spread-figures.webp"
+      },
+      {
+        "src": "assets/sapac/spread-ongoing.webp"
+      }
+    ]
+  },
+  {
     "id": "faiza",
     "name": {
       "ar": "فايزة حسين",
