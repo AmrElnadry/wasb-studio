@@ -342,11 +342,9 @@ function page(p, i, l) {
       { '@type': 'ListItem', position: 2, name: t('nav.works', l), item: SITE + base(l).slice(1) + '#works' },
       { '@type': 'ListItem', position: 3, name, item: url } ] }
   ] };
-  const scope = `<h2>${esc(t('case.scope', l))}</h2><ul>${p.tags.filter(k => T[k]).map(k => `<li>${esc(T[k][l])}</li>`).join('')}</ul>` +
-    (p.year ? `<h2>${esc(t('page.year', l))}</h2><p>${esc(p.year)}</p>` : '');
   const body = `  <article>
-    <header class="case__head">
-      <div class="wrap pg__top">
+    <header class="phead">
+      <div class="phead__top">
         <p class="pg__crumb"><a href="${base(l)}#works">${esc(t('nav.works', l))}</a> <span aria-hidden="true">/</span> ${pad(i + 1)}</p>
         <nav class="pg__pn" aria-label="${esc(t('nav.works', l))}">
           <a href="${workPath(next.id, l)}" rel="next">${esc(t('page.next', l))}${chev(l)}</a>
@@ -354,15 +352,14 @@ function page(p, i, l) {
           <a href="${base(l)}#works">${esc(t('page.all', l))}</a>
         </nav>
       </div>
-      <div class="wrap">
-        <div>
-          <h1 class="case__title">${esc(name)}</h1>
-          <p class="case__line">${esc(line)}</p>
+      <div class="phead__main${about ? '' : ' is-single'}">
+        <div class="phead__id">
+          <h1 class="phead__title">${esc(name)}</h1>
+          <p class="phead__line">${esc(line)}</p>
         </div>
-        <div class="case__scope">${scope}</div>
+        ${about ? `<div class="phead__about"><h2>${esc(t('page.about', l))}</h2><p>${esc(about)}</p></div>` : ''}
       </div>
     </header>
-    ${about ? `<section class="pg__about wrap"><h2>${esc(t('page.about', l))}</h2><p>${esc(about)}</p></section>` : ''}
     ${gallery(p, l)}
   </article>
   <section class="similar" aria-labelledby="similarTitle">

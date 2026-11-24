@@ -503,6 +503,27 @@ html[lang="en"] .pg__nav { text-transform: uppercase; letter-spacing: .06em; fon
   .pg__nav .pg__all { display: none; }
 }
 
+/* ---------- project head: title beside About, on the gallery's own width ---------- */
+.phead { width: min(100% - 2 * var(--gutter), 1200px); margin-inline: auto; padding-block: clamp(28px, 5vh, 56px) clamp(22px, 3.5vh, 40px); }
+.phead__top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-block-end: clamp(22px, 4vh, 44px); }
+.phead__top .pg__crumb { margin: 0; }
+.phead__main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: start; }
+.phead__main.is-single { grid-template-columns: minmax(0, 1fr); }
+.phead__id { padding-inline-end: clamp(24px, 4vw, 56px); }
+.phead__title { font-family: var(--display); font-weight: 900; font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.2; text-wrap: balance; }
+html[lang="en"] .phead__title { line-height: 1.02; letter-spacing: -.03em; }
+.phead__line { margin-block-start: .7rem; font-size: 1.02rem; line-height: 1.7; color: var(--mute); max-width: 34rem; }
+.phead__about { padding-inline-start: clamp(24px, 4vw, 56px); border-inline-start: 1px solid var(--rule); }
+.phead__about h2 { font-family: var(--display); font-size: .82rem; color: var(--mute); margin-block-end: 10px; }
+.phead__about p { font-size: clamp(.98rem, 1.15vw, 1.1rem); line-height: 1.95; color: rgba(240, 240, 240, .86); white-space: pre-line; }
+.phead + .gal { padding-block-start: 0; }
+@media (max-width: 820px) {
+  .phead__main { grid-template-columns: minmax(0, 1fr); }
+  .phead__id { padding-inline-end: 0; }
+  .phead__about { padding-inline-start: 0; border-inline-start: 0; border-block-start: 1px solid var(--rule); margin-block-start: 22px; padding-block-start: 20px; }
+}
+@media (max-width: 480px) { .phead__top .pg__pn .pg__sep, .phead__top .pg__pn a:last-child { display: none; } }
+
 /* ---------- project gallery: one centred column, Behance-style ---------- */
 /* every image at full width; two half-width images share a line at one height (--s is each one's share) */
 .gal { --gap: clamp(6px, .9vw, 12px); width: min(100% - 2 * var(--gutter), 1200px); margin-inline: auto; padding-block: clamp(8px, 2vh, 24px) var(--space); display: flex; flex-wrap: wrap; gap: var(--gap); }
