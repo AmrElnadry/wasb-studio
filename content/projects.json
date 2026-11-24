@@ -18,9 +18,12 @@
       "identity",
       "merch"
     ],
-    "cover": "assets/ula/artwork-h.webp",
-    "focus": "40% 45%",
+    "cover": "assets/ula/993b20c7-0d06-490a-a5c4-41be4c5869b5.webp",
+    "focus": "78% 32%",
     "gallery": [
+      {
+        "src": "assets/ula/993b20c7-0d06-490a-a5c4-41be4c5869b5.webp"
+      },
       {
         "src": "assets/ula/artwork-h.webp"
       },
