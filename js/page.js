@@ -29,7 +29,7 @@
 
   // the bar comes in once the reader is into the work, and steps aside at the end of the page
   let atEnd = false;
-  const sync = () => { const on = scrollY > innerHeight * .5 && !atEnd; bar.classList.toggle('is-on', on); if (!on && menu && !menu.hidden) open(false); };
+  const sync = () => { const on = scrollY > (matchMedia('(max-width: 820px)').matches ? 80 : innerHeight * .5) && !atEnd; /* phones: as soon as the reader starts scrolling */ bar.classList.toggle('is-on', on); if (!on && menu && !menu.hidden) open(false); };
   const end = document.querySelector('.similar') || document.querySelector('.foot');
   if (end && 'IntersectionObserver' in window) new IntersectionObserver(es => { atEnd = es[0].isIntersecting; sync(); }).observe(end);
   addEventListener('scroll', sync, { passive: true });
