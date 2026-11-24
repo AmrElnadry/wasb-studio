@@ -1,5 +1,49 @@
 [
   {
+    "id": "darsas",
+    "name": {
+      "ar": "شركة دار ساس الأمنية",
+      "en": "Dar SAS Security Co."
+    },
+    "line": {
+      "ar": "تصميم البروفايل التعريفي لشركة دار ساس الأمنية بنسختيه العربية والإنجليزية",
+      "en": "Bilingual company profile design for Dar SAS Security Co."
+    },
+    "year": "2026",
+    "about": {
+      "ar": "تصميم وتنفيذ البروفايل التعريفي لشركة دار ساس الأمنية بالرياض بنسختين عربية وإنجليزية، بتوجه بصري جريء يعتمد على ثنائية الأسود والأحمر ليعكس الثقة والحزم في قطاع الحلول الأمنية. يستعرض البروفايل قصة الشركة منذ تأسيسها، ورؤيتها وقيمها، ومنهجيتها الأمنية المتكاملة، وخدماتها من الحراسة إلى الأنظمة التقنية والاستشارات، إلى جانب الشهادات والشركاء وخطط المستقبل، في تسلسل بصري واضح ومنظم.",
+      "en": "Designing the bilingual Arabic and English company profile for Dar SAS Security in Riyadh, with a bold black-and-red visual direction that conveys trust and authority in the security sector. The profile walks through the company's story, vision and values, its integrated security methodology, and its services from guarding to technical systems and consulting, alongside certifications, partners and future plans, in a clear and structured visual flow."
+    },
+    "tags": [
+      "profile",
+      "print"
+    ],
+    "cover": "assets/darsas/cover-spread.webp",
+    "focus": "50% 50%",
+    "gallery": [
+      {
+        "src": "assets/darsas/cover-spread.webp"
+      },
+      {
+        "src": "assets/darsas/spread-about.webp"
+      },
+      {
+        "src": "assets/darsas/closed-books.webp",
+        "half": true
+      },
+      {
+        "src": "assets/darsas/spread-contact.webp",
+        "half": true
+      },
+      {
+        "src": "assets/darsas/spreads-grid.webp"
+      },
+      {
+        "src": "assets/darsas/spread-services.webp"
+      }
+    ]
+  },
+  {
     "id": "ula",
     "name": {
       "ar": "نادي العلا · Summer Camp",
