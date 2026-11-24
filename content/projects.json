@@ -1,5 +1,66 @@
 [
   {
+    "id": "faiza",
+    "name": {
+      "ar": "فايزة حسين",
+      "en": "Faiza Hussain"
+    },
+    "line": {
+      "ar": "تصميم الهوية البصرية لمصممة الأزياء السعودية فايزة حسين",
+      "en": "Brand identity for Saudi fashion designer Faiza Hussain"
+    },
+    "year": "2026",
+    "about": {
+      "ar": "تضمن العمل تصميم الشعار وتطبيقاته والهوية اللونية، وكذلك دليل الهوية البصرية.",
+      "en": "The work covered the logo and its applications, the colour palette, and the brand guidelines."
+    },
+    "tags": [
+      "identity",
+      "logo",
+      "merch"
+    ],
+    "cover": "assets/faiza/09-hang-tag.webp",
+    "focus": "68% 60%",
+    "gallery": [
+      {
+        "src": "assets/faiza/01-cover.webp"
+      },
+      {
+        "src": "assets/faiza/02-logo.webp"
+      },
+      {
+        "src": "assets/faiza/03-colors.webp"
+      },
+      {
+        "src": "assets/faiza/04-typography.webp"
+      },
+      {
+        "src": "assets/faiza/05-icon.webp"
+      },
+      {
+        "src": "assets/faiza/06-photography.webp"
+      },
+      {
+        "src": "assets/faiza/07-incorrect-usage.webp"
+      },
+      {
+        "src": "assets/faiza/08-stationery.webp"
+      },
+      {
+        "src": "assets/faiza/09-hang-tag.webp"
+      },
+      {
+        "src": "assets/faiza/10-label.webp"
+      },
+      {
+        "src": "assets/faiza/11-shopping-bag.webp"
+      },
+      {
+        "src": "assets/faiza/12-thanks.webp"
+      }
+    ]
+  },
+  {
     "id": "darsas",
     "name": {
       "ar": "شركة دار ساس الأمنية",
