@@ -96,6 +96,64 @@
     ]
   },
   {
+    "id": "greazy",
+    "name": {
+      "ar": "مطعم GREAZY",
+      "en": "Greazy Restaurant"
+    },
+    "line": {
+      "ar": "تصميم وتنفيذ هوية بصرية متكاملة لمطعم GREAZY",
+      "en": "Complete brand identity design and execution for GREAZY Restaurant"
+    },
+    "year": "2025",
+    "about": {
+      "ar": "تولّينا تنفيذ الهوية البصرية المتكاملة لمطعم GREAZY، بدءًا من ابتكار وتصميم الشعار، وتحديد لوحة الألوان والطابع البصري للعلامة التجارية، مرورًا بتصميم وتنسيق الديكورات وتطبيق الهوية في مختلف المساحات الداخلية والخارجية للمطعم، وصولًا إلى تصميم قائمة الطعام والمطبوعات، وانتهاءً بتصميم وتطوير الموقع الإلكتروني؛ لنقدم تجربة بصرية متكاملة تعكس شخصية العلامة التجارية في كل تفاصيلها.",
+      "en": "We developed and executed the complete visual identity for GREAZY Restaurant, starting with the concept and design of the logo, defining the brand’s color palette and visual style, and extending to the interior and exterior décor design and the application of the brand identity throughout the restaurant. Our work also included the design of the menu, various printed materials, and the official website, delivering a cohesive visual experience that reflects the brand’s personality across every touchpoint."
+    },
+    "tags": [
+      "identity",
+      "logo",
+      "merch",
+      "signage",
+      "print"
+    ],
+    "cover": "assets/greazy/greazy-logo.webp",
+    "focus": "51% 26%",
+    "gallery": [
+      {
+        "src": "assets/greazy/greazy-logo.webp"
+      },
+      {
+        "src": "assets/greazy/icon.webp",
+        "half": true
+      },
+      {
+        "src": "assets/greazy/pattern.webp",
+        "half": true
+      },
+      {
+        "src": "assets/greazy/hoodie-back.webp",
+        "half": true
+      },
+      {
+        "src": "assets/greazy/hoodie-front.webp",
+        "half": true
+      },
+      {
+        "src": "assets/greazy/photo-2026-04-17-21-49-40.webp"
+      },
+      {
+        "src": "assets/greazy/photo-2026-06-28-17-54-40.webp"
+      },
+      {
+        "src": "assets/greazy/photo-2026-04-20-03-49-30.webp"
+      },
+      {
+        "src": "assets/greazy/word.webp"
+      }
+    ]
+  },
+  {
     "id": "faiza",
     "name": {
       "ar": "فايزة حسين",
@@ -153,64 +211,6 @@
       },
       {
         "src": "assets/faiza/12-thanks.webp"
-      }
-    ]
-  },
-  {
-    "id": "greazy",
-    "name": {
-      "ar": "مطعم GREAZY",
-      "en": "Greazy Restaurant"
-    },
-    "line": {
-      "ar": "تصميم وتنفيذ هوية بصرية متكاملة لمطعم GREAZY",
-      "en": "Complete brand identity design and execution for GREAZY Restaurant"
-    },
-    "year": "2025",
-    "about": {
-      "ar": "تولّينا تنفيذ الهوية البصرية المتكاملة لمطعم GREAZY، بدءًا من ابتكار وتصميم الشعار، وتحديد لوحة الألوان والطابع البصري للعلامة التجارية، مرورًا بتصميم وتنسيق الديكورات وتطبيق الهوية في مختلف المساحات الداخلية والخارجية للمطعم، وصولًا إلى تصميم قائمة الطعام والمطبوعات، وانتهاءً بتصميم وتطوير الموقع الإلكتروني؛ لنقدم تجربة بصرية متكاملة تعكس شخصية العلامة التجارية في كل تفاصيلها.",
-      "en": "We developed and executed the complete visual identity for GREAZY Restaurant, starting with the concept and design of the logo, defining the brand’s color palette and visual style, and extending to the interior and exterior décor design and the application of the brand identity throughout the restaurant. Our work also included the design of the menu, various printed materials, and the official website, delivering a cohesive visual experience that reflects the brand’s personality across every touchpoint."
-    },
-    "tags": [
-      "identity",
-      "logo",
-      "merch",
-      "signage",
-      "print"
-    ],
-    "cover": "assets/greazy/greazy-logo.webp",
-    "focus": "51% 26%",
-    "gallery": [
-      {
-        "src": "assets/greazy/greazy-logo.webp"
-      },
-      {
-        "src": "assets/greazy/icon.webp",
-        "half": true
-      },
-      {
-        "src": "assets/greazy/pattern.webp",
-        "half": true
-      },
-      {
-        "src": "assets/greazy/hoodie-back.webp",
-        "half": true
-      },
-      {
-        "src": "assets/greazy/hoodie-front.webp",
-        "half": true
-      },
-      {
-        "src": "assets/greazy/photo-2026-04-17-21-49-40.webp"
-      },
-      {
-        "src": "assets/greazy/photo-2026-06-28-17-54-40.webp"
-      },
-      {
-        "src": "assets/greazy/photo-2026-04-20-03-49-30.webp"
-      },
-      {
-        "src": "assets/greazy/word.webp"
       }
     ]
   },
