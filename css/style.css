@@ -624,13 +624,20 @@ html[lang="en"] .pbar__btn, html[lang="en"] .share { letter-spacing: .02em; }
 .scard__meta svg { width: 14px; height: 14px; }
 .scard:hover .scard__meta span { color: var(--red); }
 html[dir="rtl"] .scard__meta svg { scale: -1 1; }
-.works__more { display: flex; justify-content: center; margin-top: clamp(20px, 3vh, 32px); }
-.pano__more { display: flex; justify-content: center; margin-top: clamp(8px, 2vh, 20px); }
 .pano__all { display: inline-flex; align-items: center; gap: 10px; padding: 10px 22px 11px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); font-family: var(--display); font-size: .95rem; transition: color .3s, box-shadow .3s; }
 .pano__all:hover { color: var(--red); box-shadow: inset 0 0 0 1px var(--red); }
 .pano__all svg { width: 14px; height: 14px; }
 html[dir="rtl"] .pano__all svg { scale: -1 1; }
 html[lang="en"] .pano__all { text-transform: uppercase; letter-spacing: .06em; font-size: .8rem; }
+.works__all { margin-inline-start: auto; align-self: center; }   /* «All work» at the far end of the «Selected work» line */
+@media (max-width: 820px) {
+  /* phones: the button shares the title's line, the filters take the next one */
+  .works .head { align-items: center !important; gap: 14px 16px !important; }
+  .works .head .display { flex: 0 1 auto; min-width: 0; }
+  .works .head .filters { order: 2; flex-basis: 100%; }
+  .works__all { order: 1; flex: none; white-space: nowrap; padding: 8px 14px 9px; font-size: .85rem; gap: 8px; }
+  html[lang="en"] .works__all { font-size: .72rem; letter-spacing: .04em; }
+}
 .pbar:not(.is-on) .share { display: none; }
 
 /* ---------- phones: the first screens are slides; a script lets each scroll settle on the nearest section (js/main.js) ---------- */
