@@ -141,7 +141,11 @@ const put = (html, name, body) => {
   return html.replace(re, (m, a, b) => a + body + b);
 };
 const stamp = h => h.replace(/\/js\/content\.js\?v=[^"]*/, '/js/content.js?v=' + V).replace(/\/css\/style\.css\?v=[^"]*/, '/css/style.css?v=' + VC).replace(/\/js\/main\.js\?v=[^"]*/, '/js/main.js?v=' + VM);
-const tilesFor = l => HOME.map(p => `<a class="tile" href="${workPath(p.id, l)}"><img src="${abs(p.cover)}" alt="${esc(L(p.line, l))}" loading="lazy"><span class="tile__cap"><span class="tile__name">${esc(L(p.name, l))}</span><span class="tile__tags">${esc(tags(p, l))}</span></span></a>`).join('');
+// a title like «Client · Company Profile»: the dot holds on to the word before it, so a wrapped line never starts with it
+const nameHtml = s => esc(s).replace(/ · /g, '&nbsp;· ');
+// the project page's big title: the client on one line, the kind of work under it, in grey and with no dot
+const titleHtml = s => { const i = s.indexOf(' · '); return i < 0 ? esc(s) : `${esc(s.slice(0, i))} <span class="phead__kind">${esc(s.slice(i + 3))}</span>`; };
+const tilesFor = l => HOME.map(p => `<a class="tile" href="${workPath(p.id, l)}"><img src="${abs(p.cover)}" alt="${esc(L(p.line, l))}" loading="lazy"><span class="tile__cap"><span class="tile__name">${nameHtml(L(p.name, l))}</span><span class="tile__tags">${esc(tags(p, l))}</span></span></a>`).join('');
 const sitesList = `<ul>${S.map(s => `<li><a href="${esc(s.url)}">${esc(s.label)}</a></li>`).join('')}</ul>`;
 
 let ar = readFileSync(root + 'index.html', 'utf8');
@@ -214,7 +218,7 @@ function gallery(p, l) {
     return `<figure class="gal__it${g.full ? ' is-full' : ''}" style="--r:${g.r.toFixed(4)};--s:${g.s.toFixed(4)}"><img src="${abs(g.src)}" alt="${alt}" width="${w}" height="${h}" loading="lazy" decoding="async"></figure>`;
   }).join('')}</section>`;
 }
-const tile = (p, l) => `<a class="tile" href="${workPath(p.id, l)}" style="--focus:${esc(p.focus || '50% 50%')}" aria-label="${esc(L(p.name, l))}: ${esc(t('plate.open', l))}"><img src="${abs(p.cover)}" alt="${esc(L(p.line, l))}" loading="lazy" decoding="async"><span class="tile__cap"><span class="tile__name">${esc(L(p.name, l))}</span><span class="tile__tags">${esc(tags(p, l))}</span></span><span class="tile__go" aria-hidden="true">${arrow}</span></a>`;
+const tile = (p, l) => `<a class="tile" href="${workPath(p.id, l)}" style="--focus:${esc(p.focus || '50% 50%')}" aria-label="${esc(L(p.name, l))}: ${esc(t('plate.open', l))}"><img src="${abs(p.cover)}" alt="${esc(L(p.line, l))}" loading="lazy" decoding="async"><span class="tile__cap"><span class="tile__name">${nameHtml(L(p.name, l))}</span><span class="tile__tags">${esc(tags(p, l))}</span></span><span class="tile__go" aria-hidden="true">${arrow}</span></a>`;
 
 // one frame for every inner page: head, bar, footer
 function shell(l, { path, title, desc, image, type = 'website', ld, body }) {
@@ -356,7 +360,7 @@ function page(p, i, l) {
       </div>
       <div class="phead__main${about ? '' : ' is-single'}">
         <div class="phead__id">
-          <h1 class="phead__title">${esc(name)}</h1>
+          <h1 class="phead__title">${titleHtml(name)}</h1>
           <p class="phead__line">${esc(line)}</p>
         </div>
         ${about ? `<div class="phead__about"><h2>${esc(t('page.about', l))}</h2><p>${esc(about)}</p></div>` : ''}

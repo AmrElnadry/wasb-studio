@@ -216,7 +216,7 @@
     const seen = !!grid.querySelector('.tile[data-i]');   // the plain list written by scripts/seo.mjs does not count
     grid.innerHTML = PROJECTS.map((p, i) => `<a class="tile${seen ? ' in' : ''}" href="${workUrl(p.id)}" data-i="${i}" style="--i:${i % 3};${p.focus ? `--focus:${p.focus}` : ''}" aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
         <img src="${p.cover}" alt="${esc(L(p.line))}" loading="lazy" decoding="async">
-        <span class="tile__cap"><span class="tile__name">${esc(L(p.name))}</span><span class="tile__tags">${esc(tagLine(p))}</span></span>
+        <span class="tile__cap"><span class="tile__name">${esc(L(p.name)).replace(/ · /g, '&nbsp;· ')}</span><span class="tile__tags">${esc(tagLine(p))}</span></span>
         <span class="tile__go" aria-hidden="true">${arrow}</span>
       </a>`).join('');
     if (!seen) $$('.tile', grid).forEach(watch);
