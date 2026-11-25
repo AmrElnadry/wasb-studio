@@ -265,131 +265,62 @@
       "en": "FZT"
     },
     "line": {
-      "ar": "شركة فزت للتسويق وإدارة الفعاليات",
-      "en": "FZT, marketing and event management"
+      "ar": "الهوية البصرية لشركة فزت للتسويق وإدارة الفعاليات",
+      "en": "Brand identity for FZT, marketing and event management"
     },
     "year": "",
     "about": {
-      "ar": "",
-      "en": ""
+      "ar": "تضمن العمل تصميم الرمز والشعار ونسخه، ونظام الألوان والخطوط والأنماط، وقوالب المطبوعات، إلى جانب دليل الهوية البصرية.",
+      "en": "The work covered the symbol, the logo and its versions, the colour, type and pattern system, stationery templates, and the brand guidelines."
     },
     "tags": [
       "identity",
-      "profile",
-      "website"
+      "logo"
     ],
-    "cover": "assets/fzt/profile-01.webp",
-    "focus": "80% 30%",
+    "cover": "assets/fzt/06-colour-backgrounds.webp",
+    "focus": "36% 50%",
     "gallery": [
       {
-        "src": "assets/fzt/guide-02.webp"
+        "src": "assets/fzt/01-cover.webp"
       },
       {
-        "src": "assets/fzt/guide-01.webp"
+        "src": "assets/fzt/02-symbol.webp"
       },
       {
-        "src": "assets/fzt/guide-03.webp"
+        "src": "assets/fzt/03-logo.webp"
       },
       {
-        "src": "assets/fzt/guide-05.webp"
+        "src": "assets/fzt/04-clear-space.webp"
       },
       {
-        "src": "assets/fzt/guide-06.webp"
+        "src": "assets/fzt/05-mono.webp"
       },
       {
-        "src": "assets/fzt/guide-07.webp"
+        "src": "assets/fzt/06-colour-backgrounds.webp"
       },
       {
-        "src": "assets/fzt/guide-09.webp"
+        "src": "assets/fzt/07-icon.webp"
       },
       {
-        "src": "assets/fzt/guide-11.webp"
+        "src": "assets/fzt/08-misuse.webp"
       },
       {
-        "src": "assets/fzt/guide-13.webp"
+        "src": "assets/fzt/09-colours.webp"
       },
       {
-        "src": "assets/fzt/poster.webp",
-        "half": true
+        "src": "assets/fzt/10-typography.webp"
       },
       {
-        "src": "assets/fzt/pattern.webp",
-        "half": true
+        "src": "assets/fzt/11-pattern.webp"
       },
       {
-        "src": "assets/fzt/profile-01.webp"
+        "src": "assets/fzt/12-letterhead.webp"
       },
       {
-        "src": "assets/fzt/profile-02.webp"
+        "src": "assets/fzt/13-business-card.webp"
       },
       {
-        "src": "assets/fzt/profile-03.webp"
-      },
-      {
-        "src": "assets/fzt/profile-04.webp"
-      },
-      {
-        "src": "assets/fzt/profile-05.webp"
-      },
-      {
-        "src": "assets/fzt/profile-08.webp"
-      },
-      {
-        "src": "assets/fzt/profile-09.webp"
-      },
-      {
-        "src": "assets/fzt/profile-10.webp"
-      },
-      {
-        "src": "assets/fzt/profile-11.webp"
-      },
-      {
-        "src": "assets/fzt/profile-12.webp"
-      },
-      {
-        "src": "assets/fzt/profile-13.webp"
-      },
-      {
-        "src": "assets/fzt/profile-16.webp"
-      },
-      {
-        "src": "assets/fzt/profile-17.webp"
-      },
-      {
-        "src": "assets/fzt/profile-18.webp"
-      },
-      {
-        "src": "assets/fzt/profile-19.webp"
-      },
-      {
-        "src": "assets/fzt/profile-20.webp"
-      },
-      {
-        "src": "assets/fzt/profile-21.webp"
-      },
-      {
-        "src": "assets/fzt/profile-22.webp"
-      },
-      {
-        "src": "assets/fzt/profile-23.webp"
-      },
-      {
-        "src": "assets/fzt/profile-24.webp"
-      },
-      {
-        "src": "assets/fzt/profile-25.webp"
-      },
-      {
-        "src": "assets/fzt/profile-26.webp"
-      },
-      {
-        "src": "assets/fzt/profile-27.webp"
-      },
-      {
-        "src": "assets/fzt/profile-28.webp"
-      },
-      {
-        "src": "assets/fzt/website.webp"
+        "src": "assets/fzt/14-thanks.webp"
       }
     ],
     "featured": false
