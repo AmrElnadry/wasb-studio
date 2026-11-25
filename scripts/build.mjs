@@ -406,8 +406,9 @@ function worksPage(l) {
   const url = SITE + base(l).slice(1) + 'work/';
   const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description: desc, url, inLanguage: l,
     about: { '@id': SITE + '#studio' },
-    mainEntity: { '@type': 'ItemList', itemListElement: P.map((p, k) => ({ '@type': 'ListItem', position: k + 1, url: SITE + workPath(p.id, l).slice(1), name: L(p.name, l) })) } };
-  const used = Object.keys(WALL_FILTERS).filter(f => P.some(p => p.tags.some(k => WALL_FILTERS[f].includes(k))));
+    mainEntity: { '@type': 'ItemList', itemListElement: [...P.map(p => ({ url: SITE + workPath(p.id, l).slice(1), name: L(p.name, l) })), ...S.map(x => ({ url: x.url, name: x.label }))].map((x, k) => ({ '@type': 'ListItem', position: k + 1, ...x })) } };
+  const used = Object.keys(WALL_FILTERS).filter(f => f === 'website' ? S.length || P.some(p => p.tags.includes('website')) : P.some(p => p.tags.some(k => WALL_FILTERS[f].includes(k))));
+  const siteTile = x => `<a class="tile tile--site" data-tags="website" href="${esc(x.url)}" target="_blank" rel="noopener" aria-label="${esc(x.label)}: ${esc(t('page.visit', l))}"><img src="${abs(x.src)}" alt="${esc(t('nav.sites', l) + ' · ' + x.label)}" loading="lazy" decoding="async"><span class="tile__cap"><span class="tile__kind">${esc((T.website && T.website[l]) || t('nav.sites', l))}</span><span class="tile__name" dir="ltr">${esc(x.label)}</span></span><span class="tile__go" aria-hidden="true">${arrow}</span></a>`;
   const body = `  <header class="case__head">
     <div class="wrap">
       <div>
@@ -422,7 +423,7 @@ function worksPage(l) {
       <button type="button" class="is-on" data-filter="all" aria-pressed="true">${esc(t('filter.all', l))}</button>${used.map(f => `
       <button type="button" data-filter="${f}" aria-pressed="false">${esc(t('filter.' + f, l))}</button>`).join('')}
     </div>
-    <div class="wall__grid">${P.map(p => tile(p, l).replace('<a class="tile"', `<a class="tile" data-tags="${esc(p.tags.join(' '))}"`)).join('')}</div>
+    <div class="wall__grid">${P.map(p => tile(p, l).replace('<a class="tile"', `<a class="tile" data-tags="${esc(p.tags.join(' '))}"`)).join('')}${S.map(siteTile).join('')}</div>
   </section>`;
   return shell(l, { path: 'work/', title, desc, image: SITE + `assets/share-${l}.jpg`, ld, body });
 }

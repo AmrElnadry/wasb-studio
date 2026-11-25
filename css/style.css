@@ -604,6 +604,12 @@ html[lang="en"] .pbar__btn, html[lang="en"] .share { letter-spacing: .02em; }
 .wall__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 1.2vw, 18px); }
 .wall__grid .tile { aspect-ratio: 4 / 3; border-radius: 10px; }
 .wall__grid .tile[hidden] { display: none; }
+.tile--site img { object-position: 50% 0; }   /* a website shows its first screen */
+.tile__kind { font-family: var(--display); font-size: .8rem; color: var(--mute); }
+.tile--site .tile__cap { gap: 4px; }
+.tile--site .tile__name { justify-self: start; }
+/* the filters: a keyboard focus is the red line under the word, not a frame cut by the row's edges */
+.filters button:focus-visible { outline: none; color: var(--fg); box-shadow: 0 2px 0 var(--red); }
 @media (max-width: 1000px) { .wall__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .wall__grid { grid-template-columns: minmax(0, 1fr); } .wall__grid .tile__cap { opacity: 1; } }
 .sgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: clamp(20px, 2.4vw, 36px); padding-block: 0 var(--space); }

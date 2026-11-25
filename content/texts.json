@@ -115,7 +115,7 @@
     "page.waMsg": "مرحباً، شاهدت مشروع «{name}» على موقعكم وأرغب في بدء مشروع.",
     "page.next": "التالي",
     "page.similar": "أعمال مشابهة",
-    "worksPage.title": "كل الأعمال",
+    "worksPage.title": "أعمال وثب",
     "worksPage.note": "جميع المشاريع التي صممناها في الهوية البصرية والملفات التعريفية والمواقع."
   },
   "en": {
@@ -234,7 +234,7 @@
     "page.waMsg": "Hello, I saw the {name} project on your website and would like to start a project.",
     "page.next": "Next",
     "page.similar": "Similar work",
-    "worksPage.title": "All work",
+    "worksPage.title": "WASB Work",
     "worksPage.note": "Every project we have designed across brand identity, company profiles and websites."
   }
 }
