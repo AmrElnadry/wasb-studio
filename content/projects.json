@@ -1,5 +1,60 @@
 [
   {
+    "id": "fzt-profile",
+    "name": {
+      "ar": "فزت · الملف التعريفي",
+      "en": "FZT · Company Profile"
+    },
+    "line": {
+      "ar": "تصميم الملف التعريفي لشركة فزت للتسويق وإدارة الفعاليات",
+      "en": "Company profile design for FZT, marketing and event management"
+    },
+    "year": "2026",
+    "about": {
+      "ar": "تصميم وتنفيذ الملف التعريفي لشركة فزت للتسويق وإدارة الفعاليات، امتدادًا لهويتها البصرية بالأخضر الزيتي والبيج وعناصرها الهندسية. يستعرض الملف من هي فزت ورؤيتها ورسالتها وقيمها وشركاء النجاح، ثم خدماتها من إدارة الفعاليات والأنظمة التقنية إلى الإنتاج والتصميم الإبداعي والفيديو والتجارب التفاعلية والتواصل الداخلي، وصولًا إلى أعمالها في الفعاليات الخارجية والمعارض والمبادرات الاجتماعية، في تسلسل بصري يمنح الصور مساحتها.",
+      "en": "Designing the company profile for FZT, a marketing and event management company, extending its visual identity of deep olive green, beige and geometric elements. The profile introduces FZT, its vision, mission, values and success partners, then its services from event management and technical systems to production, creative design, video, interactive experiences and internal communication, and finally its work across outdoor events, exhibitions and community initiatives, in a visual flow that gives the imagery room to breathe."
+    },
+    "tags": [
+      "profile",
+      "print"
+    ],
+    "cover": "assets/fzt-profile/spread-values-cover.webp",
+    "focus": "50% 50%",
+    "gallery": [
+      {
+        "src": "assets/fzt-profile/spread-values-cover.webp"
+      },
+      {
+        "src": "assets/fzt-profile/covers.webp",
+        "half": true
+      },
+      {
+        "src": "assets/fzt-profile/closed-stack.webp",
+        "half": true
+      },
+      {
+        "src": "assets/fzt-profile/spread-about.webp"
+      },
+      {
+        "src": "assets/fzt-profile/page-flip.webp",
+        "half": true
+      },
+      {
+        "src": "assets/fzt-profile/rolled-cover.webp",
+        "half": true
+      },
+      {
+        "src": "assets/fzt-profile/spread-services.webp"
+      },
+      {
+        "src": "assets/fzt-profile/spread-exhibitions.webp"
+      },
+      {
+        "src": "assets/fzt-profile/services-turn.webp"
+      }
+    ]
+  },
+  {
     "id": "qimam",
     "name": {
       "ar": "قمم الكمال لتقنية المعلومات",
