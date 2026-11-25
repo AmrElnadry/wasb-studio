@@ -1,5 +1,60 @@
 [
   {
+    "id": "alkamal-profile",
+    "name": {
+      "ar": "الكمال للمقاولات · الملف التعريفي",
+      "en": "Al Kamal Contracting · Company Profile"
+    },
+    "line": {
+      "ar": "تصميم الملف التعريفي لشركة الكمال للمقاولات بنسختيه العربية والإنجليزية",
+      "en": "Bilingual company profile design for Al Kamal Contracting"
+    },
+    "year": "2026",
+    "about": {
+      "ar": "تصميم وتنفيذ الملف التعريفي لشركة الكمال للمقاولات بنسختين عربية وإنجليزية، بتوجه بصري فاخر يجمع بين الذهبي والكحلي وصور المواقع وقت الغروب ليعكس قوة الشركة وخبرتها في المشاريع البحرية والبنية التحتية والإنشاءات. يستعرض الملف من نحن والرؤية والرسالة ومرتكزات العمل والهيكل الإداري وأبرز العملاء، ثم الخدمات والتخصصات والمعدات والتغطية الجغرافية، وصولًا إلى سجل المشاريع البحرية ومشاريع البنية التحتية والإنشاءات والشهادات والاعتمادات، في تسلسل بصري واضح يمنح كل مشروع مساحته.",
+      "en": "Designing the bilingual Arabic and English company profile for Al Kamal Contracting, with a premium visual direction that pairs gold and navy with sunset site photography to reflect the company's strength and experience in marine, infrastructure and construction projects. The profile covers who they are, vision, mission, core values, management structure and key clients, then services, specialties, equipment and geographic coverage, and finally the record of marine, infrastructure and construction projects alongside certifications and accreditations, in a clear visual flow that gives each project its own space."
+    },
+    "tags": [
+      "profile",
+      "print"
+    ],
+    "cover": "assets/alkamal-profile/spread-about-cover.webp",
+    "focus": "50% 50%",
+    "gallery": [
+      {
+        "src": "assets/alkamal-profile/spread-about-cover.webp"
+      },
+      {
+        "src": "assets/alkamal-profile/covers.webp",
+        "half": true
+      },
+      {
+        "src": "assets/alkamal-profile/closed-stack.webp",
+        "half": true
+      },
+      {
+        "src": "assets/alkamal-profile/spread-about.webp"
+      },
+      {
+        "src": "assets/alkamal-profile/page-flip.webp",
+        "half": true
+      },
+      {
+        "src": "assets/alkamal-profile/rolled-cover.webp",
+        "half": true
+      },
+      {
+        "src": "assets/alkamal-profile/spread-construction.webp"
+      },
+      {
+        "src": "assets/alkamal-profile/spread-residential.webp"
+      },
+      {
+        "src": "assets/alkamal-profile/page-turn.webp"
+      }
+    ]
+  },
+  {
     "id": "fzt-profile",
     "name": {
       "ar": "فزت · الملف التعريفي",
