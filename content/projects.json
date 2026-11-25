@@ -450,8 +450,8 @@
       "identity",
       "logo"
     ],
-    "cover": "assets/fzt/06-colour-backgrounds.webp",
-    "focus": "36% 50%",
+    "cover": "assets/fzt/03-logo.webp",
+    "focus": "0% 43%",
     "gallery": [
       {
         "src": "assets/fzt/01-cover.webp"
@@ -591,56 +591,6 @@
       }
     ],
     "featured": false
-  },
-  {
-    "id": "alkamal",
-    "name": {
-      "ar": "الكمال",
-      "en": "Al Kamal"
-    },
-    "line": {
-      "ar": "شركة مقاولات: بروفايل مطبوع وموقع إلكتروني",
-      "en": "Contracting company: printed profile and website"
-    },
-    "year": "",
-    "about": {
-      "ar": "",
-      "en": ""
-    },
-    "tags": [
-      "profile",
-      "website"
-    ],
-    "cover": "assets/alkamal/cover-dark.webp",
-    "focus": "48% 45%",
-    "gallery": [
-      {
-        "src": "assets/alkamal/cover-dark.webp"
-      },
-      {
-        "src": "assets/alkamal/spread-about.webp",
-        "half": true
-      },
-      {
-        "src": "assets/alkamal/spread-structure.webp",
-        "half": true
-      },
-      {
-        "src": "assets/alkamal/spread-city.webp"
-      },
-      {
-        "src": "assets/alkamal/spread-p1.webp"
-      },
-      {
-        "src": "assets/alkamal/spread-p2.webp"
-      },
-      {
-        "src": "assets/alkamal/spread-p3.webp"
-      },
-      {
-        "src": "assets/web/alkamal.webp"
-      }
-    ]
   },
   {
     "id": "dan",
