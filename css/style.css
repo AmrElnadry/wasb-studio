@@ -598,6 +598,14 @@ html[lang="en"] .pbar__btn, html[lang="en"] .share { letter-spacing: .02em; }
 @media (max-width: 480px) { .similar__grid { grid-template-columns: minmax(0, 1fr); } .similar__grid .tile:nth-child(4) { display: none; } .pg__pn .pg__sep, .pg__pn a:last-child { display: none; } }
 
 /* ---------- all websites (/sites/) ---------- */
+/* ---------- all work: every project, filtered by service ---------- */
+.wall { padding-block: 0 var(--space); }
+.wall__filters { margin-block-end: clamp(20px, 3vh, 32px); }
+.wall__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 1.2vw, 18px); }
+.wall__grid .tile { aspect-ratio: 4 / 3; border-radius: 10px; }
+.wall__grid .tile[hidden] { display: none; }
+@media (max-width: 1000px) { .wall__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .wall__grid { grid-template-columns: minmax(0, 1fr); } .wall__grid .tile__cap { opacity: 1; } }
 .sgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: clamp(20px, 2.4vw, 36px); padding-block: 0 var(--space); }
 .scard { display: grid; gap: 14px; }
 .scard .browser { max-width: none; width: 100%; }
@@ -610,6 +618,7 @@ html[lang="en"] .pbar__btn, html[lang="en"] .share { letter-spacing: .02em; }
 .scard__meta svg { width: 14px; height: 14px; }
 .scard:hover .scard__meta span { color: var(--red); }
 html[dir="rtl"] .scard__meta svg { scale: -1 1; }
+.works__more { display: flex; justify-content: center; margin-top: clamp(20px, 3vh, 32px); }
 .pano__more { display: flex; justify-content: center; margin-top: clamp(8px, 2vh, 20px); }
 .pano__all { display: inline-flex; align-items: center; gap: 10px; padding: 10px 22px 11px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); font-family: var(--display); font-size: .95rem; transition: color .3s, box-shadow .3s; }
 .pano__all:hover { color: var(--red); box-shadow: inset 0 0 0 1px var(--red); }

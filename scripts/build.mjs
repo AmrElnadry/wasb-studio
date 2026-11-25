@@ -276,7 +276,7 @@ ${ldTag(ld)}
 </header>
 <div class="menu" id="menu" hidden>
   <nav class="menu__links" aria-label="${esc(t('nav.menu', l))}">
-    <a href="${base(l)}#works">${esc(t('nav.works', l))}</a>
+    <a href="${base(l)}work/">${esc(t('nav.works', l))}</a>
     <a href="${base(l)}sites/">${esc(t('nav.sites', l))}</a>
     <a href="${base(l)}#approach">${esc(t('nav.approach', l))}</a>
     <a href="${base(l)}#about">${esc(t('nav.about', l))}</a>
@@ -345,17 +345,17 @@ function page(p, i, l) {
       keywords: tags(p, l), dateCreated: p.year || undefined, creator: { '@type': 'ProfessionalService', '@id': SITE + '#studio', name: 'وثب استوديو', url: SITE } },
     { '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: studio, item: SITE + base(l).slice(1) },
-      { '@type': 'ListItem', position: 2, name: t('nav.works', l), item: SITE + base(l).slice(1) + '#works' },
+      { '@type': 'ListItem', position: 2, name: t('nav.works', l), item: SITE + base(l).slice(1) + 'work/' },
       { '@type': 'ListItem', position: 3, name, item: url } ] }
   ] };
   const body = `  <article>
     <header class="phead">
       <div class="phead__top">
-        <p class="pg__crumb"><a href="${base(l)}#works">${esc(t('nav.works', l))}</a> <span aria-hidden="true">/</span> ${pad(i + 1)}</p>
+        <p class="pg__crumb"><a href="${base(l)}work/">${esc(t('nav.works', l))}</a> <span aria-hidden="true">/</span> ${pad(i + 1)}</p>
         <nav class="pg__pn" aria-label="${esc(t('nav.works', l))}">
           <a href="${workPath(next.id, l)}" rel="next">${esc(t('page.next', l))}${chev(l)}</a>
           <span class="pg__sep" aria-hidden="true"></span>
-          <a href="${base(l)}#works">${esc(t('page.all', l))}</a>
+          <a href="${base(l)}work/">${esc(t('page.all', l))}</a>
         </nav>
       </div>
       <div class="phead__main${about ? '' : ' is-single'}">
@@ -369,7 +369,7 @@ function page(p, i, l) {
     ${gallery(p, l)}
   </article>
   <section class="similar" aria-labelledby="similarTitle">
-    <div class="similar__head"><h2 id="similarTitle">${esc(t('page.similar', l))}</h2><a href="${base(l)}#works">${esc(t('page.all', l))}${chev(l)}</a></div>
+    <div class="similar__head"><h2 id="similarTitle">${esc(t('page.similar', l))}</h2><a href="${base(l)}work/">${esc(t('page.all', l))}${chev(l)}</a></div>
     <div class="similar__grid">${similar(p, i).map(q => tile(q, l)).join('')}</div>
   </section>
 ${bar(name, url, l)}`;
@@ -399,8 +399,37 @@ function sitesPage(l) {
   return shell(l, { path: 'sites/', title, desc, image: SITE + `assets/share-${l}.jpg`, ld, body });
 }
 
+// every project, shown on the home page or not, with the same filters as the home page
+const WALL_FILTERS = { identity: ['identity', 'logo', 'merch', 'signage'], profile: ['profile'], website: ['website'] };
+function worksPage(l) {
+  const title = t('worksPage.title', l), desc = t('worksPage.note', l);
+  const url = SITE + base(l).slice(1) + 'work/';
+  const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description: desc, url, inLanguage: l,
+    about: { '@id': SITE + '#studio' },
+    mainEntity: { '@type': 'ItemList', itemListElement: P.map((p, k) => ({ '@type': 'ListItem', position: k + 1, url: SITE + workPath(p.id, l).slice(1), name: L(p.name, l) })) } };
+  const used = Object.keys(WALL_FILTERS).filter(f => P.some(p => p.tags.some(k => WALL_FILTERS[f].includes(k))));
+  const body = `  <header class="case__head">
+    <div class="wrap">
+      <div>
+        <p class="pg__crumb"><a href="${base(l)}">${esc(t('page.home', l))}</a> <span aria-hidden="true">/</span> ${esc(t('nav.works', l))}</p>
+        <h1 class="case__title">${esc(title)}</h1>
+        <p class="case__line">${esc(desc)}</p>
+      </div>
+    </div>
+  </header>
+  <section class="wall wrap" data-filters='${esc(JSON.stringify(WALL_FILTERS))}'>
+    <div class="filters wall__filters" role="group" aria-label="${esc(t('nav.works', l))}">
+      <button type="button" class="is-on" data-filter="all" aria-pressed="true">${esc(t('filter.all', l))}</button>${used.map(f => `
+      <button type="button" data-filter="${f}" aria-pressed="false">${esc(t('filter.' + f, l))}</button>`).join('')}
+    </div>
+    <div class="wall__grid">${P.map(p => tile(p, l).replace('<a class="tile"', `<a class="tile" data-tags="${esc(p.tags.join(' '))}"`)).join('')}</div>
+  </section>`;
+  return shell(l, { path: 'work/', title, desc, image: SITE + `assets/share-${l}.jpg`, ld, body });
+}
+
 for (const dir of ['work', 'en/work', 'sites', 'en/sites']) rmSync(root + dir, { recursive: true, force: true });
 P.forEach((p, i) => { write(`work/${p.id}/index.html`, page(p, i, 'ar')); write(`en/work/${p.id}/index.html`, page(p, i, 'en')); });
+write('work/index.html', worksPage('ar')); write('en/work/index.html', worksPage('en'));
 write('sites/index.html', sitesPage('ar')); write('en/sites/index.html', sitesPage('en'));
 
 // ---------- sitemap.xml ----------
@@ -415,6 +444,7 @@ ${imgs.map(s => `    <image:image><image:loc>${full(s)}</image:loc></image:image
 writeFileSync(root + 'sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${entry('', 'en/', P.map(p => p.cover))}
+${entry('work/', 'en/work/', P.map(p => p.cover))}
 ${entry('sites/', 'en/sites/', S.map(x => x.src))}
 ${P.map(p => entry(`work/${p.id}/`, `en/work/${p.id}/`, [p.cover, ...gimgs(p)].filter((s, k, a) => a.indexOf(s) === k).slice(0, 30))).join('\n')}
 </urlset>

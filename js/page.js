@@ -20,6 +20,18 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') { set(false); burger.focus(); } });
   }
 
+  // all-work page: filter the projects by service
+  const wall = document.querySelector('.wall');
+  if (wall) {
+    const F = JSON.parse(wall.dataset.filters || '{}');
+    wall.addEventListener('click', e => {
+      const b = e.target.closest('[data-filter]'); if (!b) return;
+      const keys = F[b.dataset.filter];
+      wall.querySelectorAll('[data-filter]').forEach(x => { const on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', on); });
+      wall.querySelectorAll('.tile').forEach(tile => { tile.hidden = !!keys && !tile.dataset.tags.split(' ').some(k => keys.includes(k)); });
+    });
+  }
+
   const bar = document.getElementById('pbar');
   if (!bar) return;
   const btn = document.getElementById('shareBtn'), menu = document.getElementById('shareMenu');

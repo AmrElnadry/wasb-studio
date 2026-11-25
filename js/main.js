@@ -47,6 +47,7 @@
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
     $('#sitesAll').href = BASE() + 'sites/';
+    $('#worksAll').href = BASE() + 'work/';
     renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); buildGhost(); alignHero(); if (window.WASB_HAND) window.WASB_HAND(); syncGame();
     if (!first) onScroll();
   }
