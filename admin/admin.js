@@ -101,8 +101,7 @@
       baseSha = ref.object.sha;
       await Promise.all(Object.entries(FILES).map(async ([k, f]) => { const r = await gh(`${R}/contents/${f}?ref=${baseSha}`); data[k] = JSON.parse(b64utf8(r.content)); }));
     }
-    // gallery entries are { src, half }; older files held plain paths
-    data.projects.forEach(q => { q.gallery = (q.gallery || []).map(g => typeof g === 'string' ? { src: g } : g); });
+    normalize(data);   // gallery entries are { src, half }; older files held plain paths
     for (const k of Object.keys(FILES)) orig[k] = JSON.stringify(data[k]);
     staged.clear(); fresh.clear(); dirCache.clear();
     sel = Math.min(sel, Math.max(0, data.projects.length - 1));
@@ -675,6 +674,59 @@
     data.sites.forEach((s, i) => { if (!s.label || !/^https?:\/\/.+/.test(s.url) || !s.src) out.push(`موقع #${i + 1}: الاسم أو الرابط أو اللقطة ناقصة.`); });
     return out;
   }
+  /* ---------- merging: a save applies only what changed on this page onto the latest version ---------- */
+  // Two people (or two open tabs) can edit at once. Each save reads the latest files, keeps everything
+  // the others changed, and lays only this page's own changes on top, field by field and project by project.
+  const cl = v => v === undefined ? undefined : clone(v);
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const isObj = v => !!v && typeof v === 'object' && !Array.isArray(v);
+  const idList = a => Array.isArray(a) && a.every(x => isObj(x) && typeof x.id === 'string');
+  function merge(base, mine, theirs) {
+    if (same(mine, base)) return cl(theirs);                  // not touched here: the latest wins
+    if (same(theirs, base) || same(mine, theirs)) return cl(mine);
+    if (isObj(base) && isObj(mine) && isObj(theirs)) {
+      const out = {};
+      for (const k of new Set([...Object.keys(theirs), ...Object.keys(mine)])) { const v = merge(base[k], mine[k], theirs[k]); if (v !== undefined) out[k] = v; }
+      return out;
+    }
+    if (idList(base) && idList(mine) && idList(theirs)) return mergeList(base, mine, theirs);
+    return cl(mine);                                          // both changed the same value: this save wins
+  }
+  function mergeList(base, mine, theirs) {
+    const B = new Map(base.map(x => [x.id, x])), M = new Map(mine.map(x => [x.id, x])), T = new Map(theirs.map(x => [x.id, x]));
+    // removed on one side stays removed, unless the other side edited it meanwhile
+    const alive = id => !B.has(id) || (M.has(id) && T.has(id)) || (M.has(id) && !same(M.get(id), B.get(id))) || (T.has(id) && !same(T.get(id), B.get(id)));
+    const val = id => !M.has(id) ? cl(T.get(id)) : !T.has(id) ? cl(M.get(id)) : merge(B.get(id), M.get(id), T.get(id));
+    // the order: this page's, if it was rearranged here; otherwise the latest. Additions keep their place.
+    const order = a => a.filter(x => B.has(x.id) && M.has(x.id) && T.has(x.id)).map(x => x.id);
+    const mineMoved = !same(order(mine), order(base));
+    const lead = mineMoved ? mine : theirs, other = mineMoved ? theirs : mine;
+    const out = lead.map(x => x.id).filter(alive);
+    other.forEach((x, i) => {
+      if (out.includes(x.id) || !alive(x.id)) return;
+      const prev = other.slice(0, i).reverse().find(y => out.includes(y.id));
+      out.splice(prev ? out.indexOf(prev.id) + 1 : 0, 0, x.id);
+    });
+    return out.map(val);
+  }
+  const normalize = d => { d.projects.forEach(q => { q.gallery = (q.gallery || []).map(g => typeof g === 'string' ? { src: g } : g); }); return d; };
+  async function readAt(sha) {
+    const out = {};
+    await Promise.all(Object.entries(FILES).map(async ([k, f]) => { const r = await gh(`${R}/contents/${f}?ref=${sha}`); out[k] = JSON.parse(b64utf8(r.content)); }));
+    return normalize(out);
+  }
+  // every image the site will show must exist, or the publish step would stop
+  async function missingImages(sha, next, adding) {
+    const t = await gh(`${R}/git/trees/${sha}?recursive=1`);
+    if (t.truncated) return [];
+    const have = new Set(t.tree.map(x => x.path).concat(adding));
+    const out = [];
+    const check = (p, who) => { if (p && !/^https?:/.test(p) && !have.has(p.replace(/^\//, ''))) out.push(`«${who}»: الصورة ${p} غير موجودة على الموقع. اخترها من جديد.`); };
+    next.projects.forEach(p => { const n = p.name.ar || p.id; check(p.cover, n); p.gallery.forEach(g => check(g.src, n)); });
+    next.sites.forEach(s => check(s.src, s.label || s.url));
+    return out;
+  }
+
   /* ---------- save: one commit ---------- */
   let saving = false;
   async function save() {
@@ -694,41 +746,55 @@
     }
     saving = true; $('#saveBtn').disabled = true;
     status('جاري الحفظ…', 'busy');
+    const selId = (data.projects[sel] || {}).id;
+    const blobs = new Map();
     try {
-      const ref = await gh(`${R}/git/ref/heads/${BRANCH}`);
-      const head = ref.object.sha;
-      if (head !== baseSha) {
-        // someone saved since this page loaded: stop if they touched the same part
-        const cmp = await gh(`${R}/compare/${baseSha}...${head}`);
-        const touched = (cmp.files || []).map(f => f.filename);
-        const clash = parts.filter(k => touched.includes(FILES[k]));
-        if (clash.length && !confirm(`قام أحد أعضاء الفريق بحفظ تعديلات على «${clash.map(k => PART[k]).join('، ')}» بعد فتحك للوحة.\n\nإذا تابعت، ستحل تعديلاتك محل تعديلاته في هذا الجزء. الأفضل أن تنسخ تعديلاتك ثم تعيد تحميل الصفحة.\n\nهل تريد متابعة الحفظ؟`)) {
-          status('أُلغي الحفظ', 'err'); saving = false; syncDirty(); return;
+      for (let attempt = 1; ; attempt++) {
+        const head = (await gh(`${R}/git/ref/heads/${BRANCH}`)).object.sha;
+        // someone saved since this page loaded: start from their version and add this page's changes
+        const latest = head === baseSha ? null : await readAt(head);
+        const next = {};
+        for (const k of Object.keys(FILES)) next[k] = !latest ? clone(data[k]) : parts.includes(k) ? merge(JSON.parse(orig[k]), data[k], latest[k]) : latest[k];
+        const missing = await missingImages(head, next, imgs);
+        if (missing.length) { const e = new Error(missing[0]); e.plain = true; throw e; }
+        let n = 0;
+        for (const p of imgs) {
+          if (blobs.has(p)) continue;
+          status(`جاري رفع الصور ${++n}/${imgs.length}…`, 'busy');
+          blobs.set(p, (await gh(`${R}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: await blobB64(staged.get(p).blob), encoding: 'base64' }) })).sha);
         }
+        status('جاري الحفظ…', 'busy');
+        const before = latest || Object.fromEntries(Object.keys(FILES).map(k => [k, JSON.parse(orig[k])]));
+        const tree = Object.keys(FILES).filter(k => !same(next[k], before[k])).map(k => ({ path: FILES[k], mode: '100644', type: 'blob', content: JSON.stringify(next[k], null, 2) + '\n' }));
+        for (const p of imgs) tree.push({ path: p, mode: '100644', type: 'blob', sha: blobs.get(p) });
+        let sha = head;
+        if (tree.length) {
+          const commit = await gh(`${R}/git/commits/${head}`);
+          const t = await gh(`${R}/git/trees`, { method: 'POST', body: JSON.stringify({ base_tree: commit.tree.sha, tree }) });
+          const c = await gh(`${R}/git/commits`, { method: 'POST', body: JSON.stringify({ message, tree: t.sha, parents: [head] }) });
+          try { await gh(`${R}/git/refs/heads/${BRANCH}`, { method: 'PATCH', body: JSON.stringify({ sha: c.sha }) }); }
+          catch (x) {
+            // another save landed in the same second: read again and merge once more
+            if ((x.status === 409 || x.status === 422) && attempt < 4) { await sleep(800 * attempt); continue; }
+            throw x;
+          }
+          sha = c.sha;
+        }
+        // the page now holds exactly what was saved, others' changes included
+        for (const k of Object.keys(FILES)) { data[k] = clone(next[k]); orig[k] = JSON.stringify(next[k]); }
+        baseSha = sha;
+        const i = data.projects.findIndex(p => p.id === selId);
+        sel = i >= 0 ? i : Math.min(sel, Math.max(0, data.projects.length - 1));
+        for (const [p, s] of staged) { if (imgs.includes(p)) shown.set(p, s.url); }
+        staged.clear(); fresh.clear();
+        render(); syncDirty();
+        toast(latest ? 'تم الحفظ، ودُمجت تعديلاتك مع تعديلات أحدث من عضو آخر في الفريق.' : 'تم الحفظ. سيتحدث الموقع خلال دقيقة أو دقيقتين.');
+        if (tree.length) watchDeploy(sha); else status('');
+        break;
       }
-      const commit = await gh(`${R}/git/commits/${head}`);
-      const tree = [];
-      for (const k of parts) tree.push({ path: FILES[k], mode: '100644', type: 'blob', content: JSON.stringify(data[k], null, 2) + '\n' });
-      let n = 0;
-      for (const p of imgs) {
-        status(`جاري رفع الصور ${++n}/${imgs.length}…`, 'busy');
-        const blob = await gh(`${R}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: await blobB64(staged.get(p).blob), encoding: 'base64' }) });
-        tree.push({ path: p, mode: '100644', type: 'blob', sha: blob.sha });
-      }
-      status('جاري الحفظ…', 'busy');
-      const t = await gh(`${R}/git/trees`, { method: 'POST', body: JSON.stringify({ base_tree: commit.tree.sha, tree }) });
-      const c = await gh(`${R}/git/commits`, { method: 'POST', body: JSON.stringify({ message, tree: t.sha, parents: [head] }) });
-      await gh(`${R}/git/refs/heads/${BRANCH}`, { method: 'PATCH', body: JSON.stringify({ sha: c.sha }) });
-      baseSha = c.sha;
-      for (const k of parts) orig[k] = JSON.stringify(data[k]);
-      for (const [p, s] of staged) { if (imgs.includes(p)) shown.set(p, s.url); }
-      staged.clear(); fresh.clear();
-      render(); syncDirty();
-      toast('تم الحفظ. سيتحدث الموقع خلال دقيقة أو دقيقتين.');
-      watchDeploy(c.sha);
     } catch (x) {
-      status('فشل الحفظ', 'err');
-      toast(x.status === 409 || x.status === 422 ? 'حدث تعارض مع تعديل آخر. اضغط «حفظ ونشر» مرة أخرى.' : 'فشل الحفظ: ' + x.message, true);
+      status('لم يُحفظ', 'err');
+      toast(x.plain ? x.message : x.status === 401 ? 'انتهت صلاحية مفتاح الدخول. اخرج ثم ادخل بمفتاح جديد، وتعديلاتك باقية في الصفحة حتى ذلك الحين.' : !navigator.onLine || x instanceof TypeError ? 'تعذّر الاتصال بالإنترنت. تعديلاتك باقية في الصفحة، اضغط «حفظ ونشر» مرة أخرى.' : 'لم يُحفظ: ' + x.message, true);
       syncDirty();
     }
     saving = false;
@@ -736,6 +802,27 @@
   }
   $('#saveBtn').addEventListener('click', save);
   document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); if (!$('#saveBtn').disabled) save(); } });
+
+  // a page left open picks up others' saves on its own while nothing is being edited here
+  async function refreshIfStale() {
+    if (DEMO || !baseSha || saving || changedParts().length || staged.size || document.hidden) return;
+    try {
+      const head = (await gh(`${R}/git/ref/heads/${BRANCH}`)).object.sha;
+      if (head === baseSha || changedParts().length || staged.size) return;
+      const latest = await readAt(head);
+      if (changedParts().length || staged.size) return;
+      const selId = (data.projects[sel] || {}).id;
+      for (const k of Object.keys(FILES)) { data[k] = latest[k]; orig[k] = JSON.stringify(latest[k]); }
+      baseSha = head;
+      const i = data.projects.findIndex(p => p.id === selId);
+      sel = i >= 0 ? i : Math.min(sel, Math.max(0, data.projects.length - 1));
+      render(); syncDirty();
+      toast('تم تحميل آخر نسخة من المحتوى.');
+    } catch (x) {}
+  }
+  document.addEventListener('visibilitychange', refreshIfStale);
+  addEventListener('focus', refreshIfStale);
+  setInterval(refreshIfStale, 60000);
 
   async function watchDeploy(sha) {
     status('جاري النشر على الموقع…', 'busy');
