@@ -364,6 +364,7 @@ html[dir="ltr"] .case__close .back { scale: -1 1; }
 .case__scroll { overflow-y: auto; overscroll-behavior: contain; outline: none; }
 .case__head { padding-block: clamp(48px, 9vh, 110px) clamp(28px, 5vh, 56px); }
 .case__head .wrap { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px 48px; align-items: end; }
+.case__head .pg__crumb { margin-block-end: clamp(1.4rem, 3vw, 2.6rem); }   /* the big title's hamza and alef rise well above its line */
 .case__title { font-family: var(--display); font-weight: 900; font-size: clamp(2.6rem, 8vw, 7rem); line-height: 1.2; text-wrap: balance; }
 html[lang="en"] .case__title { line-height: .98; letter-spacing: -.04em; }
 .case__line { font-size: 1.15rem; margin-block-start: .8rem; color: var(--mute); max-width: 34rem; }
@@ -604,6 +605,7 @@ html[lang="en"] .pbar__btn, html[lang="en"] .share { letter-spacing: .02em; }
 .wall__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 1.2vw, 18px); }
 .wall__grid .tile { aspect-ratio: 4 / 3; border-radius: 10px; }
 .wall__grid .tile[hidden] { display: none; }
+.wall__grid .tile.is-wide { grid-column: 1 / -1; aspect-ratio: auto; }
 .tile--site img { object-position: 50% 0; }   /* a website shows its first screen */
 .tile__kind { font-family: var(--display); font-size: .8rem; color: var(--mute); }
 .tile--site .tile__cap { gap: 4px; }

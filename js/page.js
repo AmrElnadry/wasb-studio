@@ -29,7 +29,20 @@
       const keys = F[b.dataset.filter];
       wall.querySelectorAll('[data-filter]').forEach(x => { const on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', on); });
       wall.querySelectorAll('.tile').forEach(tile => { tile.hidden = !!keys && !tile.dataset.tags.split(' ').some(k => keys.includes(k)); });
+      fill();
     });
+    // a card left alone on the last row takes the whole row, at the same height as the others
+    const grid = wall.querySelector('.wall__grid');
+    const fill = () => {
+      const shown = [...grid.querySelectorAll('.tile')].filter(x => !x.hidden);
+      shown.forEach(x => { x.classList.remove('is-wide'); x.style.height = ''; });
+      const cols = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+      if (cols < 2 || shown.length % cols !== 1) return;
+      const last = shown[shown.length - 1], h = shown[0].offsetHeight;
+      last.classList.add('is-wide'); last.style.height = h + 'px';
+    };
+    fill();
+    addEventListener('resize', fill);
   }
 
   const bar = document.getElementById('pbar');
