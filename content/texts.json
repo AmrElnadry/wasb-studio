@@ -51,7 +51,7 @@
     "svc.2.c": "نسخة للطباعة ونسخة رقمية",
     "svc.2.cta": "أعمال البروفايلات",
     "skip": "تخطَّ إلى الأعمال",
-    "nav.works": "الأعمال",
+    "nav.works": "أعمال وثب",
     "nav.services": "الخدمات",
     "nav.approach": "المنهجية",
     "nav.about": "عن وثب",
@@ -116,7 +116,8 @@
     "page.next": "التالي",
     "page.similar": "أعمال مشابهة",
     "worksPage.title": "أعمال وثب",
-    "worksPage.note": "جميع المشاريع التي صممناها في الهوية البصرية والملفات التعريفية والمواقع."
+    "worksPage.note": "جميع المشاريع التي صممناها في الهوية البصرية والملفات التعريفية والمواقع.",
+    "page.services": "الخدمات"
   },
   "en": {
     "nav.sites": "Websites",
@@ -170,7 +171,7 @@
     "svc.2.c": "Print and digital versions",
     "svc.2.cta": "Profile work",
     "skip": "Skip to work",
-    "nav.works": "Work",
+    "nav.works": "WASB Work",
     "nav.services": "Services",
     "nav.approach": "Approach",
     "nav.about": "About",
@@ -235,6 +236,7 @@
     "page.next": "Next",
     "page.similar": "Similar work",
     "worksPage.title": "WASB Work",
-    "worksPage.note": "Every project we have designed across brand identity, company profiles and websites."
+    "worksPage.note": "Every project we have designed across brand identity, company profiles and websites.",
+    "page.services": "Services"
   }
 }

@@ -175,7 +175,6 @@ en = en.replace(/(<([a-z0-9]+)\b[^>]*\sdata-i18n="([^"]+)"[^>]*>)([^<]*)(<\/\2>)
 en = en.replace(/(\sdata-i18n-label="([^"]+)"\s+aria-label=")[^"]*"/g, (m, a, key) => a + esc(t(key, 'en')) + '"');
 en = en.replace('id="langToggle" aria-label="Switch to English">EN<', 'id="langToggle" aria-label="التبديل إلى العربية">عربي<');
 en = put(en, 'works', tilesFor('en'));
-en = en.replace('id="sitesAll" href="/sites/"', 'id="sitesAll" href="/en/sites/"');
 write('en/index.html', en);
 
 // ---------- share images: each project's cover as a 1200x630 JPEG, cropped around its focus point ----------
@@ -220,6 +219,16 @@ const symbols = ['wasb-symbol', 'wasb-word', 'wasb-latin', 'i-arrow', 'i-wa'].ma
   <symbol id="i-in" viewBox="0 0 24 24"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-3.95v-11Z"/></symbol>`;
 const arrow = '<svg aria-hidden="true"><use href="#i-arrow"/></svg>';
 const pad = n => String(n).padStart(2, '0');
+// the works page's filters; a service on a project page links to the filter that holds it
+const WALL_FILTERS = { identity: ['identity', 'logo', 'merch', 'signage'], profile: ['profile'], website: ['website'] };
+const filterOf = k => Object.keys(WALL_FILTERS).find(f => WALL_FILTERS[f].includes(k));
+function facts(p, l) {
+  const svc = p.tags.filter(k => T[k]).map(k => { const f = filterOf(k); return f ? `<a href="${base(l)}work/?type=${f}">${esc(T[k][l])}</a>` : `<span>${esc(T[k][l])}</span>`; });
+  const rows = [];
+  if (svc.length) rows.push(`<div><dt>${esc(t('page.services', l))}</dt><dd>${svc.join('<i aria-hidden="true"> · </i>')}</dd></div>`);
+  if (p.year) rows.push(`<div><dt>${esc(t('page.year', l))}</dt><dd>${esc(p.year)}</dd></div>`);
+  return rows.length ? `<dl class="phead__facts">${rows.join('')}</dl>` : '';
+}
 // the back link's arrow points the way back: right in Arabic, left in English
 const backChev = l => `<svg class="pg__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="${l === 'ar' ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 // the project opens on the image its card showed: the cover leads the gallery, at full width.
@@ -384,14 +393,13 @@ function page(p, i, l) {
         <p class="pg__crumb"><a href="${base(l)}work/">${esc(t('nav.works', l))}</a> <span aria-hidden="true">/</span> ${pad(i + 1)}</p>
         <nav class="pg__pn" aria-label="${esc(t('nav.works', l))}">
           <a href="${workPath(next.id, l)}" rel="next">${esc(t('page.next', l))}${chev(l)}</a>
-          <span class="pg__sep" aria-hidden="true"></span>
-          <a href="${base(l)}work/">${esc(t('page.all', l))}</a>
         </nav>
       </div>
       <div class="phead__main${about ? '' : ' is-single'}">
         <div class="phead__id">
           <h1 class="phead__title">${titleHtml(name)}</h1>
           <p class="phead__line">${esc(line)}</p>
+          ${facts(p, l)}
         </div>
         ${about ? `<div class="phead__about"><h2>${esc(t('page.about', l))}</h2><p>${esc(about)}</p></div>` : ''}
         ${gal.lead}
@@ -407,31 +415,25 @@ ${bar(name, url, l)}`;
   return shell(l, { path: `work/${p.id}/`, title: name, desc, image: full(shareImg.get(p.id) || p.cover), type: 'article', ld, body, back: { href: base(l) + 'work/', label: t('nav.works', l) } });
 }
 
-// every website, starred or not
-function sitesPage(l) {
-  const title = t('sites.title', l), desc = t('sites.note', l);
-  const url = SITE + base(l).slice(1) + 'sites/';
-  const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description: desc, url, inLanguage: l,
-    about: { '@id': SITE + '#studio' },
-    mainEntity: { '@type': 'ItemList', itemListElement: S.map((s, k) => ({ '@type': 'ListItem', position: k + 1, item: { '@type': 'WebSite', name: s.label, url: s.url, creator: { '@id': SITE + '#studio' } } })) } };
-  const body = `  <header class="case__head">
-    <div class="wrap">
-      <div>
-        <p class="pg__crumb"><a href="${base(l)}">${esc(t('page.home', l))}</a> <span aria-hidden="true">/</span> ${esc(t('page.sites', l))}</p>
-        <h1 class="case__title">${esc(title)}</h1>
-        <p class="case__line">${esc(desc)}</p>
-      </div>
-    </div>
-  </header>
-  <section class="sgrid wrap">${S.map(s => `<a class="scard" href="${esc(s.url)}" target="_blank" rel="noopener">
-      <div class="browser"><div class="browser__bar"><i></i><i></i><i></i><span>${esc(s.label)}</span></div><div class="scard__view"><img src="${abs(s.src)}" alt="${esc(t('nav.sites', l) + ' · ' + s.label)}" loading="lazy" decoding="async"></div></div>
-      <span class="scard__meta"><b>${esc(s.label)}</b><span>${esc(t('page.visit', l))}${arrow}</span></span>
-    </a>`).join('')}</section>`;
-  return shell(l, { path: 'sites/', title, desc, image: SITE + `assets/share-${l}.jpg`, ld, body });
+// /sites/ moved into the works page, on its websites tab
+function sitesMoved(l) {
+  const to = `${base(l)}work/?type=website`;
+  return `<!doctype html>
+<html lang="${l}" dir="${l === 'ar' ? 'rtl' : 'ltr'}">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, follow">
+<title>${esc(t('worksPage.title', l))}</title>
+<link rel="canonical" href="${SITE}${to.slice(1)}">
+<meta http-equiv="refresh" content="0; url=${to}">
+<script>location.replace(${JSON.stringify(to)})</script>
+</head>
+<body><a href="${to}">${esc(t('worksPage.title', l))}</a></body>
+</html>
+`;
 }
 
 // every project, shown on the home page or not, with the same filters as the home page
-const WALL_FILTERS = { identity: ['identity', 'logo', 'merch', 'signage'], profile: ['profile'], website: ['website'] };
 function worksPage(l) {
   const title = t('worksPage.title', l), desc = t('worksPage.note', l);
   const url = SITE + base(l).slice(1) + 'work/';
@@ -462,7 +464,7 @@ function worksPage(l) {
 for (const dir of ['work', 'en/work', 'sites', 'en/sites']) rmSync(root + dir, { recursive: true, force: true });
 P.forEach((p, i) => { write(`work/${p.id}/index.html`, page(p, i, 'ar')); write(`en/work/${p.id}/index.html`, page(p, i, 'en')); });
 write('work/index.html', worksPage('ar')); write('en/work/index.html', worksPage('en'));
-write('sites/index.html', sitesPage('ar')); write('en/sites/index.html', sitesPage('en'));
+write('sites/index.html', sitesMoved('ar')); write('en/sites/index.html', sitesMoved('en'));
 
 // ---------- sitemap.xml ----------
 const today = new Date().toISOString().slice(0, 10);
@@ -477,7 +479,6 @@ writeFileSync(root + 'sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${entry('', 'en/', P.map(p => p.cover))}
 ${entry('work/', 'en/work/', P.map(p => p.cover))}
-${entry('sites/', 'en/sites/', S.map(x => x.src))}
 ${P.map(p => entry(`work/${p.id}/`, `en/work/${p.id}/`, [p.cover, ...gimgs(p)].filter((s, k, a) => a.indexOf(s) === k).slice(0, 30))).join('\n')}
 </urlset>
 `);

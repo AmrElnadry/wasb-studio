@@ -517,6 +517,16 @@ html[lang="en"] .pg__nav { text-transform: uppercase; letter-spacing: .06em; fon
 html[lang="en"] .phead__title { line-height: 1.02; letter-spacing: -.03em; }
 .phead__kind { display: block; color: var(--mute); }   /* «Client · Company Profile»: the kind of work on its own line */
 .phead__line { margin-block-start: .7rem; font-size: 1.02rem; line-height: 1.7; color: var(--mute); max-width: 34rem; }
+.phead__facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-block-start: 1.1rem; font-family: var(--display); font-size: .86rem; line-height: 1.6; }
+.phead__facts dt, .phead__facts dd { display: inline; }
+.phead__facts dt { margin-inline-end: 8px; }
+.phead__facts dd a, .phead__facts dd span { white-space: nowrap; }   /* a service never breaks in the middle */
+.phead__facts dt { color: var(--mute); }
+.phead__facts dd { margin: 0; color: rgba(240, 240, 240, .86); }
+.phead__facts i { font-style: normal; color: var(--mute); }
+.phead__facts a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; transition: color .3s, text-decoration-color .3s; }
+.phead__facts a:hover, .phead__facts a:focus-visible { color: var(--red); text-decoration-color: currentColor; }
+html[lang="en"] .phead__facts { text-transform: uppercase; letter-spacing: .05em; font-size: .74rem; }
 .phead__about { padding-inline-start: clamp(24px, 4vw, 56px); border-inline-start: 1px solid var(--rule); }
 .phead__about h2 { font-family: var(--display); font-size: .82rem; color: var(--mute); margin-block-end: 10px; }
 .phead__about p { font-size: clamp(.98rem, 1.15vw, 1.1rem); line-height: 1.95; color: rgba(240, 240, 240, .86); white-space: pre-line; }
@@ -592,8 +602,6 @@ html[lang="en"] .pg__back { text-transform: uppercase; letter-spacing: .06em; fo
 .pg__bar--home .pg__start { transition: opacity .4s; }
 .pg__bar--home.is-bare .pg__start { opacity: 0; visibility: hidden; }
 html.intro-on .pg__bar--home { visibility: hidden; }
-/* over the hero, the year steps down below the menu */
-@media (min-width: 821px) { .hero__year { margin-block-start: 52px; } }
 
 /* ---------- moving between pages: the bar stays, the card's image grows into the project's first image ---------- */
 @view-transition { navigation: auto; }
