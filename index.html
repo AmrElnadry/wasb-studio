@@ -33,7 +33,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css?v=b436f54d">
+<link rel="stylesheet" href="/css/style.css?v=41497c6f">
 <script>(function(d){d.classList.add('js');var seen=0;try{seen=sessionStorage.getItem('wasb-intro');sessionStorage.setItem('wasb-intro','1')}catch(e){}var inside=document.referrer.indexOf(location.origin)===0;if(!seen&&!inside&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!/[?&]nointro/.test(location.search)&&!location.hash)d.classList.add('intro-on')})(document.documentElement)</script>
 </head>
 <body>
@@ -80,18 +80,24 @@
   </div>
 </div>
 
-<a class="dock dock--home" href="#top" aria-label="وثب استوديو">
-  <svg viewBox="0 0 263 358" aria-hidden="true"><use class="plate" href="#wasb-plate"/><use href="#wasb-symbol"/></svg>
-</a>
-<div class="dock dock--menu">
-  <button class="menu-btn" type="button" id="burger" aria-expanded="false" aria-controls="menu"><span class="menu-btn__roll"><span data-i18n="nav.menu">القائمة</span></span></button>
-  <button class="dock__btn" type="button" id="langToggle" aria-label="Switch to English">EN</button>
-</div>
+<header class="pg__bar pg__bar--home" id="topbar">
+  <div class="pg__start">
+    <a class="pg__home" href="#top" data-i18n-label="foot.name" aria-label="وثب استوديو">
+      <svg class="pg__sym" viewBox="0 0 263 358" aria-hidden="true"><use href="#wasb-symbol"/></svg>
+      <svg class="pg__word ar-only" viewBox="0 0 257.7 90.3" aria-hidden="true"><use href="#wasb-word"/></svg>
+      <svg class="pg__word en-only" viewBox="0 0 263.17 69.84" aria-hidden="true"><use href="#wasb-latin"/></svg>
+    </a>
+  </div>
+  <div class="pg__nav">
+    <button class="pg__lang" type="button" id="langToggle" aria-label="Switch to English">EN</button>
+    <button class="menu-btn" type="button" id="burger" aria-expanded="false" aria-controls="menu"><span class="menu-btn__roll"><span data-i18n="nav.menu">القائمة</span></span></button>
+  </div>
+</header>
 
 <div class="menu" id="menu" hidden>
   <nav class="menu__links" aria-label="القائمة">
-    <a href="#works" data-i18n="nav.works">الأعمال</a>
-    <a href="#sites" data-i18n="nav.sites">المواقع</a>
+    <a href="/work/" data-to="work/" data-i18n="nav.works">الأعمال</a>
+    <a href="/work/?type=website" data-to="work/?type=website" data-i18n="nav.sites">المواقع</a>
     <a href="#approach" data-i18n="nav.approach">المنهجية</a>
     <a href="#about" data-i18n="nav.about">عن وثب</a>
     <a href="#contact" data-i18n="cta.start">ابدأ مشروعك</a>
@@ -151,7 +157,7 @@
         </div>
         <a class="pano__all works__all" id="worksAll" href="/work/"><span data-i18n="page.all">كل الأعمال</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </header>
-      <div class="grid" id="grid"><!-- seo:works --><a class="tile" href="/work/ula/"><img src="/assets/ula/993b20c7-0d06-490a-a5c4-41be4c5869b5.webp" alt="الهوية البصرية للمخيم الصيفي لنادي العلا 2026 " loading="lazy"><span class="tile__cap"><span class="tile__name">نادي العلا&nbsp;· Summer Camp</span><span class="tile__tags">هوية بصرية، تطبيقات الهوية</span></span></a><a class="tile" href="/work/alkamal-profile/"><img src="/assets/alkamal-profile/covers.webp" alt="تصميم الملف التعريفي لشركة الكمال للمقاولات بنسختيه العربية والإنجليزية" loading="lazy"><span class="tile__cap"><span class="tile__name">الكمال للمقاولات&nbsp;· الملف التعريفي</span><span class="tile__tags">بروفايل شركة، مطبوعات</span></span></a><a class="tile" href="/work/qimam/"><img src="/assets/qimam/spread-values-cover.webp" alt="تصميم البروفايل التعريفي لشركة قمم الكمال لتقنية المعلومات بنسختيه العربية والإنجليزية" loading="lazy"><span class="tile__cap"><span class="tile__name">قمم الكمال لتقنية المعلومات</span><span class="tile__tags">بروفايل شركة، مطبوعات</span></span></a><a class="tile" href="/work/sapac/"><img src="/assets/sapac/ps-industrial-cover.webp" alt="تصميم البروفايل التعريفي لشركة عبر المملكة SAPAC للمقاولات" loading="lazy"><span class="tile__cap"><span class="tile__name">عبر المملكة SAPAC</span><span class="tile__tags">بروفايل شركة، مطبوعات</span></span></a><a class="tile" href="/work/faiza/"><img src="/assets/faiza/09-hang-tag.webp" alt="تصميم الهوية البصرية لمصممة الأزياء السعودية فايزة حسين" loading="lazy"><span class="tile__cap"><span class="tile__name">فايزة حسين&nbsp;· هوية بصرية</span><span class="tile__tags">هوية بصرية، شعار، تطبيقات الهوية</span></span></a><a class="tile" href="/work/greazy/"><img src="/assets/greazy/greazy-logo.webp" alt="تصميم وتنفيذ هوية بصرية متكاملة لمطعم GREAZY" loading="lazy"><span class="tile__cap"><span class="tile__name">مطعم GREAZY</span><span class="tile__tags">هوية بصرية، شعار، تطبيقات الهوية، واجهات ولوحات، مطبوعات</span></span></a><a class="tile" href="/work/darsas/"><img src="/assets/darsas/ps-spread-cover.webp" alt="تصميم البروفايل التعريفي لشركة دار ساس الأمنية بنسختيه العربية والإنجليزية" loading="lazy"><span class="tile__cap"><span class="tile__name">شركة دار ساس الأمنية</span><span class="tile__tags">بروفايل شركة، مطبوعات</span></span></a><!-- /seo:works --></div>
+      <div class="grid" id="grid"><!-- seo:works --><a class="tile" href="/work/ula/"><img src="/assets/ula/993b20c7-0d06-490a-a5c4-41be4c5869b5.webp" alt="الهوية البصرية للمخيم الصيفي لنادي العلا 2026 " loading="lazy"><span class="tile__cap"><span class="tile__name">نادي العلا&nbsp;· Summer Camp</span><span class="tile__tags">هوية بصرية، تطبيقات الهوية</span></span></a><a class="tile" href="/work/sapac/"><img src="/assets/sapac/ps-industrial-cover.webp" alt="تصميم البروفايل التعريفي لشركة عبر المملكة SAPAC للمقاولات" loading="lazy"><span class="tile__cap"><span class="tile__name">عبر المملكة SAPAC</span><span class="tile__tags">بروفايل شركة، مطبوعات</span></span></a><a class="tile" href="/work/greazy/"><img src="/assets/greazy/greazy-logo.webp" alt="تصميم وتنفيذ هوية بصرية متكاملة لمطعم GREAZY" loading="lazy"><span class="tile__cap"><span class="tile__name">مطعم GREAZY</span><span class="tile__tags">هوية بصرية، شعار، تطبيقات الهوية، واجهات ولوحات، مطبوعات</span></span></a><a class="tile" href="/work/darsas/"><img src="/assets/darsas/ps-spread-cover.webp" alt="تصميم البروفايل التعريفي لشركة دار ساس الأمنية بنسختيه العربية والإنجليزية" loading="lazy"><span class="tile__cap"><span class="tile__name">شركة دار ساس الأمنية</span><span class="tile__tags">بروفايل شركة، مطبوعات</span></span></a><!-- /seo:works --></div>
     </div>
   </section>
 
@@ -226,7 +232,7 @@
   </section>
 </main>
 
-<script src="/js/content.js?v=d5891db5"></script>
-<script src="/js/main.js?v=d621e82b"></script>
+<script src="/js/content.js?v=d42c034b"></script>
+<script src="/js/main.js?v=085db612"></script>
 </body>
 </html>

@@ -20,6 +20,50 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') { set(false); burger.focus(); } });
   }
 
+  // back: to the place the visitor came from (the home page or all work), at the same scroll;
+  // anyone who arrived from elsewhere goes to all work
+  const back = document.querySelector('[data-back]');
+  if (back) back.addEventListener('click', e => {
+    try {
+      const r = new URL(document.referrer);
+      if (r.origin === location.origin && /^\/(en\/)?(work\/)?$/.test(r.pathname) && history.length > 1) { e.preventDefault(); history.back(); }
+    } catch (x) {}
+  });
+
+  /* ---------- page to page: the card's image grows into the project's first image, and back ---------- */
+  // the two images share one view-transition name for the length of the move; browsers without
+  // cross-page transitions simply open the page
+  (function moveBetweenPages() {
+    if (!('onpagereveal' in window)) return;
+    const named = [];
+    const name = img => { if (img) { img.style.viewTransitionName = 'lead'; named.push(img); } };
+    const clear = () => { named.splice(0).forEach(x => { x.style.viewTransitionName = ''; }); };
+    const inView = el => { const r = el.getBoundingClientRect(); return r.bottom > 40 && r.top < innerHeight - 40; };
+    const lead = () => document.querySelector('.gal__it.is-lead img');
+    const tileFor = path => [...document.querySelectorAll('a.tile[href]')].find(a => !a.hidden && new URL(a.href, location.href).pathname === path && inView(a));
+    let clicked = null;
+    document.addEventListener('click', e => { const a = e.target.closest('a.tile'); clicked = a && !e.defaultPrevented ? a : null; }, true);
+    addEventListener('pageswap', e => {
+      clear();
+      if (!e.viewTransition) return;
+      e.viewTransition.ready.catch(() => {});
+      try { sessionStorage.setItem('wasb-from', location.pathname); } catch (x) {}
+      if (clicked && inView(clicked)) name(clicked.querySelector('img'));
+      else { const l = lead(); if (l && inView(l)) name(l); }
+      clicked = null;
+    });
+    addEventListener('pagereveal', e => {
+      clear();
+      if (!e.viewTransition) return;
+      let from = '';
+      try { from = sessionStorage.getItem('wasb-from') || ''; } catch (x) {}
+      const l = lead();
+      if (l) name(l);
+      else { const a = from && tileFor(from); if (a) name(a.querySelector('img')); }
+      e.viewTransition.ready.catch(() => {}); e.viewTransition.finished.then(clear, clear);
+    });
+  })();
+
   // all-work page: filter the projects by service
   const wall = document.querySelector('.wall');
   if (wall) {
@@ -30,6 +74,8 @@
       wall.querySelectorAll('[data-filter]').forEach(x => { const on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', on); });
       wall.querySelectorAll('.tile').forEach(tile => { tile.hidden = !!keys && !tile.dataset.tags.split(' ').some(k => keys.includes(k)); });
       fill();
+      // the address keeps the filter, so the menu, a shared link and the back button land on it
+      try { const u = new URL(location.href); if (keys) u.searchParams.set('type', b.dataset.filter); else u.searchParams.delete('type'); history.replaceState(history.state, '', u); } catch (x) {}
     });
     // a card left alone on the last row takes the whole row, at the same height as the others
     const grid = wall.querySelector('.wall__grid');
@@ -43,6 +89,9 @@
     };
     fill();
     addEventListener('resize', fill);
+    const want = new URLSearchParams(location.search).get('type');
+    const pick = want && [...wall.querySelectorAll('[data-filter]')].find(x => x.dataset.filter === want);
+    if (pick) pick.click();
   }
 
   const bar = document.getElementById('pbar');

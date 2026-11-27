@@ -47,6 +47,7 @@
     btn.textContent = lang === 'ar' ? 'EN' : 'عربي';
     btn.setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
     $('#worksAll').href = BASE() + 'work/';
+    $$('#menu [data-to]').forEach(a => { a.href = BASE() + a.dataset.to; });
     renderRows(); renderPano(); renderContact(); syncMenuLabel(); applyFilter(filter); fitTrio(); buildGhost(); alignHero(); if (window.WASB_HAND) window.WASB_HAND(); syncGame();
     if (!first) onScroll();
   }
@@ -357,6 +358,62 @@
   }
   burger.addEventListener('click', () => setMenu(!menuOpen()));
   menu.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
+
+  /* ---------- page to page: the card's image grows into the project's first image, and back ---------- */
+  // the two images share one view-transition name for the length of the move; browsers without
+  // cross-page transitions simply open the page
+  (function moveBetweenPages() {
+    if (!('onpagereveal' in window)) return;
+    const named = [];
+    const name = img => { if (img) { img.style.viewTransitionName = 'lead'; named.push(img); } };
+    const clear = () => { named.splice(0).forEach(x => { x.style.viewTransitionName = ''; }); };
+    const inView = el => { const r = el.getBoundingClientRect(); return r.bottom > 40 && r.top < innerHeight - 40; };
+    const lead = () => document.querySelector('.gal__it.is-lead img');
+    const tileFor = path => [...document.querySelectorAll('a.tile[href]')].find(a => !a.hidden && new URL(a.href, location.href).pathname === path && inView(a));
+    let clicked = null;
+    document.addEventListener('click', e => { const a = e.target.closest('a.tile'); clicked = a && !e.defaultPrevented ? a : null; }, true);
+    addEventListener('pageswap', e => {
+      clear();
+      if (!e.viewTransition) return;
+      e.viewTransition.ready.catch(() => {});
+      try { sessionStorage.setItem('wasb-from', location.pathname); } catch (x) {}
+      if (clicked && inView(clicked)) name(clicked.querySelector('img'));
+      else { const l = lead(); if (l && inView(l)) name(l); }
+      clicked = null;
+    });
+    addEventListener('pagereveal', e => {
+      clear();
+      if (!e.viewTransition) return;
+      let from = '';
+      try { from = sessionStorage.getItem('wasb-from') || ''; } catch (x) {}
+      const l = lead();
+      if (l) name(l);
+      else { const a = from && tileFor(from); if (a) name(a.querySelector('img')); }
+      e.viewTransition.ready.catch(() => {}); e.viewTransition.finished.then(clear, clear);
+    });
+  })();
+
+  /* ---------- top bar: the same bar as every inner page ---------- */
+  // over the hero only the language and the menu show (the hero is the logo); past it the full bar
+  // steps aside while the reader scrolls down and comes back as soon as they scroll up
+  (function topBar() {
+    const bar = $('#topbar'), hero = $('#hero');
+    let last = scrollY, raf = 0, on = true;
+    const sync = () => {
+      raf = 0;
+      const y = scrollY, past = y > hero.offsetHeight - bar.offsetHeight;
+      if (!past) on = true;
+      else if (y < last - 6) on = true;
+      else if (y > last + 6) on = false;
+      if (Math.abs(y - last) > 6 || !past) last = y;
+      bar.classList.toggle('is-bare', !past && !menuOpen());
+      bar.classList.toggle('is-on', on || menuOpen());
+    };
+    addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(sync); }, { passive: true });
+    addEventListener('resize', sync);
+    burger.addEventListener('click', () => requestAnimationFrame(sync));
+    sync();
+  })();
 
   /* ---------- approach: build the identity ---------- */
   // Each leap sends a red diamond (a dot of the letter ث) along the arc to the next stage,

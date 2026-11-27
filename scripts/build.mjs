@@ -198,6 +198,15 @@ if (sharp) {
   }
 }
 
+// the main colour of each gallery image fills its frame until the image arrives
+const tone = new Map();
+if (sharp) {
+  const files = new Set(P.flatMap(p => [p.cover, ...gimgs(p)]).filter(f => f && !/^https?:/.test(f)).map(abs));
+  await Promise.all([...files].map(async f => {
+    try { const { dominant: d } = await sharp(root + f.slice(1)).stats(); tone.set(f, '#' + [d.r, d.g, d.b].map(v => v.toString(16).padStart(2, '0')).join('')); } catch (e) {}
+  }));
+}
+
 // ---------- project pages ----------
 const symbols = ['wasb-symbol', 'wasb-word', 'wasb-latin', 'i-arrow', 'i-wa'].map(id => {
   const m = ar.match(new RegExp(`<symbol id="${id}"[\\s\\S]*?</symbol>`));
@@ -211,17 +220,34 @@ const symbols = ['wasb-symbol', 'wasb-word', 'wasb-latin', 'i-arrow', 'i-wa'].ma
   <symbol id="i-in" viewBox="0 0 24 24"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-3.95v-11Z"/></symbol>`;
 const arrow = '<svg aria-hidden="true"><use href="#i-arrow"/></svg>';
 const pad = n => String(n).padStart(2, '0');
+// the back link's arrow points the way back: right in Arabic, left in English
+const backChev = l => `<svg class="pg__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="${l === 'ar' ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+// the project opens on the image its card showed: the cover leads the gallery, at full width.
+// If the cover was half of a pair, its partner stands alone at full width.
+function withCover(p) {
+  const items = (p.gallery || []).map(g => ({ src: gsrc(g), half: !!(g && g.half) }));
+  const k = items.findIndex(g => abs(g.src) === abs(p.cover));
+  if (k >= 0) {
+    // pairs form the way galLayout forms them: two halves in a row
+    for (let i = 0; i < items.length - 1; i++) if (items[i].half && items[i + 1].half) { if (i === k) items[i + 1].half = false; if (i + 1 === k) items[i].half = false; i++; }
+    items.splice(k, 1);
+  }
+  return [{ src: p.cover, half: false }, ...items];
+}
 function gallery(p, l) {
   const alt = esc(L(p.name, l) + ' · ' + tags(p, l));
-  return `<section class="gal">${galLayout(p.gallery || []).map(g => {
-    const [w, h] = imgSize(g.src);
-    return `<figure class="gal__it${g.full ? ' is-full' : ''}" style="--r:${g.r.toFixed(4)};--s:${g.s.toFixed(4)}"><img src="${abs(g.src)}" alt="${alt}" width="${w}" height="${h}" loading="lazy" decoding="async"></figure>`;
-  }).join('')}</section>`;
+  const figs = galLayout(withCover(p)).map((g, i) => {
+    const [w, h] = imgSize(g.src), bg = tone.get(abs(g.src));
+    const load = i === 0 ? 'fetchpriority="high"' : i < 3 ? 'loading="eager" decoding="async"' : 'loading="lazy" decoding="async"';
+    return `<figure class="gal__it${g.full ? ' is-full' : ''}${i === 0 ? ' is-lead' : ''}" style="--r:${g.r.toFixed(4)};--s:${g.s.toFixed(4)}${bg ? ';--tone:' + bg : ''}"><img src="${abs(g.src)}" alt="${alt}" width="${w}" height="${h}" ${load}></figure>`;
+  });
+  // the lead image sits in the header, so on phones it comes straight after the title, before the about text
+  return { lead: figs[0], rest: `<section class="gal">${figs.slice(1).join('')}</section>` };
 }
 const tile = (p, l) => `<a class="tile" href="${workPath(p.id, l)}" style="--focus:${esc(p.focus || '50% 50%')}" aria-label="${esc(L(p.name, l))}: ${esc(t('plate.open', l))}"><img src="${abs(p.cover)}" alt="${esc(L(p.line, l))}" loading="lazy" decoding="async"><span class="tile__cap"><span class="tile__name">${nameHtml(L(p.name, l))}</span><span class="tile__tags">${esc(tags(p, l))}</span></span><span class="tile__go" aria-hidden="true">${arrow}</span></a>`;
 
 // one frame for every inner page: head, bar, footer
-function shell(l, { path, title, desc, image, type = 'website', ld, body }) {
+function shell(l, { path, title, desc, image, type = 'website', ld, body, back }) {
   const other = l === 'ar' ? 'en' : 'ar';
   const studio = l === 'ar' ? 'وثب استوديو' : 'WASB Studio';
   const url = SITE + base(l).slice(1) + path, arUrl = SITE + path, enUrl = SITE + 'en/' + path;
@@ -265,10 +291,13 @@ ${ldTag(ld)}
   ${symbols}
 </defs></svg>
 <header class="pg__bar">
-  <a class="pg__home" href="${base(l)}" aria-label="${esc(studio)}">
-    <svg class="pg__sym" viewBox="0 0 263 358" aria-hidden="true"><use href="#wasb-symbol"/></svg>
-    ${l === 'ar' ? '<svg class="pg__word" viewBox="0 0 257.7 90.3" aria-hidden="true"><use href="#wasb-word"/></svg>' : '<svg class="pg__word" viewBox="0 0 263.17 69.84" aria-hidden="true"><use href="#wasb-latin"/></svg>'}
-  </a>
+  <div class="pg__start">
+    <a class="pg__home" href="${base(l)}" aria-label="${esc(studio)}">
+      <svg class="pg__sym" viewBox="0 0 263 358" aria-hidden="true"><use href="#wasb-symbol"/></svg>
+      ${l === 'ar' ? '<svg class="pg__word" viewBox="0 0 257.7 90.3" aria-hidden="true"><use href="#wasb-word"/></svg>' : '<svg class="pg__word" viewBox="0 0 263.17 69.84" aria-hidden="true"><use href="#wasb-latin"/></svg>'}
+    </a>${back ? `
+    <a class="pg__back" href="${esc(back.href)}" data-back>${backChev(l)}<span>${esc(back.label)}</span></a>` : ''}
+  </div>
   <div class="pg__nav">
     <a class="pg__lang" href="${base(other)}${path}" hreflang="${other}" lang="${other}">${other === 'en' ? 'EN' : 'عربي'}</a>
     <button class="menu-btn" type="button" id="burger" aria-expanded="false" aria-controls="menu" data-open="${esc(t('nav.menu', l))}" data-close="${esc(t('nav.close', l))}"><span class="menu-btn__roll">${esc(t('nav.menu', l))}</span></button>
@@ -277,7 +306,7 @@ ${ldTag(ld)}
 <div class="menu" id="menu" hidden>
   <nav class="menu__links" aria-label="${esc(t('nav.menu', l))}">
     <a href="${base(l)}work/">${esc(t('nav.works', l))}</a>
-    <a href="${base(l)}sites/">${esc(t('nav.sites', l))}</a>
+    <a href="${base(l)}work/?type=website">${esc(t('nav.sites', l))}</a>
     <a href="${base(l)}#approach">${esc(t('nav.approach', l))}</a>
     <a href="${base(l)}#about">${esc(t('nav.about', l))}</a>
     <a href="${base(l)}#contact">${esc(t('cta.start', l))}</a>
@@ -348,6 +377,7 @@ function page(p, i, l) {
       { '@type': 'ListItem', position: 2, name: t('nav.works', l), item: SITE + base(l).slice(1) + 'work/' },
       { '@type': 'ListItem', position: 3, name, item: url } ] }
   ] };
+  const gal = gallery(p, l);
   const body = `  <article>
     <header class="phead">
       <div class="phead__top">
@@ -364,16 +394,17 @@ function page(p, i, l) {
           <p class="phead__line">${esc(line)}</p>
         </div>
         ${about ? `<div class="phead__about"><h2>${esc(t('page.about', l))}</h2><p>${esc(about)}</p></div>` : ''}
+        ${gal.lead}
       </div>
     </header>
-    ${gallery(p, l)}
+    ${gal.rest}
   </article>
   <section class="similar" aria-labelledby="similarTitle">
     <div class="similar__head"><h2 id="similarTitle">${esc(t('page.similar', l))}</h2><a href="${base(l)}work/">${esc(t('page.all', l))}${chev(l)}</a></div>
     <div class="similar__grid">${similar(p, i).map(q => tile(q, l)).join('')}</div>
   </section>
 ${bar(name, url, l)}`;
-  return shell(l, { path: `work/${p.id}/`, title: name, desc, image: full(shareImg.get(p.id) || p.cover), type: 'article', ld, body });
+  return shell(l, { path: `work/${p.id}/`, title: name, desc, image: full(shareImg.get(p.id) || p.cover), type: 'article', ld, body, back: { href: base(l) + 'work/', label: t('nav.works', l) } });
 }
 
 // every website, starred or not
