@@ -117,7 +117,8 @@
     "page.similar": "أعمال مشابهة",
     "worksPage.title": "أعمال وثب",
     "worksPage.note": "جميع المشاريع التي صممناها في الهوية البصرية والملفات التعريفية والمواقع.",
-    "page.services": "الخدمات"
+    "page.services": "الخدمات",
+    "intro.skip": "تخطَّ المقدمة"
   },
   "en": {
     "nav.sites": "Websites",
@@ -237,6 +238,7 @@
     "page.similar": "Similar work",
     "worksPage.title": "WASB Work",
     "worksPage.note": "Every project we have designed across brand identity, company profiles and websites.",
-    "page.services": "Services"
+    "page.services": "Services",
+    "intro.skip": "Skip intro"
   }
 }

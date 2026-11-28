@@ -94,6 +94,10 @@
     if (pick) pick.click();
   }
 
+  // «similar work» is the next decision: its images load as soon as the page itself has, not on arrival
+  const early = () => document.querySelectorAll('.similar img[loading="lazy"]').forEach(im => { im.loading = 'eager'; });
+  if (document.readyState === 'complete') early(); else addEventListener('load', () => setTimeout(early, 300), { once: true });
+
   const bar = document.getElementById('pbar');
   if (!bar) return;
   const btn = document.getElementById('shareBtn'), menu = document.getElementById('shareMenu');

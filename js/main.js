@@ -65,24 +65,25 @@
     };
     const skip = () => { skipped = true; done(); };
     ['wheel', 'touchstart', 'keydown', 'click'].forEach(ev => window.addEventListener(ev, skip, { once: true, passive: true }));
-    await Promise.race([Promise.all(imgs.map(i => i.decode().catch(() => {}))), sleep(1600)]);
+    await Promise.race([Promise.all(imgs.map(i => i.decode().catch(() => {}))), sleep(700)]);
     if (skipped) return;
+    const ready = imgs.filter(i => i.complete && i.naturalWidth);   // a slow network flashes what has arrived, it does not wait
     const target = slab.getBoundingClientRect();
     const s = Math.min(target.width, innerHeight * .8);
     Object.assign(box.style, { width: target.width + 'px', height: s + 'px', left: target.left + 'px', top: (innerHeight - s) / 2 + 'px' });
     await sleep(60);
     box.classList.add('is-on');
     await sleep(380);
-    for (let k = 0; k < imgs.length && !skipped; k++) {
-      imgs.forEach((im, j) => im.classList.toggle('is-on', j === k));
-      await sleep(92);   // 10 images in about the same second as before
+    for (let k = 0; k < ready.length && !skipped; k++) {
+      ready.forEach((im, j) => im.classList.toggle('is-on', j === k));
+      await sleep(95);
     }
     if (skipped) return;
     imgs.forEach(im => im.classList.remove('is-on'));
     const r = slab.getBoundingClientRect();
     box.style.borderRadius = getComputedStyle(slab).borderRadius;
     Object.assign(box.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
-    await sleep(1050);
+    await sleep(820);
     if (skipped) return;
     intro.classList.add('is-out');
     done();
@@ -215,7 +216,7 @@
   const tagLine = p => p.tags.map(k => L(TAGS[k])).join(' / ');
   function renderRows() {
     const seen = !!grid.querySelector('.tile[data-i]');   // the plain list written by scripts/seo.mjs does not count
-    grid.innerHTML = PROJECTS.map((p, i) => `<a class="tile${seen ? ' in' : ''}" href="${workUrl(p.id)}" data-i="${i}" style="--i:${i % 3};${p.focus ? `--focus:${p.focus}` : ''}" aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
+    grid.innerHTML = PROJECTS.map((p, i) => `<a class="tile${seen ? ' in' : ''}" href="${workUrl(p.id)}" data-i="${i}" style="--i:${i % 3};${p.focus ? `--focus:${p.focus};` : ''}${p.tone ? `--tone:${p.tone}` : ''}" aria-label="${esc(L(p.name))}: ${esc(t('plate.open'))}">
         <img src="${p.cover}" alt="${esc(L(p.line))}" loading="lazy" decoding="async">
         <span class="tile__cap"><span class="tile__name">${esc(L(p.name)).replace(/ · /g, '&nbsp;· ')}</span><span class="tile__tags">${esc(tagLine(p))}</span></span>
         <span class="tile__go" aria-hidden="true">${arrow}</span>
